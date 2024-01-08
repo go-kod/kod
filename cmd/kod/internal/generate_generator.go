@@ -131,7 +131,7 @@ type generator struct {
 // errorf is like fmt.Errorf but prefixes the error with the provided position.
 func errorf(fset *token.FileSet, pos token.Pos, format string, args ...interface{}) error {
 	// Rewrite the position's filename relative to the current directory. This
-	// replaces long filenames like "/home/foo/hnlq715/kod/kod.go"
+	// replaces long filenames like "/home/foo/go-kod/kod/kod.go"
 	// with much shorter filenames like "./kod.go".
 	position := fset.Position(pos)
 	if cwd, err := filepath.Abs("."); err == nil {

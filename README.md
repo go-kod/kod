@@ -1,7 +1,7 @@
 <div align="center">
 
 [![Build and Test](https://github.com/go-kod/kod/actions/workflows/go.yml/badge.svg)](https://github.com/go-kod/kod/actions/workflows/go.yml)
-[![codecov](https://codecov.io/github/hnlq715/kod/graph/badge.svg?token=OOZNKQJL38)](https://codecov.io/github/hnlq715/kod)
+[![codecov](https://codecov.io/github/go-kod/kod/graph/badge.svg?token=OOZNKQJL38)](https://codecov.io/github/go-kod/kod)
 
 [**English**](./README.md) •
 [**简体中文**](./README_CN.md)
