@@ -35,7 +35,7 @@ jobs:
 
       - uses: codecov/codecov-action@v3
         with:
-          token: "b9e39662-490a-4a2f-b80c-c088aded033f"
+          # token: "b9e39662-490a-4a2f-b80c-c088aded033f"
           files: ./coverage.out # optional
           flags: unittests # optional
           name: codecov-umbrella # optional
