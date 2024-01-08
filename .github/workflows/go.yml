@@ -1,0 +1,43 @@
+name: Build and Test
+
+on:
+ push:
+   branches:
+     - 'main'
+ pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        version: ["stable"]
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: ${{ matrix.version }}
+          cache: true
+
+      - name: Install Task
+        uses: arduino/setup-task@v1
+        with:
+          version: 3.x
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: generate and test
+        run: |
+            task github-action
+
+      - uses: codecov/codecov-action@v3
+        with:
+          token: "b9e39662-490a-4a2f-b80c-c088aded033f"
+          files: ./coverage.out # optional
+          flags: unittests # optional
+          name: codecov-umbrella # optional
+          fail_ci_if_error: true # optional (default = false)
+          verbose: true # optional (default = false)
