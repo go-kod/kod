@@ -24,10 +24,6 @@ import (
 	"golang.org/x/tools/go/types/typeutil"
 )
 
-// TODO(rgrandl): Modify the generator code to use only the types package. Right
-// now we are doing code generation relying both on the types and ast packages,
-// which can be confusing and also we might do unnecessary work.
-
 const (
 	generatedCodeFile = "kod_gen.go"
 
@@ -181,7 +177,7 @@ func newGenerator(opt Options, pkg *packages.Package, fset *token.FileSet, autom
 			// Check for component duplicates, two components that embed the
 			// same kod.Implements[T].
 			//
-			// TODO(mwhittaker): This code relies on the fact that a component
+			// This code relies on the fact that a component
 			// interface and component implementation have to be in the same
 			// package. If we lift this requirement, then this code will break.
 			if existing, ok := components[c.fullIntfName()]; ok {
@@ -293,7 +289,7 @@ func extractComponent(opt Options, pkg *packages.Package, file *ast.File, tset *
 		if len(f.Names) != 0 {
 			// Ignore unembedded fields.
 			//
-			// TODO(mwhittaker): Warn the user about unembedded
+			// TODO: Warn the user about unembedded
 			// kod.Implements, kod.WithConfig, or kod.WithRouter?
 			continue
 		}
@@ -326,7 +322,7 @@ func extractComponent(opt Options, pkg *packages.Package, file *ast.File, tset *
 	}
 
 	if intf == nil {
-		// TODO(mwhittaker): Warn the user if they embed kod.WithRouter or
+		// TODO: Warn the user if they embed kod.WithRouter or
 		// kod.WithConfig but don't embed kod.Implements.
 		return nil, nil
 	}
@@ -525,7 +521,7 @@ func checkMistypedInit(pkg *packages.Package, tset *typeSet, impl *types.Named) 
 			continue
 		}
 
-		// TODO(mwhittaker): Highlight the warning yellow instead of red.
+		// TODO: Highlight the warning yellow instead of red.
 		sig := m.Type().(*types.Signature)
 		err := errorf(pkg.Fset, m.Pos(),
 			`WARNING: Component %v's Init method has type "%v", not type "func(context.Context) error". It will be ignored.`,
@@ -547,7 +543,7 @@ func checkMistypedInit(pkg *packages.Package, tset *typeSet, impl *types.Named) 
 
 type printFn func(format string, args ...interface{})
 
-// TODO(mwhittaker): Have generate return an error.
+// TODO: Have generate return an error.
 func (g *generator) generate() error {
 	if len(g.components) == 0 {
 		// There's nothing to generate.
