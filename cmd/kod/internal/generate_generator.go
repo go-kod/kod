@@ -723,7 +723,7 @@ func (g *generator) kod() importPkg {
 
 // kod imports and returns the kod package.
 func (g *generator) interceptor() importPkg {
-	return g.tset.importPackage("github.com/go-kod/kod/core/interceptor", "interceptor")
+	return g.tset.importPackage("github.com/go-kod/kod/interceptor", "interceptor")
 }
 
 // codegen imports and returns the codegen package.

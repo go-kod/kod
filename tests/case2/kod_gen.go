@@ -6,7 +6,7 @@ package case2
 import (
 	"context"
 	"github.com/go-kod/kod"
-	"github.com/go-kod/kod/core/interceptor"
+	"github.com/go-kod/kod/interceptor"
 	"reflect"
 )
 

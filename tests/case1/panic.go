@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"github.com/go-kod/kod"
-	"github.com/go-kod/kod/core/interceptor/krecovery"
+	"github.com/go-kod/kod/interceptor/krecovery"
 )
 
 type panicCase struct {
