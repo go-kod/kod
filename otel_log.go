@@ -33,9 +33,10 @@ func (k *Kod) initLog() {
 
 	var handler slog.Handler
 	if k.opts.logWrapper != nil {
-		handler = k.opts.logWrapper(jsonHandler)
+		handler = otelslog.NewOtelHandler(k.opts.logWrapper(jsonHandler))
+	} else {
+		handler = otelslog.NewOtelHandler(jsonHandler)
 	}
-	handler = otelslog.NewOtelHandler(handler)
 
 	k.log = slog.New(handler)
 	slog.SetDefault(k.log)
