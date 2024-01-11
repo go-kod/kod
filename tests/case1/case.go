@@ -137,7 +137,8 @@ func (t *test1Component) Foo(ctx context.Context, req *FooReq) (*FooRes, error) 
 	t.L().InfoContext(ctx, "Foo info ", slog.Any("config", t.Config()))
 	t.L().ErrorContext(ctx, "Foo error:")
 	t.L().DebugContext(ctx, "Foo debug:")
-	fmt.Println(errors.New("test1"))
+	t.L().WithGroup("test group").InfoContext(ctx, "Foo info with group")
+
 	return &FooRes{Id: req.Id}, errors.New("test1:" + t.Config().A)
 }
 

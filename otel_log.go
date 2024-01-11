@@ -12,27 +12,32 @@ import (
 
 func (k *Kod) initLog() {
 
-	level := lo.If(k.config.Env == "dev", slog.LevelDebug).Else(slog.LevelInfo)
+	level := lo.If(k.config.Env == "local", slog.LevelDebug).Else(slog.LevelInfo)
 
-	k.log = slog.New(otelslog.NewOtelHandler(
-		slog.NewJSONHandler(
-			os.Stdout, &slog.HandlerOptions{
-				AddSource: true,
-				Level:     level,
-				ReplaceAttr: func(groups []string, a slog.Attr) slog.Attr {
-					// Remove the directory from the source's filename.
-					if a.Key == slog.SourceKey {
-						source := a.Value.Any().(*slog.Source)
-						source.File = customBase(source.File, 2)
-						source.Function = customBase(source.Function, 1)
-					}
+	jsonHandler := slog.NewJSONHandler(
+		os.Stdout, &slog.HandlerOptions{
+			AddSource: true,
+			Level:     level,
+			ReplaceAttr: func(groups []string, a slog.Attr) slog.Attr {
+				// Remove the directory from the source's filename.
+				if a.Key == slog.SourceKey {
+					source := a.Value.Any().(*slog.Source)
+					source.File = customBase(source.File, 2)
+					source.Function = customBase(source.Function, 1)
+				}
 
-					return a
-				},
+				return a
 			},
-		),
-	))
+		},
+	)
 
+	var handler slog.Handler
+	if k.opts.logWrapper != nil {
+		handler = k.opts.logWrapper(jsonHandler)
+	}
+	handler = otelslog.NewOtelHandler(handler)
+
+	k.log = slog.New(handler)
 	slog.SetDefault(k.log)
 }
 

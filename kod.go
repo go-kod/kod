@@ -92,6 +92,13 @@ func WithFakes(fakes ...fakeComponent) func(*options) {
 	}
 }
 
+// WithLogWrapper is an option setter for specifying a logger.
+func WithLogWrapper(h func(slog.Handler) slog.Handler) func(*options) {
+	return func(opts *options) {
+		opts.logWrapper = h
+	}
+}
+
 // Run initializes and runs the application with the provided main component and options.
 func Run[T any, _ PointerToMain[T]](ctx context.Context, app func(context.Context, *T) error, opts ...func(*options)) error {
 	opt := &options{}
@@ -171,6 +178,7 @@ type Kod struct {
 type options struct {
 	configFilename string
 	fakes          map[reflect.Type]any
+	logWrapper     func(slog.Handler) slog.Handler
 }
 
 // newKod creates a new instance of Kod with the provided registrations and options.
