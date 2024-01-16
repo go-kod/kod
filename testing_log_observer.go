@@ -34,7 +34,7 @@ func (l *ObservedLogs) Filter(filter func(slog.Record) bool) *ObservedLogs {
 	}
 }
 
-// TakeAll clears the observed logs.
+// Clean clears the observed logs.
 func (l *ObservedLogs) Clean() *ObservedLogs {
 	l.mu.Lock()
 	defer l.mu.Unlock()
@@ -42,6 +42,14 @@ func (l *ObservedLogs) Clean() *ObservedLogs {
 	l.records = make([]slog.Record, 0)
 
 	return l
+}
+
+// All returns all the observed logs.
+func (l *ObservedLogs) All() []slog.Record {
+	l.mu.Lock()
+	defer l.mu.Unlock()
+
+	return l.records
 }
 
 // add adds a record to the observed logs.

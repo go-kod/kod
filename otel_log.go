@@ -39,7 +39,7 @@ func (k *Kod) initLog() {
 	}
 
 	k.log = slog.New(handler)
-	slog.SetDefault(k.log)
+	// slog.SetDefault(k.log)
 }
 
 func customBase(fullPath string, levelsToKeep int) string {
