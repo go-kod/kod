@@ -7,6 +7,7 @@ import (
 	"testing"
 
 	"github.com/go-kod/kod"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestHttpHandler(t *testing.T) {
@@ -15,7 +16,12 @@ func TestHttpHandler(t *testing.T) {
 		record := httptest.NewRecorder()
 
 		r, _ := http.NewRequest(http.MethodGet, "/hello/gin", nil)
-		// if ctx is not passed, this will panic
+		ctx = StartTrace(ctx)
+		r = r.WithContext(ctx)
+
 		k.Foo(record, r)
+
+		assert.Equal(t, http.StatusOK, record.Code)
+		assert.Equal(t, "Hello, World!", record.Body.String())
 	})
 }
