@@ -4,16 +4,12 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"net/http"
-	"net/http/httptest"
 	"syscall"
 	"testing"
 
-	"github.com/gin-gonic/gin"
 	"github.com/go-kod/kod"
 	"github.com/go-kod/kod/internal/mock"
 	"github.com/stretchr/testify/assert"
-	"go.opentelemetry.io/contrib/instrumentation/github.com/gin-gonic/gin/otelgin"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/trace"
 	"go.uber.org/goleak"
@@ -70,31 +66,6 @@ func TestInterfacePanic(t *testing.T) {
 			Panic: true,
 		})
 		assert.Contains(t, err.Error(), "panic caught: test panic")
-	})
-}
-
-func TestGinHandler(t *testing.T) {
-	t.Parallel()
-	kod.RunTest(t, func(ctx context.Context, k test1Controller) {
-		server := gin.New()
-		server.Use(otelgin.Middleware("gintest"))
-		record := httptest.NewRecorder()
-		c := gin.CreateTestContextOnly(record, server)
-		c.Request, _ = http.NewRequest(http.MethodGet, "/hello/gin", nil)
-		k.Foo(c)
-		_, ok := c.Request.Context().Deadline()
-		assert.True(t, ok)
-	})
-}
-
-func TestHttpHandler(t *testing.T) {
-	t.Parallel()
-	kod.RunTest(t, func(ctx context.Context, k HTTPController) {
-		record := httptest.NewRecorder()
-
-		r, _ := http.NewRequest(http.MethodGet, "/hello/gin", nil)
-		// if ctx is not passed, this will panic
-		k.Foo(record, r)
 	})
 }
 

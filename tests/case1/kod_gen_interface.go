@@ -10,19 +10,7 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-// test1ControllerImpl is a component that implements .
 type test1Controller interface {
-	// Foo ...
-	Foo(cccccc *gin.Context)
-	// Foo1 ...
-	Foo1(cccccc *gin.Context)
-	// Foo2 ...
-	Foo2(cccccc *gin.Context)
-}
-
-// httpControllerImpl is a component that implements HTTPController.
-type HTTPController interface {
-	Foo(w http.ResponseWriter, r *http.Request)
 }
 
 // serviceImpl is a component that implements testService.
@@ -47,12 +35,20 @@ type Test2Component interface {
 
 // testEchoControllerImpl is a component that implements testEchoController.
 type testEchoController interface {
+	// Hello is a method of testEchoControllerImpl
 	Hello(c echo.Context) error
 }
 
 // testGinControllerImpl is a component that implements testGinController.
 type testGinController interface {
+	// Hello is a method of testGinControllerImpl
 	Hello(c *gin.Context)
+}
+
+// httpControllerImpl is a component that implements HTTPController.
+type HTTPController interface {
+	// Foo is a http handler
+	Foo(w http.ResponseWriter, r *http.Request)
 }
 
 // panicCase is a component that implements panicCaseInterface.

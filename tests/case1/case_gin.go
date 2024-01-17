@@ -11,6 +11,7 @@ type testGinControllerImpl struct {
 	kod.Implements[testGinController]
 }
 
+// Hello is a method of testGinControllerImpl
 func (t *testGinControllerImpl) Hello(c *gin.Context) {
 	c.String(200, "Hello, World!")
 }

@@ -245,3 +245,8 @@ func (k *Kod) close(ctx context.Context) {
 func (k *Kod) Config() kodConfig {
 	return k.config
 }
+
+// L() returns the logger of the Kod instance.
+func (k *Kod) L() *slog.Logger {
+	return k.log
+}

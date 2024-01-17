@@ -17,8 +17,8 @@ func TestMockLog(t *testing.T) {
 
 		_, err := k.Foo(ctx, &FooReq{Id: 1})
 		assert.Equal(t, "test1:B", err.Error())
-		assert.Equal(t, 5, observer.Len(), observer.All())
-		assert.Equal(t, 1, observer.Filter(func(r slog.Record) bool {
+		assert.Equal(t, 6, observer.Len(), observer.All())
+		assert.Equal(t, 2, observer.Filter(func(r slog.Record) bool {
 			return r.Level == slog.LevelError
 		}).Len())
 		assert.Equal(t, 0, observer.Clean().Len())

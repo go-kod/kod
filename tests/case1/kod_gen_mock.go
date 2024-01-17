@@ -41,77 +41,6 @@ func (m *Mocktest1Controller) EXPECT() *Mocktest1ControllerMockRecorder {
 	return m.recorder
 }
 
-// Foo mocks base method.
-func (m *Mocktest1Controller) Foo(cccccc *gin.Context) {
-	m.ctrl.T.Helper()
-	m.ctrl.Call(m, "Foo", cccccc)
-}
-
-// Foo indicates an expected call of Foo.
-func (mr *Mocktest1ControllerMockRecorder) Foo(cccccc any) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Foo", reflect.TypeOf((*Mocktest1Controller)(nil).Foo), cccccc)
-}
-
-// Foo1 mocks base method.
-func (m *Mocktest1Controller) Foo1(cccccc *gin.Context) {
-	m.ctrl.T.Helper()
-	m.ctrl.Call(m, "Foo1", cccccc)
-}
-
-// Foo1 indicates an expected call of Foo1.
-func (mr *Mocktest1ControllerMockRecorder) Foo1(cccccc any) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Foo1", reflect.TypeOf((*Mocktest1Controller)(nil).Foo1), cccccc)
-}
-
-// Foo2 mocks base method.
-func (m *Mocktest1Controller) Foo2(cccccc *gin.Context) {
-	m.ctrl.T.Helper()
-	m.ctrl.Call(m, "Foo2", cccccc)
-}
-
-// Foo2 indicates an expected call of Foo2.
-func (mr *Mocktest1ControllerMockRecorder) Foo2(cccccc any) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Foo2", reflect.TypeOf((*Mocktest1Controller)(nil).Foo2), cccccc)
-}
-
-// MockHTTPController is a mock of HTTPController interface.
-type MockHTTPController struct {
-	ctrl     *gomock.Controller
-	recorder *MockHTTPControllerMockRecorder
-}
-
-// MockHTTPControllerMockRecorder is the mock recorder for MockHTTPController.
-type MockHTTPControllerMockRecorder struct {
-	mock *MockHTTPController
-}
-
-// NewMockHTTPController creates a new mock instance.
-func NewMockHTTPController(ctrl *gomock.Controller) *MockHTTPController {
-	mock := &MockHTTPController{ctrl: ctrl}
-	mock.recorder = &MockHTTPControllerMockRecorder{mock}
-	return mock
-}
-
-// EXPECT returns an object that allows the caller to indicate expected use.
-func (m *MockHTTPController) EXPECT() *MockHTTPControllerMockRecorder {
-	return m.recorder
-}
-
-// Foo mocks base method.
-func (m *MockHTTPController) Foo(w http.ResponseWriter, r *http.Request) {
-	m.ctrl.T.Helper()
-	m.ctrl.Call(m, "Foo", w, r)
-}
-
-// Foo indicates an expected call of Foo.
-func (mr *MockHTTPControllerMockRecorder) Foo(w, r any) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Foo", reflect.TypeOf((*MockHTTPController)(nil).Foo), w, r)
-}
-
 // MocktestService is a mock of testService interface.
 type MocktestService struct {
 	ctrl     *gomock.Controller
@@ -331,6 +260,41 @@ func (m *MocktestGinController) Hello(c *gin.Context) {
 func (mr *MocktestGinControllerMockRecorder) Hello(c any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Hello", reflect.TypeOf((*MocktestGinController)(nil).Hello), c)
+}
+
+// MockHTTPController is a mock of HTTPController interface.
+type MockHTTPController struct {
+	ctrl     *gomock.Controller
+	recorder *MockHTTPControllerMockRecorder
+}
+
+// MockHTTPControllerMockRecorder is the mock recorder for MockHTTPController.
+type MockHTTPControllerMockRecorder struct {
+	mock *MockHTTPController
+}
+
+// NewMockHTTPController creates a new mock instance.
+func NewMockHTTPController(ctrl *gomock.Controller) *MockHTTPController {
+	mock := &MockHTTPController{ctrl: ctrl}
+	mock.recorder = &MockHTTPControllerMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MockHTTPController) EXPECT() *MockHTTPControllerMockRecorder {
+	return m.recorder
+}
+
+// Foo mocks base method.
+func (m *MockHTTPController) Foo(w http.ResponseWriter, r *http.Request) {
+	m.ctrl.T.Helper()
+	m.ctrl.Call(m, "Foo", w, r)
+}
+
+// Foo indicates an expected call of Foo.
+func (mr *MockHTTPControllerMockRecorder) Foo(w, r any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Foo", reflect.TypeOf((*MockHTTPController)(nil).Foo), w, r)
 }
 
 // MockpanicCaseInterface is a mock of panicCaseInterface interface.

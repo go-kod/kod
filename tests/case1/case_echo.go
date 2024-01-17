@@ -11,6 +11,7 @@ type testEchoControllerImpl struct {
 	kod.Implements[testEchoController]
 }
 
+// Hello is a method of testEchoControllerImpl
 func (t *testEchoControllerImpl) Hello(c echo.Context) error {
 	return c.String(200, "Hello, World!")
 }

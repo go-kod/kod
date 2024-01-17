@@ -8,7 +8,6 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/gin-gonic/gin"
 	"github.com/go-kod/kod"
 	"github.com/go-kod/kod/interceptor/kaccesslog"
 	"github.com/go-kod/kod/interceptor/kcircuitbreaker"
@@ -36,43 +35,6 @@ type test1ControllerImpl struct {
 	kod.Implements[test1Controller]
 
 	test1Component kod.Ref[Test1Component]
-}
-
-// Foo ...
-func (t *test1ControllerImpl) Foo(cccccc *gin.Context) {
-	_, _ = t.test1Component.Get().Foo(cccccc, &FooReq{})
-}
-
-func (t *test1ControllerImpl) Interceptors() []kod.Interceptor {
-	return []kod.Interceptor{
-		krecovery.Interceptor(),
-		kaccesslog.Interceptor(),
-		ktimeout.Interceptor(ktimeout.WithTimeout(time.Second)),
-	}
-}
-
-// Foo1 ...
-func (t *test1ControllerImpl) Foo1(cccccc *gin.Context) {
-	_, _ = t.test1Component.Get().Foo(cccccc, &FooReq{})
-}
-
-type httpControllerImpl struct {
-	kod.Implements[HTTPController]
-}
-
-func (t *httpControllerImpl) Foo(w http.ResponseWriter, r *http.Request) {
-	_, ok := r.Context().Deadline()
-	if !ok {
-		panic("no deadline")
-	}
-}
-
-func (t *httpControllerImpl) Interceptors() []kod.Interceptor {
-	return []kod.Interceptor{
-		krecovery.Interceptor(),
-		kaccesslog.Interceptor(),
-		ktimeout.Interceptor(),
-	}
 }
 
 type serviceImpl struct {
