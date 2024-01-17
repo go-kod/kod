@@ -13,6 +13,7 @@ import (
 	"github.com/go-kod/kod"
 	"github.com/go-kod/kod/internal/mock"
 	"github.com/stretchr/testify/assert"
+	"go.opentelemetry.io/contrib/instrumentation/github.com/gin-gonic/gin/otelgin"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/trace"
 	"go.uber.org/goleak"
@@ -75,8 +76,10 @@ func TestInterfacePanic(t *testing.T) {
 func TestGinHandler(t *testing.T) {
 	t.Parallel()
 	kod.RunTest(t, func(ctx context.Context, k test1Controller) {
+		server := gin.New()
+		server.Use(otelgin.Middleware("gintest"))
 		record := httptest.NewRecorder()
-		c := gin.CreateTestContextOnly(record, gin.New())
+		c := gin.CreateTestContextOnly(record, server)
 		c.Request, _ = http.NewRequest(http.MethodGet, "/hello/gin", nil)
 		k.Foo(c)
 		_, ok := c.Request.Context().Deadline()

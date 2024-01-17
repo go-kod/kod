@@ -733,6 +733,11 @@ func (g *generator) ginContext() importPkg {
 	return g.tset.importPackage("github.com/gin-gonic/gin", "gin")
 }
 
+// echoContext imports and returns the kerror package.
+func (g *generator) echoContext() importPkg {
+	return g.tset.importPackage("github.com/labstack/echo/v4", "echo")
+}
+
 // formatType pretty prints the provided type, encountered in the provided
 // currentPackage.
 func formatType(currentPackage *packages.Package, t types.Type) string {
@@ -772,24 +777,18 @@ func (g *generator) generateLocalStubs(p printFn) {
 		for _, m := range comp.methods() {
 
 			mt := m.Type().(*types.Signature)
+
+			firstArgTypeString := ""
+			secondArgTypeString := ""
+			if mt.Params().Len() > 0 {
+				firstArgTypeString = g.tset.genTypeString(mt.Params().At(0).Type())
+			}
+			if mt.Params().Len() > 1 {
+				secondArgTypeString = g.tset.genTypeString(mt.Params().At(1).Type())
+			}
+
 			p(``)
 			p(`func (s %s) %s(%s) (%s) {`, stub, m.Name(), g.args(mt), g.returns(mt))
-
-			if haveGinContext(mt) {
-				p(`var err error`)
-				g.ginContext()
-				p(`	ctx := a0.Request.Context()`)
-			}
-
-			if isHttpHandler(mt) {
-				p(` ctx := a1.Context()`)
-			}
-
-			p(`info := kod.CallInfo{
-					Component:  s.name,
-					FullMethod: "%s.%s",
-					Caller:     s.caller,
-				}`, comp.fullIntfName(), m.Name())
 
 			p(`
 				if s.interceptor == nil {
@@ -800,33 +799,67 @@ func (g *generator) generateLocalStubs(p printFn) {
 
 			p(`call := func(ctx context.Context, info kod.CallInfo, req, res []any) (err error) {`)
 
-			if haveGinContext(mt) {
-				p(` a0.Request = a0.Request.WithContext(ctx)`)
+			switch firstArgTypeString {
+			case "*gin.Context":
+				p(`a0.Request = a0.Request.WithContext(ctx)`)
+			case "echo.Context":
+				p(`a0.SetRequest(a0.Request().WithContext(ctx))`)
 			}
-			if isHttpHandler(mt) {
-				p(` a1 = a1.WithContext(ctx)`)
+
+			if firstArgTypeString == "http.ResponseWriter" && secondArgTypeString == "*http.Request" {
+				p(`a1 = a1.WithContext(ctx)`)
 			}
 
 			p(`	%s s.impl.%s(%s)
-					%s
-					return
-				}`, g.returnsList(mt), m.Name(), g.argList(comp, mt), g.setReturnsList(mt))
+					%sreturn
+				}
+			`, g.returnsList(mt), m.Name(), g.argList(comp, mt), g.setReturnsList(mt))
 
-			p(`			
-				%s = s.interceptor(%s, info, []any{%s}, []any{%s}, call)`,
+			p(`info := kod.CallInfo{
+					Component:  s.name,
+					FullMethod: "%s.%s",
+					Caller:     s.caller,
+				}
+			`, comp.fullIntfName(), m.Name())
+
+			switch firstArgTypeString {
+			case "*gin.Context":
+				p(`var err error`)
+				p(`ctx := a0.Request.Context()`)
+			case "echo.Context":
+				p(`ctx := a0.Request().Context()`)
+			case "http.ResponseWriter":
+				if secondArgTypeString == "*http.Request" {
+					p(`ctx := a1.Context()`)
+				} else {
+					p(`ctx := context.Background()`)
+				}
+			case "context.Context":
+				// don't need to do anything
+			default:
+				p(`ctx := context.Background()`)
+			}
+
+			p(`%s = s.interceptor(ctx, info, []any{%s}, []any{%s}, call)`,
 				lo.If(haveError(mt) || haveGinContext(mt), "err").Else("_"),
-				lo.If(haveContext(mt) || haveGinContext(mt) || isHttpHandler(mt), "ctx").Else("context.Background()"),
 				g.argsReflectList(comp, mt), g.returnsReflectList(mt))
 
 			// Call the local method.
 			b.Reset()
 
-			if haveGinContext(mt) {
+			switch firstArgTypeString {
+			case "*gin.Context":
 				g.ginContext()
 				p(`if err != nil {`)
 				p(`	a0.Error(err)`)
 				p(`}`)
+			case "echo.Context":
+				g.echoContext()
+				p(`if err != nil {`)
+				p(`	a0.Error(err)`)
+				p(`}`)
 			}
+
 			if mt.Results().Len() > 0 {
 				p(`	return`)
 			}
@@ -1017,16 +1050,6 @@ func haveContext(mt *types.Signature) bool {
 func haveGinContext(mt *types.Signature) bool {
 	if mt.Params().Len() == 1 {
 		if isGinContext(mt.Params().At(0).Type()) {
-			return true
-		}
-	}
-
-	return false
-}
-
-func isHttpHandler(mt *types.Signature) bool {
-	if mt.Params().Len() == 2 {
-		if isHttpResponseWriter(mt.Params().At(0).Type()) && isHttpRequest(mt.Params().At(1).Type()) {
 			return true
 		}
 	}

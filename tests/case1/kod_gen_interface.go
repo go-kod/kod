@@ -7,6 +7,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/labstack/echo/v4"
 )
 
 // test1ControllerImpl is a component that implements .
@@ -42,6 +43,16 @@ type Test1Component interface {
 // test2Component is a component that implements Test2Component.
 type Test2Component interface {
 	GetClient() *http.Client
+}
+
+// testEchoControllerImpl is a component that implements testEchoController.
+type testEchoController interface {
+	Hello(c echo.Context) error
+}
+
+// testGinControllerImpl is a component that implements testGinController.
+type testGinController interface {
+	Hello(c *gin.Context)
 }
 
 // panicCase is a component that implements panicCaseInterface.

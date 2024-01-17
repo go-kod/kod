@@ -14,6 +14,7 @@ import (
 	reflect "reflect"
 
 	gin "github.com/gin-gonic/gin"
+	echo "github.com/labstack/echo/v4"
 	gomock "go.uber.org/mock/gomock"
 )
 
@@ -258,6 +259,78 @@ func (m *MockTest2Component) GetClient() *http.Client {
 func (mr *MockTest2ComponentMockRecorder) GetClient() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetClient", reflect.TypeOf((*MockTest2Component)(nil).GetClient))
+}
+
+// MocktestEchoController is a mock of testEchoController interface.
+type MocktestEchoController struct {
+	ctrl     *gomock.Controller
+	recorder *MocktestEchoControllerMockRecorder
+}
+
+// MocktestEchoControllerMockRecorder is the mock recorder for MocktestEchoController.
+type MocktestEchoControllerMockRecorder struct {
+	mock *MocktestEchoController
+}
+
+// NewMocktestEchoController creates a new mock instance.
+func NewMocktestEchoController(ctrl *gomock.Controller) *MocktestEchoController {
+	mock := &MocktestEchoController{ctrl: ctrl}
+	mock.recorder = &MocktestEchoControllerMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MocktestEchoController) EXPECT() *MocktestEchoControllerMockRecorder {
+	return m.recorder
+}
+
+// Hello mocks base method.
+func (m *MocktestEchoController) Hello(c echo.Context) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Hello", c)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Hello indicates an expected call of Hello.
+func (mr *MocktestEchoControllerMockRecorder) Hello(c any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Hello", reflect.TypeOf((*MocktestEchoController)(nil).Hello), c)
+}
+
+// MocktestGinController is a mock of testGinController interface.
+type MocktestGinController struct {
+	ctrl     *gomock.Controller
+	recorder *MocktestGinControllerMockRecorder
+}
+
+// MocktestGinControllerMockRecorder is the mock recorder for MocktestGinController.
+type MocktestGinControllerMockRecorder struct {
+	mock *MocktestGinController
+}
+
+// NewMocktestGinController creates a new mock instance.
+func NewMocktestGinController(ctrl *gomock.Controller) *MocktestGinController {
+	mock := &MocktestGinController{ctrl: ctrl}
+	mock.recorder = &MocktestGinControllerMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MocktestGinController) EXPECT() *MocktestGinControllerMockRecorder {
+	return m.recorder
+}
+
+// Hello mocks base method.
+func (m *MocktestGinController) Hello(c *gin.Context) {
+	m.ctrl.T.Helper()
+	m.ctrl.Call(m, "Hello", c)
+}
+
+// Hello indicates an expected call of Hello.
+func (mr *MocktestGinControllerMockRecorder) Hello(c any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Hello", reflect.TypeOf((*MocktestGinController)(nil).Hello), c)
 }
 
 // MockpanicCaseInterface is a mock of panicCaseInterface interface.

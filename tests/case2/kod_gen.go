@@ -98,11 +98,6 @@ type test1Component_local_stub struct {
 var _ Test1Component = (*test1Component_local_stub)(nil)
 
 func (s test1Component_local_stub) Foo(ctx context.Context, a1 *FooReq) (err error) {
-	info := kod.CallInfo{
-		Component:  s.name,
-		FullMethod: "github.com/go-kod/kod/tests/case2/Test1Component.Foo",
-		Caller:     s.caller,
-	}
 
 	if s.interceptor == nil {
 		err = s.impl.Foo(ctx, a1)
@@ -111,8 +106,13 @@ func (s test1Component_local_stub) Foo(ctx context.Context, a1 *FooReq) (err err
 
 	call := func(ctx context.Context, info kod.CallInfo, req, res []any) (err error) {
 		err = s.impl.Foo(ctx, a1)
-
 		return
+	}
+
+	info := kod.CallInfo{
+		Component:  s.name,
+		FullMethod: "github.com/go-kod/kod/tests/case2/Test1Component.Foo",
+		Caller:     s.caller,
 	}
 
 	err = s.interceptor(ctx, info, []any{a1}, []any{}, call)
@@ -130,11 +130,6 @@ type test2Component_local_stub struct {
 var _ Test2Component = (*test2Component_local_stub)(nil)
 
 func (s test2Component_local_stub) Foo(ctx context.Context, a1 *FooReq) (err error) {
-	info := kod.CallInfo{
-		Component:  s.name,
-		FullMethod: "github.com/go-kod/kod/tests/case2/Test2Component.Foo",
-		Caller:     s.caller,
-	}
 
 	if s.interceptor == nil {
 		err = s.impl.Foo(ctx, a1)
@@ -143,8 +138,13 @@ func (s test2Component_local_stub) Foo(ctx context.Context, a1 *FooReq) (err err
 
 	call := func(ctx context.Context, info kod.CallInfo, req, res []any) (err error) {
 		err = s.impl.Foo(ctx, a1)
-
 		return
+	}
+
+	info := kod.CallInfo{
+		Component:  s.name,
+		FullMethod: "github.com/go-kod/kod/tests/case2/Test2Component.Foo",
+		Caller:     s.caller,
 	}
 
 	err = s.interceptor(ctx, info, []any{a1}, []any{}, call)

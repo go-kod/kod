@@ -191,26 +191,6 @@ func isGinContext(t types.Type) bool {
 	return n.Obj().Pkg().Path() == "github.com/gin-gonic/gin" && n.Obj().Name() == "Context"
 }
 
-func isHttpResponseWriter(t types.Type) bool {
-	n, ok := t.(*types.Named)
-	if !ok {
-		return false
-	}
-	return n.Obj().Pkg().Path() == "net/http" && n.Obj().Name() == "ResponseWriter"
-}
-
-func isHttpRequest(t types.Type) bool {
-	p, ok := t.(*types.Pointer)
-	if !ok {
-		return false
-	}
-	n, ok := p.Elem().(*types.Named)
-	if !ok {
-		return false
-	}
-	return n.Obj().Pkg().Path() == "net/http" && n.Obj().Name() == "Request"
-}
-
 func isError(t types.Type) bool {
 	n, ok := t.(*types.Named)
 	if !ok {

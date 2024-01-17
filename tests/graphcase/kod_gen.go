@@ -152,11 +152,6 @@ type hTTPController_local_stub struct {
 var _ HTTPController = (*hTTPController_local_stub)(nil)
 
 func (s hTTPController_local_stub) Foo(a0 http.ResponseWriter, a1 http.Request) {
-	info := kod.CallInfo{
-		Component:  s.name,
-		FullMethod: "github.com/go-kod/kod/tests/graphcase/HTTPController.Foo",
-		Caller:     s.caller,
-	}
 
 	if s.interceptor == nil {
 		s.impl.Foo(a0, a1)
@@ -165,11 +160,17 @@ func (s hTTPController_local_stub) Foo(a0 http.ResponseWriter, a1 http.Request) 
 
 	call := func(ctx context.Context, info kod.CallInfo, req, res []any) (err error) {
 		s.impl.Foo(a0, a1)
-
 		return
 	}
 
-	_ = s.interceptor(context.Background(), info, []any{a0, a1}, []any{}, call)
+	info := kod.CallInfo{
+		Component:  s.name,
+		FullMethod: "github.com/go-kod/kod/tests/graphcase/HTTPController.Foo",
+		Caller:     s.caller,
+	}
+
+	ctx := context.Background()
+	_ = s.interceptor(ctx, info, []any{a0, a1}, []any{}, call)
 }
 
 type main_local_stub struct {
@@ -193,11 +194,6 @@ type test1Component_local_stub struct {
 var _ Test1Component = (*test1Component_local_stub)(nil)
 
 func (s test1Component_local_stub) Foo(ctx context.Context, a1 *FooReq) (err error) {
-	info := kod.CallInfo{
-		Component:  s.name,
-		FullMethod: "github.com/go-kod/kod/tests/graphcase/Test1Component.Foo",
-		Caller:     s.caller,
-	}
 
 	if s.interceptor == nil {
 		err = s.impl.Foo(ctx, a1)
@@ -206,8 +202,13 @@ func (s test1Component_local_stub) Foo(ctx context.Context, a1 *FooReq) (err err
 
 	call := func(ctx context.Context, info kod.CallInfo, req, res []any) (err error) {
 		err = s.impl.Foo(ctx, a1)
-
 		return
+	}
+
+	info := kod.CallInfo{
+		Component:  s.name,
+		FullMethod: "github.com/go-kod/kod/tests/graphcase/Test1Component.Foo",
+		Caller:     s.caller,
 	}
 
 	err = s.interceptor(ctx, info, []any{a1}, []any{}, call)
@@ -225,13 +226,6 @@ type test1Controller_local_stub struct {
 var _ test1Controller = (*test1Controller_local_stub)(nil)
 
 func (s test1Controller_local_stub) Foo(a0 *gin.Context) {
-	var err error
-	ctx := a0.Request.Context()
-	info := kod.CallInfo{
-		Component:  s.name,
-		FullMethod: "github.com/go-kod/kod/tests/graphcase/test1Controller.Foo",
-		Caller:     s.caller,
-	}
 
 	if s.interceptor == nil {
 		s.impl.Foo(a0)
@@ -241,10 +235,17 @@ func (s test1Controller_local_stub) Foo(a0 *gin.Context) {
 	call := func(ctx context.Context, info kod.CallInfo, req, res []any) (err error) {
 		a0.Request = a0.Request.WithContext(ctx)
 		s.impl.Foo(a0)
-
 		return
 	}
 
+	info := kod.CallInfo{
+		Component:  s.name,
+		FullMethod: "github.com/go-kod/kod/tests/graphcase/test1Controller.Foo",
+		Caller:     s.caller,
+	}
+
+	var err error
+	ctx := a0.Request.Context()
 	err = s.interceptor(ctx, info, []any{a0}, []any{}, call)
 	if err != nil {
 		a0.Error(err)
@@ -262,11 +263,6 @@ type testModel_local_stub struct {
 var _ testModel = (*testModel_local_stub)(nil)
 
 func (s testModel_local_stub) Foo(ctx context.Context) (err error) {
-	info := kod.CallInfo{
-		Component:  s.name,
-		FullMethod: "github.com/go-kod/kod/tests/graphcase/testModel.Foo",
-		Caller:     s.caller,
-	}
 
 	if s.interceptor == nil {
 		err = s.impl.Foo(ctx)
@@ -275,8 +271,13 @@ func (s testModel_local_stub) Foo(ctx context.Context) (err error) {
 
 	call := func(ctx context.Context, info kod.CallInfo, req, res []any) (err error) {
 		err = s.impl.Foo(ctx)
-
 		return
+	}
+
+	info := kod.CallInfo{
+		Component:  s.name,
+		FullMethod: "github.com/go-kod/kod/tests/graphcase/testModel.Foo",
+		Caller:     s.caller,
 	}
 
 	err = s.interceptor(ctx, info, []any{}, []any{}, call)
@@ -294,11 +295,6 @@ type testService_local_stub struct {
 var _ testService = (*testService_local_stub)(nil)
 
 func (s testService_local_stub) Foo(ctx context.Context) (err error) {
-	info := kod.CallInfo{
-		Component:  s.name,
-		FullMethod: "github.com/go-kod/kod/tests/graphcase/testService.Foo",
-		Caller:     s.caller,
-	}
 
 	if s.interceptor == nil {
 		err = s.impl.Foo(ctx)
@@ -307,8 +303,13 @@ func (s testService_local_stub) Foo(ctx context.Context) (err error) {
 
 	call := func(ctx context.Context, info kod.CallInfo, req, res []any) (err error) {
 		err = s.impl.Foo(ctx)
-
 		return
+	}
+
+	info := kod.CallInfo{
+		Component:  s.name,
+		FullMethod: "github.com/go-kod/kod/tests/graphcase/testService.Foo",
+		Caller:     s.caller,
 	}
 
 	err = s.interceptor(ctx, info, []any{}, []any{}, call)
