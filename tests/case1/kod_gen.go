@@ -249,8 +249,13 @@ func (s hTTPController_local_stub) Foo(a0 http.ResponseWriter, a1 *http.Request)
 		Caller:     s.caller,
 	}
 
+	var err error
 	ctx := a1.Context()
 	_ = s.interceptor(ctx, info, []any{a0, a1}, []any{}, call)
+	if err != nil {
+		a0.WriteHeader(http.StatusInternalServerError)
+		a0.Write([]byte(err.Error()))
+	}
 }
 
 type main_local_stub struct {

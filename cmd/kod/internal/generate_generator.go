@@ -830,6 +830,7 @@ func (g *generator) generateLocalStubs(p printFn) {
 				p(`ctx := a0.Request().Context()`)
 			case "http.ResponseWriter":
 				if secondArgTypeString == "*http.Request" {
+					p(`var err error`)
 					p(`ctx := a1.Context()`)
 				} else {
 					p(`ctx := context.Background()`)
@@ -858,6 +859,13 @@ func (g *generator) generateLocalStubs(p printFn) {
 				p(`if err != nil {`)
 				p(`	a0.Error(err)`)
 				p(`}`)
+			case "http.ResponseWriter":
+				if secondArgTypeString == "*http.Request" {
+					p(`if err != nil {`)
+					p(`	a0.WriteHeader(http.StatusInternalServerError)`)
+					p(` a0.Write([]byte(err.Error()))`)
+					p(`}`)
+				}
 			}
 
 			if mt.Results().Len() > 0 {
