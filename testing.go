@@ -50,7 +50,7 @@ func (r runner) sub(t testing.TB, testBody any) error {
 	if err != nil {
 		return fmt.Errorf("newKod: %v", err)
 	}
-	defer runner.close(ctx)
+	defer runner.runDefer(ctx)
 
 	ctx = newContext(ctx, runner)
 

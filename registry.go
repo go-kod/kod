@@ -6,12 +6,14 @@ import (
 	"reflect"
 )
 
+// LocalStubFnInfo is the information passed to LocalStubFn.
 type LocalStubFnInfo struct {
 	Impl   any
 	Name   string
 	Caller string
 }
 
+// Registration is the registration information for a component.
 type Registration struct {
 	Name        string       // full package-prefixed component name
 	Iface       reflect.Type // interface type for the component
@@ -24,6 +26,7 @@ var (
 	regs = make([]*Registration, 0)
 )
 
+// Register registers the given component implementations.
 func Register(reg Registration) {
 	regs = append(regs, &reg)
 }
@@ -32,21 +35,7 @@ func getRegs() []*Registration {
 	return regs
 }
 
-// func (k *Kod) getRegistryByType(t reflect.Type) *Registration {
-// 	k.mu.Lock()
-// 	defer k.mu.Unlock()
-
-// 	if reg, ok := k.registryByIface[t]; ok {
-// 		return reg
-// 	}
-
-// 	if reg, ok := k.registryByImpl[t]; ok {
-// 		return reg
-// 	}
-
-// 	return nil
-// }
-
+// getImpl returns the component for the given implementation type.
 func (k *Kod) getImpl(ctx context.Context, t reflect.Type) (any, error) {
 	k.mu.Lock()
 	defer k.mu.Unlock()
@@ -59,6 +48,7 @@ func (k *Kod) getImpl(ctx context.Context, t reflect.Type) (any, error) {
 	return k.get(ctx, reg)
 }
 
+// getIntf returns the component for the given interface type.
 func (k *Kod) getIntf(ctx context.Context, t reflect.Type, caller string) (any, error) {
 	reg, ok := k.registryByIface[t]
 	if !ok {
@@ -77,7 +67,9 @@ func (k *Kod) getIntf(ctx context.Context, t reflect.Type, caller string) (any, 
 	}), nil
 }
 
+// get returns the component for the given registration.
 func (k *Kod) get(ctx context.Context, reg *Registration) (any, error) {
+	// Check if we already have the component.
 	if c, ok := k.components[reg.Name]; ok {
 		return c, nil
 	}
@@ -87,6 +79,7 @@ func (k *Kod) get(ctx context.Context, reg *Registration) (any, error) {
 		return fake, nil
 	}
 
+	// Create a new instance of the component.
 	v := reflect.New(reg.Impl)
 	obj := v.Interface()
 
@@ -98,10 +91,12 @@ func (k *Kod) get(ctx context.Context, reg *Registration) (any, error) {
 		}
 	}
 
+	// Fill logger.
 	if err := fillLog(obj, k.log.With("component", reg.Name)); err != nil {
 		return nil, err
 	}
 
+	// Fill refs.
 	if err := fillRefs(obj, func(t reflect.Type) (any, error) {
 		return k.getIntf(ctx, t, reg.Name)
 	}); err != nil {
@@ -117,9 +112,10 @@ func (k *Kod) get(ctx context.Context, reg *Registration) (any, error) {
 
 	// Call Stop if available.
 	if i, ok := obj.(interface{ Stop(context.Context) error }); ok {
-		k.deferFn(deferFn{Name: reg.Name, Fn: i.Stop})
+		k.addDefer(deferFunc{Name: reg.Name, Fn: i.Stop})
 	}
 
+	// Cache the component.
 	k.components[reg.Name] = obj
 
 	return obj, nil

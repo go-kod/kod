@@ -133,7 +133,7 @@ func Run[T any, _ PointerToMain[T]](ctx context.Context, app func(context.Contex
 	}()
 
 	<-stop
-	kod.close(ctx)
+	kod.runDefer(ctx)
 
 	return err
 }
@@ -164,7 +164,7 @@ type Kod struct {
 	logLevelVar *slog.LevelVar
 
 	deferMux sync.Mutex
-	defers   []deferFn
+	defers   []deferFunc
 
 	regs            []*Registration
 	registryByName  map[string]*Registration
@@ -228,17 +228,6 @@ func (k *Kod) register(impl []*Registration) {
 		k.registryByName[v.Name] = v
 		k.registryByIface[v.Iface] = v
 		k.registryByImpl[v.Impl] = v
-	}
-}
-
-// close gracefully shuts down the Kod application.
-func (k *Kod) close(ctx context.Context) {
-	ctx, timeoutCancel := context.WithTimeout(context.WithoutCancel(ctx), k.config.ShutdownTimeout)
-	defer timeoutCancel()
-
-	err := k.runDefer(ctx)
-	if err != nil {
-		k.log.Error("runDefer failed", "error", err)
 	}
 }
 

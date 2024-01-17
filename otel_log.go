@@ -43,6 +43,7 @@ func (k *Kod) initLog() {
 	// slog.SetDefault(k.log)
 }
 
+// customBase returns the last n levels of the path.
 func customBase(fullPath string, levelsToKeep int) string {
 	dir, file := filepath.Split(fullPath)
 

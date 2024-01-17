@@ -8,6 +8,7 @@ import (
 	"github.com/samber/lo"
 )
 
+// ObservedLogs is a structure that holds observed logs.
 type ObservedLogs struct {
 	mu      sync.Mutex
 	records []slog.Record
@@ -59,6 +60,7 @@ func (l *ObservedLogs) add(r slog.Record) {
 	l.records = append(l.records, r)
 }
 
+// observer is a slog.Handler implementation that observes logs.
 type observer struct {
 	observedLogs *ObservedLogs
 	next         slog.Handler

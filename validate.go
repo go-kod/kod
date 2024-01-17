@@ -9,6 +9,8 @@ import (
 	"github.com/go-kod/kod/internal/callgraph"
 )
 
+// checkCircularDependency checks that there are no circular dependencies
+// between registered components.
 func (k *Kod) checkCircularDependency() error {
 	g := graph.New(graph.StringHash, graph.Directed(), graph.PreventCycles())
 
@@ -18,6 +20,7 @@ func (k *Kod) checkCircularDependency() error {
 		}
 	}
 
+	var errs []error
 	for _, reg := range k.regs {
 		edges := callgraph.ParseEdges([]byte(reg.Refs))
 		for _, edge := range edges {
@@ -25,17 +28,18 @@ func (k *Kod) checkCircularDependency() error {
 			if err != nil {
 				switch err {
 				case graph.ErrEdgeAlreadyExists, graph.ErrEdgeCreatesCycle:
-					return fmt.Errorf("components [%s] and [%s] have cycle Ref", edge[0], edge[1])
-				default:
-					return err
+					err = fmt.Errorf("components [%s] and [%s] have cycle Ref", edge[0], edge[1])
 				}
+				errs = append(errs, err)
 			}
 		}
 	}
 
-	return nil
+	return errors.Join(errs...)
 }
 
+// validateRegistrations checks that all registered component interfaces are
+// implemented by a registered component implementation struct.
 func (k *Kod) validateRegistrations() error {
 	// Gather the set of registered interfaces.
 	intfs := map[reflect.Type]struct{}{}
