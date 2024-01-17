@@ -159,8 +159,9 @@ type Kod struct {
 
 	config kodConfig
 
-	log   *slog.Logger
-	viper *viper.Viper
+	viper       *viper.Viper
+	log         *slog.Logger
+	logLevelVar *slog.LevelVar
 
 	deferMux sync.Mutex
 	defers   []deferFn
@@ -249,4 +250,9 @@ func (k *Kod) Config() kodConfig {
 // L() returns the logger of the Kod instance.
 func (k *Kod) L() *slog.Logger {
 	return k.log
+}
+
+// LevelVar returns the log level variable of the Kod instance.
+func (k *Kod) LevelVar() *slog.LevelVar {
+	return k.logLevelVar
 }
