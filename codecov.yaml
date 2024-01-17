@@ -12,8 +12,8 @@ component_management:
       name: kod
       paths:
         - "**"
-        - "!ext/**"
-    - component_id: kod-ext
-      name: kod-ext
-      paths:
-        - "ext/**"
+        # - "!ext/**"
+    # - component_id: kod-ext
+    #   name: kod-ext
+    #   paths:
+    #     - "ext/**"

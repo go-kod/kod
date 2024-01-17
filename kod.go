@@ -40,6 +40,22 @@ func (i *Implements[T]) setLogger(log *slog.Logger) {
 func (Implements[T]) implements(T) {}
 
 // Ref[T any] is a reference holder to a value of type T.
+// The reference is expected to be a field of a component struct.
+// The value is set by the framework, and is accessible via the Get() method.
+//
+// Example:
+//
+//	type app struct {
+//		kod.Implements[kod.Main]
+//		component kod.Ref[example.Component]
+//	}
+//
+//	func main() {
+//		kod.Run(context.Background(), func(ctx context.Context, main *app) error {
+//			component := main.component.Get()
+//			// ...
+//		})
+//	}
 type Ref[T any] struct {
 	value T
 }
@@ -54,6 +70,21 @@ func (r Ref[T]) isRef() {}
 func (r *Ref[T]) setRef(val any) { r.value = val.(T) }
 
 // Main is the interface that should be implemented by an application's main component.
+// The main component is the entry point of the application,
+// and is expected to be a struct that embeds Implements[Main].
+//
+// Example:
+//
+//	type app struct {
+//		kod.Implements[kod.Main]
+//	}
+//
+//	func main() {
+//		kod.Run(context.Background(), func(ctx context.Context, main *app) error {
+//			fmt.Println("Hello, World!")
+//			return nil
+//		})
+//	}
 type Main interface{}
 
 // PointerToMain is a type constraint that asserts *T is an instance of Main
@@ -69,6 +100,26 @@ type InstanceOf[T any] interface {
 }
 
 // WithConfig[T any] is a struct to hold configuration of type T.
+// The struct is expected to be a field of a component struct.
+// The configuration is loaded from a file, and is accessible via the Config() method.
+//
+// Example:
+//
+//	type app struct {
+//		kod.Implements[kod.Main]
+//		kod.WithConfig[appConfig]
+//	}
+//
+//	type appConfig struct {
+//		Host string
+//		Port int
+//	}
+//
+//	func main() {
+//		kod.Run(context.Background(), func(ctx context.Context, main *app) error {
+//			fmt.Println("config:", main.Config())
+//		})
+//	}
 type WithConfig[T any] struct {
 	config T
 }
