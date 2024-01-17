@@ -7,12 +7,13 @@ import (
 	"strings"
 
 	"github.com/go-kod/kod/internal/otelslog"
+	"github.com/samber/lo"
 )
 
 func (k *Kod) initLog() {
 
 	k.logLevelVar = new(slog.LevelVar)
-	k.logLevelVar.UnmarshalText([]byte(k.config.Log.Level))
+	lo.Must0(k.logLevelVar.UnmarshalText([]byte(k.config.Log.Level)))
 
 	jsonHandler := slog.NewJSONHandler(
 		os.Stdout, &slog.HandlerOptions{
