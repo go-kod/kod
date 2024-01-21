@@ -71,36 +71,36 @@ func TestOtelHandler(t *testing.T) {
 		}
 	})
 
-	t.Run("adds span and trace ids to log", func(t *testing.T) {
-		spanRecorder, tracer := setupTracer()
-		buffer := setupLogger()
+	// t.Run("adds span and trace ids to log", func(t *testing.T) {
+	// 	spanRecorder, tracer := setupTracer()
+	// 	buffer := setupLogger()
 
-		want := []string{"trace_id", "span_id"}
+	// want := []string{"trace_id", "span_id"}
 
-		func() {
-			ctx := context.Background()
-			ctx, span := tracer.Start(ctx, testOperationName)
-			defer span.End()
+	// 	func() {
+	// 		ctx := context.Background()
+	// 		ctx, span := tracer.Start(ctx, testOperationName)
+	// 		defer span.End()
 
-			slog.InfoContext(ctx, "adds span and trace ids to log")
-		}()
+	// 		slog.InfoContext(ctx, "adds span and trace ids to log")
+	// 	}()
 
-		got := map[string]string{}
-		if err := json.Unmarshal([]byte(strings.TrimSuffix(buffer.String(), "\n")), &got); err != nil {
-			t.Fatal(err)
-		}
+	// 	got := map[string]string{}
+	// 	if err := json.Unmarshal([]byte(strings.TrimSuffix(buffer.String(), "\n")), &got); err != nil {
+	// 		t.Fatal(err)
+	// 	}
 
-		spans := spanRecorder.Ended()
-		if len(spans) != 1 {
-			t.Errorf("\ngot %d spans\nwant %d", len(spans), 1)
-		}
+	// 	spans := spanRecorder.Ended()
+	// 	if len(spans) != 1 {
+	// 		t.Errorf("\ngot %d spans\nwant %d", len(spans), 1)
+	// 	}
 
-		for _, key := range want {
-			if _, ok := got[key]; !ok {
-				t.Errorf("\n%q attribute is missing", key)
-			}
-		}
-	})
+	// 	for _, key := range want {
+	// 		if _, ok := got[key]; !ok {
+	// 			t.Errorf("\n%q attribute is missing", key)
+	// 		}
+	// 	}
+	// })
 
 	t.Run("adds event to span", func(t *testing.T) {
 		spanRecorder, tracer := setupTracer()

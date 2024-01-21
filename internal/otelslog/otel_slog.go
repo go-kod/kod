@@ -71,17 +71,17 @@ func (h otelHandler) Handle(ctx context.Context, record slog.Record) error {
 
 	span.AddEvent("log_record", trace.WithAttributes(eventAttrs...))
 
-	// Adding span info to log record.
-	spanContext := span.SpanContext()
-	if spanContext.HasTraceID() {
-		traceID := spanContext.TraceID().String()
-		record.AddAttrs(slog.String("trace_id", traceID))
-	}
+	// // Adding span info to log record.
+	// spanContext := span.SpanContext()
+	// if spanContext.HasTraceID() {
+	// 	traceID := spanContext.TraceID().String()
+	// 	record.AddAttrs(slog.String("trace_id", traceID))
+	// }
 
-	if spanContext.HasSpanID() {
-		spanID := spanContext.SpanID().String()
-		record.AddAttrs(slog.String("span_id", spanID))
-	}
+	// if spanContext.HasSpanID() {
+	// 	spanID := spanContext.SpanID().String()
+	// 	record.AddAttrs(slog.String("span_id", spanID))
+	// }
 
 	// Setting span status if the log is an error.
 	// Purposely leaving as codes.Unset (default) otherwise.
@@ -157,4 +157,17 @@ func (h otelHandler) slogAttrToOtelAttr(attr slog.Attr, groupKeys ...string) att
 	}
 
 	return attribute.KeyValue{}
+}
+
+// LogWithContext returns a logger with trace information.
+func LogWithContext(ctx context.Context, logger *slog.Logger) *slog.Logger {
+	s := trace.SpanContextFromContext(ctx)
+	if s.HasTraceID() {
+		logger = logger.With("traceid", s.TraceID().String())
+	}
+	if s.HasSpanID() {
+		logger = logger.With("spanid", s.SpanID().String())
+	}
+
+	return logger
 }

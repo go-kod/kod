@@ -9,6 +9,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/go-kod/kod/internal/otelslog"
 	"github.com/samber/lo"
 	"github.com/spf13/viper"
 )
@@ -26,8 +27,8 @@ type Implements[T any] struct {
 }
 
 // L returns the associated logger.
-func (i *Implements[T]) L() *slog.Logger {
-	return i.log
+func (i *Implements[T]) L(ctx context.Context) *slog.Logger {
+	return otelslog.LogWithContext(ctx, i.log)
 }
 
 // setLogger sets the logger for the component.
@@ -288,8 +289,8 @@ func (k *Kod) Config() kodConfig {
 }
 
 // L() returns the logger of the Kod instance.
-func (k *Kod) L() *slog.Logger {
-	return k.log
+func (k *Kod) L(ctx context.Context) *slog.Logger {
+	return otelslog.LogWithContext(ctx, k.log)
 }
 
 // LevelVar returns the log level variable of the Kod instance.

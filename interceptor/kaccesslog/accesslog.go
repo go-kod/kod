@@ -26,7 +26,7 @@ func Interceptor() kod.Interceptor {
 			attrs = append(attrs, slog.String("error", err.Error()))
 		}
 
-		kod.FromContext(ctx).L().LogAttrs(ctx, level, "accesslog", attrs...)
+		kod.FromContext(ctx).L(ctx).LogAttrs(ctx, level, "accesslog", attrs...)
 
 		return err
 	}

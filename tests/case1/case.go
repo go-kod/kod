@@ -60,7 +60,7 @@ type test1Component struct {
 
 func (t *test1Component) Init(ctx context.Context) error {
 	kod := kod.FromContext(ctx)
-	t.L().InfoContext(ctx, "Init test1Component"+kod.Config().Name)
+	t.L(ctx).InfoContext(ctx, "Init test1Component"+kod.Config().Name)
 
 	return nil
 }
@@ -96,10 +96,10 @@ func (t *test1Component) Foo(ctx context.Context, req *FooReq) (*FooRes, error) 
 	}
 
 	ctx = baggage.ContextWithBaggage(ctx, lo.Must(baggage.New(lo.Must(baggage.NewMember("b1", "v1")))))
-	t.L().InfoContext(ctx, "Foo info ", slog.Any("config", t.Config()))
-	t.L().ErrorContext(ctx, "Foo error:")
-	t.L().DebugContext(ctx, "Foo debug:")
-	t.L().WithGroup("test group").InfoContext(ctx, "Foo info with group")
+	t.L(ctx).InfoContext(ctx, "Foo info ", slog.Any("config", t.Config()))
+	t.L(ctx).ErrorContext(ctx, "Foo error:")
+	t.L(ctx).DebugContext(ctx, "Foo debug:")
+	t.L(ctx).WithGroup("test group").InfoContext(ctx, "Foo info with group")
 
 	return &FooRes{Id: req.Id}, errors.New("test1:" + t.Config().A)
 }

@@ -373,7 +373,7 @@ type adder struct {
 
 func (a *adder) Add(ctx context.Context, x, y int) (int, error) {
     // adder embeds kod.Implements[Adder] which provides the L method.
-    logger := a.L()
+    logger := a.L(ctx)
     logger.DebugContext(ctx, "A debug log.")
     logger.InfoContext(ctx, "An info log.")
     logger.ErrorContext(ctx, "An error log.", fmt.Errorf("an error"))

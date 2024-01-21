@@ -75,8 +75,8 @@ type FooReq struct {
 }
 
 func (t *test1Component) Foo(ctx context.Context, req *FooReq) error {
-	t.L().InfoContext(ctx, "Foo info ", "config", t.Config())
-	t.L().Debug("Foo debug:")
+	t.L(ctx).InfoContext(ctx, "Foo info ", "config", t.Config())
+	t.L(ctx).Debug("Foo debug:")
 	fmt.Println(errors.New("test1"))
 	return errors.New("test1:" + t.Config().A)
 }
