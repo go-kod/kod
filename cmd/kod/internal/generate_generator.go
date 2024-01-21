@@ -500,7 +500,7 @@ func validateMethods(pkg *packages.Package, tset *typeSet, intf *types.Named) er
 
 		// // Last result must be error.
 		// if t.Results().Len() == 1 && t.Results().At(t.Results().Len()-1).Type().String() != "error" {
-		// 	// TODO(mwhittaker): If the function doesn't return anything, don't
+		// 	// TODO: If the function doesn't return anything, don't
 		// 	// print t.Results.
 		// 	errs = append(errs, bad("return", "The last return must have type error."))
 		// }
