@@ -154,6 +154,13 @@ func WithLogWrapper(h func(slog.Handler) slog.Handler) func(*options) {
 	}
 }
 
+// WithRegistrations is an option setter for specifying component registrations.
+func WithRegistrations(regs ...*Registration) func(*options) {
+	return func(opts *options) {
+		opts.registrations = regs
+	}
+}
+
 // Run initializes and runs the application with the provided main component and options.
 func Run[T any, _ PointerToMain[T]](ctx context.Context, run func(context.Context, *T) error, opts ...func(*options)) error {
 	opt := &options{}
@@ -162,7 +169,7 @@ func Run[T any, _ PointerToMain[T]](ctx context.Context, run func(context.Contex
 	}
 
 	// Create a new Kod instance.
-	kod, err := newKod(registry.All(), *opt)
+	kod, err := newKod(*opt)
 	if err != nil {
 		return err
 	}
@@ -244,10 +251,11 @@ type options struct {
 	configFilename string
 	fakes          map[reflect.Type]any
 	logWrapper     func(slog.Handler) slog.Handler
+	registrations  []*Registration
 }
 
 // newKod creates a new instance of Kod with the provided registrations and options.
-func newKod(regs []*Registration, opts options) (*Kod, error) {
+func newKod(opts options) (*Kod, error) {
 
 	kod := &Kod{
 		mu: &sync.Mutex{},
@@ -257,7 +265,7 @@ func newKod(regs []*Registration, opts options) (*Kod, error) {
 			Log:             logConfig{Level: "info"},
 			ShutdownTimeout: 5 * time.Second,
 		},
-		regs:            make([]*Registration, 0),
+		regs:            registry.All(),
 		registryByName:  make(map[string]*Registration),
 		registryByIface: make(map[reflect.Type]*Registration),
 		registryByImpl:  make(map[reflect.Type]*Registration),
@@ -265,7 +273,7 @@ func newKod(regs []*Registration, opts options) (*Kod, error) {
 		opts:            opts,
 	}
 
-	kod.register(regs)
+	kod.register(opts.registrations)
 
 	if err := kod.parseConfig(opts.configFilename); err != nil {
 		return nil, err
@@ -285,10 +293,12 @@ func newKod(regs []*Registration, opts options) (*Kod, error) {
 }
 
 // register adds the given implementations to the Kod instance.
-func (k *Kod) register(impl []*Registration) {
-	k.regs = append(k.regs, impl...)
+func (k *Kod) register(regs []*Registration) {
+	if len(regs) > 0 {
+		k.regs = regs
+	}
 
-	for _, v := range impl {
+	for _, v := range k.regs {
 		k.registryByName[v.Name] = v
 		k.registryByIface[v.Iface] = v
 		k.registryByImpl[v.Impl] = v

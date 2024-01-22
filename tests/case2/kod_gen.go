@@ -11,7 +11,7 @@ import (
 )
 
 func init() {
-	kod.Register(kod.Registration{
+	kod.Register(&kod.Registration{
 		Name:  "github.com/go-kod/kod/Main",
 		Iface: reflect.TypeOf((*kod.Main)(nil)).Elem(),
 		Impl:  reflect.TypeOf(App{}),
@@ -29,7 +29,7 @@ func init() {
 			}
 		},
 	})
-	kod.Register(kod.Registration{
+	kod.Register(&kod.Registration{
 		Name:  "github.com/go-kod/kod/tests/case2/Test1Component",
 		Iface: reflect.TypeOf((*Test1Component)(nil)).Elem(),
 		Impl:  reflect.TypeOf(test1Component{}),
@@ -47,7 +47,7 @@ func init() {
 			}
 		},
 	})
-	kod.Register(kod.Registration{
+	kod.Register(&kod.Registration{
 		Name:  "github.com/go-kod/kod/tests/case2/Test2Component",
 		Iface: reflect.TypeOf((*Test2Component)(nil)).Elem(),
 		Impl:  reflect.TypeOf(test2Component{}),

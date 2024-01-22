@@ -11,7 +11,7 @@ import (
 )
 
 func init() {
-	kod.Register(kod.Registration{
+	kod.Register(&kod.Registration{
 		Name:  "github.com/go-kod/kod/Main",
 		Iface: reflect.TypeOf((*kod.Main)(nil)).Elem(),
 		Impl:  reflect.TypeOf(app{}),

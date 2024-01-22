@@ -694,7 +694,7 @@ func (g *generator) generateRegisteredComponents(p printFn) {
 		}
 
 		reflect := g.tset.importPackage("reflect", "reflect")
-		p(`	%s(%s{`, g.codegen().qualify("Register"), g.codegen().qualify("Registration"))
+		p(`	%s(&%s{`, g.codegen().qualify("Register"), g.codegen().qualify("Registration"))
 		p(`		Name: %q,`, myName)
 		// To get a reflect.Type for an interface, we have to first get a type
 		// of its pointer and then resolve the underlying type. See:

@@ -14,7 +14,7 @@ import (
 )
 
 func init() {
-	kod.Register(kod.Registration{
+	kod.Register(&kod.Registration{
 		Name:  "github.com/go-kod/kod/tests/case1/HTTPController",
 		Iface: reflect.TypeOf((*HTTPController)(nil)).Elem(),
 		Impl:  reflect.TypeOf(httpControllerImpl{}),
@@ -32,7 +32,7 @@ func init() {
 			}
 		},
 	})
-	kod.Register(kod.Registration{
+	kod.Register(&kod.Registration{
 		Name:  "github.com/go-kod/kod/Main",
 		Iface: reflect.TypeOf((*kod.Main)(nil)).Elem(),
 		Impl:  reflect.TypeOf(App{}),
@@ -50,7 +50,7 @@ func init() {
 			}
 		},
 	})
-	kod.Register(kod.Registration{
+	kod.Register(&kod.Registration{
 		Name:  "github.com/go-kod/kod/tests/case1/Test1Component",
 		Iface: reflect.TypeOf((*Test1Component)(nil)).Elem(),
 		Impl:  reflect.TypeOf(test1Component{}),
@@ -68,7 +68,7 @@ func init() {
 			}
 		},
 	})
-	kod.Register(kod.Registration{
+	kod.Register(&kod.Registration{
 		Name:  "github.com/go-kod/kod/tests/case1/Test2Component",
 		Iface: reflect.TypeOf((*Test2Component)(nil)).Elem(),
 		Impl:  reflect.TypeOf(test2Component{}),
@@ -86,7 +86,7 @@ func init() {
 			}
 		},
 	})
-	kod.Register(kod.Registration{
+	kod.Register(&kod.Registration{
 		Name:  "github.com/go-kod/kod/tests/case1/panicCaseInterface",
 		Iface: reflect.TypeOf((*panicCaseInterface)(nil)).Elem(),
 		Impl:  reflect.TypeOf(panicCase{}),
@@ -104,7 +104,7 @@ func init() {
 			}
 		},
 	})
-	kod.Register(kod.Registration{
+	kod.Register(&kod.Registration{
 		Name:  "github.com/go-kod/kod/tests/case1/test1Controller",
 		Iface: reflect.TypeOf((*test1Controller)(nil)).Elem(),
 		Impl:  reflect.TypeOf(test1ControllerImpl{}),
@@ -122,7 +122,7 @@ func init() {
 			}
 		},
 	})
-	kod.Register(kod.Registration{
+	kod.Register(&kod.Registration{
 		Name:  "github.com/go-kod/kod/tests/case1/testEchoController",
 		Iface: reflect.TypeOf((*testEchoController)(nil)).Elem(),
 		Impl:  reflect.TypeOf(testEchoControllerImpl{}),
@@ -140,7 +140,7 @@ func init() {
 			}
 		},
 	})
-	kod.Register(kod.Registration{
+	kod.Register(&kod.Registration{
 		Name:  "github.com/go-kod/kod/tests/case1/testGinController",
 		Iface: reflect.TypeOf((*testGinController)(nil)).Elem(),
 		Impl:  reflect.TypeOf(testGinControllerImpl{}),
@@ -158,7 +158,7 @@ func init() {
 			}
 		},
 	})
-	kod.Register(kod.Registration{
+	kod.Register(&kod.Registration{
 		Name:  "github.com/go-kod/kod/tests/case1/testRepository",
 		Iface: reflect.TypeOf((*testRepository)(nil)).Elem(),
 		Impl:  reflect.TypeOf(modelImpl{}),
@@ -176,7 +176,7 @@ func init() {
 			}
 		},
 	})
-	kod.Register(kod.Registration{
+	kod.Register(&kod.Registration{
 		Name:  "github.com/go-kod/kod/tests/case1/testService",
 		Iface: reflect.TypeOf((*testService)(nil)).Elem(),
 		Impl:  reflect.TypeOf(serviceImpl{}),

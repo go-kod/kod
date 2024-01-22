@@ -24,8 +24,8 @@ type Registration struct {
 var regs = make([]*Registration, 0)
 
 // Register registers the given component implementations.
-func Register(reg Registration) {
-	regs = append(regs, &reg)
+func Register(reg *Registration) {
+	regs = append(regs, reg)
 }
 
 func All() []*Registration {

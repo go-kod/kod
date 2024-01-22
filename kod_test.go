@@ -12,7 +12,7 @@ func TestMain(m *testing.M) {
 }
 
 func TestConfigNoSuffix(t *testing.T) {
-	k, err := newKod(nil, options{})
+	k, err := newKod(options{})
 	assert.Nil(t, err)
 
 	assert.EqualError(t, k.parseConfig("nosuffix"), "read config file: Unsupported Config Type \"\"")

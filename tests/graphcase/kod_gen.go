@@ -13,7 +13,7 @@ import (
 )
 
 func init() {
-	kod.Register(kod.Registration{
+	kod.Register(&kod.Registration{
 		Name:  "github.com/go-kod/kod/tests/graphcase/HTTPController",
 		Iface: reflect.TypeOf((*HTTPController)(nil)).Elem(),
 		Impl:  reflect.TypeOf(httpControllerImpl{}),
@@ -31,7 +31,7 @@ func init() {
 			}
 		},
 	})
-	kod.Register(kod.Registration{
+	kod.Register(&kod.Registration{
 		Name:  "github.com/go-kod/kod/Main",
 		Iface: reflect.TypeOf((*kod.Main)(nil)).Elem(),
 		Impl:  reflect.TypeOf(App{}),
@@ -50,7 +50,7 @@ func init() {
 			}
 		},
 	})
-	kod.Register(kod.Registration{
+	kod.Register(&kod.Registration{
 		Name:  "github.com/go-kod/kod/tests/graphcase/Test1Component",
 		Iface: reflect.TypeOf((*Test1Component)(nil)).Elem(),
 		Impl:  reflect.TypeOf(test1Component{}),
@@ -68,7 +68,7 @@ func init() {
 			}
 		},
 	})
-	kod.Register(kod.Registration{
+	kod.Register(&kod.Registration{
 		Name:  "github.com/go-kod/kod/tests/graphcase/test1Controller",
 		Iface: reflect.TypeOf((*test1Controller)(nil)).Elem(),
 		Impl:  reflect.TypeOf(test1ControllerImpl{}),
@@ -87,7 +87,7 @@ func init() {
 			}
 		},
 	})
-	kod.Register(kod.Registration{
+	kod.Register(&kod.Registration{
 		Name:  "github.com/go-kod/kod/tests/graphcase/testModel",
 		Iface: reflect.TypeOf((*testModel)(nil)).Elem(),
 		Impl:  reflect.TypeOf(modelImpl{}),
@@ -105,7 +105,7 @@ func init() {
 			}
 		},
 	})
-	kod.Register(kod.Registration{
+	kod.Register(&kod.Registration{
 		Name:  "github.com/go-kod/kod/tests/graphcase/testService",
 		Iface: reflect.TypeOf((*testService)(nil)).Elem(),
 		Impl:  reflect.TypeOf(serviceImpl{}),

@@ -7,7 +7,6 @@ import (
 	"testing"
 
 	"github.com/go-kod/kod/internal/reflects"
-	"github.com/go-kod/kod/internal/registry"
 	"github.com/samber/lo"
 )
 
@@ -48,7 +47,7 @@ func (r runner) sub(t testing.TB, testBody any) error {
 		cancelFn()
 	}()
 
-	runner, err := newKod(registry.All(), r.options)
+	runner, err := newKod(r.options)
 	if err != nil {
 		return fmt.Errorf("newKod: %v", err)
 	}
