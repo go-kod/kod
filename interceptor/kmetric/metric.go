@@ -36,7 +36,6 @@ func Interceptor() kod.Interceptor {
 		as := attribute.NewSet(
 			attribute.String("component", info.Component),
 			attribute.String("full_method", info.FullMethod),
-			attribute.String("caller", info.Caller),
 		)
 
 		if err != nil {

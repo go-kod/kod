@@ -2,15 +2,9 @@ package kod
 
 import (
 	"context"
-	"errors"
 	"os"
 	"os/signal"
 	"syscall"
-)
-
-var (
-	ErrorShutdown         = errors.New("shutdown")
-	ErrorGracefulShutdown = errors.New("graceful shutdown")
 )
 
 var shutdownSignals = []os.Signal{syscall.SIGQUIT, os.Interrupt, syscall.SIGTERM}

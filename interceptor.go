@@ -8,8 +8,8 @@ type CallInfo struct {
 	Component string
 	// The full name of the called method, in the format of "package/service.method".
 	FullMethod string
-	// The name of the caller.
-	Caller string
+	// The name of the method.
+	Method string
 }
 
 // HandleFunc is the type of the function invoked by Components.

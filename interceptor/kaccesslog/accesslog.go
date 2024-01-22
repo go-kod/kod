@@ -17,7 +17,6 @@ func Interceptor() kod.Interceptor {
 			slog.Any("reply", reply),
 			slog.String("component", info.Component),
 			slog.String("full_method", info.FullMethod),
-			slog.String("caller", info.Caller),
 		}
 
 		level := slog.LevelInfo

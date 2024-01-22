@@ -29,7 +29,6 @@ func init() {
 				impl:        info.Impl.(HTTPController),
 				interceptor: interceptor.Chain(interceptors),
 				name:        info.Name,
-				caller:      info.Caller,
 			}
 		},
 	})
@@ -48,7 +47,6 @@ func init() {
 				impl:        info.Impl.(kod.Main),
 				interceptor: interceptor.Chain(interceptors),
 				name:        info.Name,
-				caller:      info.Caller,
 			}
 		},
 	})
@@ -67,7 +65,6 @@ func init() {
 				impl:        info.Impl.(Test1Component),
 				interceptor: interceptor.Chain(interceptors),
 				name:        info.Name,
-				caller:      info.Caller,
 			}
 		},
 	})
@@ -86,7 +83,6 @@ func init() {
 				impl:        info.Impl.(Test2Component),
 				interceptor: interceptor.Chain(interceptors),
 				name:        info.Name,
-				caller:      info.Caller,
 			}
 		},
 	})
@@ -105,7 +101,6 @@ func init() {
 				impl:        info.Impl.(panicCaseInterface),
 				interceptor: interceptor.Chain(interceptors),
 				name:        info.Name,
-				caller:      info.Caller,
 			}
 		},
 	})
@@ -124,7 +119,6 @@ func init() {
 				impl:        info.Impl.(test1Controller),
 				interceptor: interceptor.Chain(interceptors),
 				name:        info.Name,
-				caller:      info.Caller,
 			}
 		},
 	})
@@ -143,7 +137,6 @@ func init() {
 				impl:        info.Impl.(testEchoController),
 				interceptor: interceptor.Chain(interceptors),
 				name:        info.Name,
-				caller:      info.Caller,
 			}
 		},
 	})
@@ -162,7 +155,6 @@ func init() {
 				impl:        info.Impl.(testGinController),
 				interceptor: interceptor.Chain(interceptors),
 				name:        info.Name,
-				caller:      info.Caller,
 			}
 		},
 	})
@@ -181,7 +173,6 @@ func init() {
 				impl:        info.Impl.(testRepository),
 				interceptor: interceptor.Chain(interceptors),
 				name:        info.Name,
-				caller:      info.Caller,
 			}
 		},
 	})
@@ -200,7 +191,6 @@ func init() {
 				impl:        info.Impl.(testService),
 				interceptor: interceptor.Chain(interceptors),
 				name:        info.Name,
-				caller:      info.Caller,
 			}
 		},
 	})
@@ -223,7 +213,6 @@ var _ kod.InstanceOf[testService] = (*serviceImpl)(nil)
 type hTTPController_local_stub struct {
 	impl        HTTPController
 	name        string
-	caller      string
 	interceptor kod.Interceptor
 }
 
@@ -246,7 +235,7 @@ func (s hTTPController_local_stub) Foo(a0 http.ResponseWriter, a1 *http.Request)
 	info := kod.CallInfo{
 		Component:  s.name,
 		FullMethod: "github.com/go-kod/kod/tests/case1/HTTPController.Foo",
-		Caller:     s.caller,
+		Method:     "Foo",
 	}
 
 	var err error
@@ -261,7 +250,6 @@ func (s hTTPController_local_stub) Foo(a0 http.ResponseWriter, a1 *http.Request)
 type main_local_stub struct {
 	impl        kod.Main
 	name        string
-	caller      string
 	interceptor kod.Interceptor
 }
 
@@ -271,7 +259,6 @@ var _ kod.Main = (*main_local_stub)(nil)
 type test1Component_local_stub struct {
 	impl        Test1Component
 	name        string
-	caller      string
 	interceptor kod.Interceptor
 }
 
@@ -294,7 +281,7 @@ func (s test1Component_local_stub) Foo(ctx context.Context, a1 *FooReq) (r0 *Foo
 	info := kod.CallInfo{
 		Component:  s.name,
 		FullMethod: "github.com/go-kod/kod/tests/case1/Test1Component.Foo",
-		Caller:     s.caller,
+		Method:     "Foo",
 	}
 
 	err = s.interceptor(ctx, info, []any{a1}, []any{r0}, call)
@@ -304,7 +291,6 @@ func (s test1Component_local_stub) Foo(ctx context.Context, a1 *FooReq) (r0 *Foo
 type test2Component_local_stub struct {
 	impl        Test2Component
 	name        string
-	caller      string
 	interceptor kod.Interceptor
 }
 
@@ -327,7 +313,7 @@ func (s test2Component_local_stub) GetClient() (r0 *http.Client) {
 	info := kod.CallInfo{
 		Component:  s.name,
 		FullMethod: "github.com/go-kod/kod/tests/case1/Test2Component.GetClient",
-		Caller:     s.caller,
+		Method:     "GetClient",
 	}
 
 	ctx := context.Background()
@@ -338,7 +324,6 @@ func (s test2Component_local_stub) GetClient() (r0 *http.Client) {
 type panicCaseInterface_local_stub struct {
 	impl        panicCaseInterface
 	name        string
-	caller      string
 	interceptor kod.Interceptor
 }
 
@@ -360,7 +345,7 @@ func (s panicCaseInterface_local_stub) TestPanic(a0 *http.Request) {
 	info := kod.CallInfo{
 		Component:  s.name,
 		FullMethod: "github.com/go-kod/kod/tests/case1/panicCaseInterface.TestPanic",
-		Caller:     s.caller,
+		Method:     "TestPanic",
 	}
 
 	ctx := context.Background()
@@ -370,7 +355,6 @@ func (s panicCaseInterface_local_stub) TestPanic(a0 *http.Request) {
 type test1Controller_local_stub struct {
 	impl        test1Controller
 	name        string
-	caller      string
 	interceptor kod.Interceptor
 }
 
@@ -380,7 +364,6 @@ var _ test1Controller = (*test1Controller_local_stub)(nil)
 type testEchoController_local_stub struct {
 	impl        testEchoController
 	name        string
-	caller      string
 	interceptor kod.Interceptor
 }
 
@@ -403,7 +386,7 @@ func (s testEchoController_local_stub) Hello(a0 echo.Context) (err error) {
 	info := kod.CallInfo{
 		Component:  s.name,
 		FullMethod: "github.com/go-kod/kod/tests/case1/testEchoController.Hello",
-		Caller:     s.caller,
+		Method:     "Hello",
 	}
 
 	ctx := a0.Request().Context()
@@ -417,7 +400,6 @@ func (s testEchoController_local_stub) Hello(a0 echo.Context) (err error) {
 type testGinController_local_stub struct {
 	impl        testGinController
 	name        string
-	caller      string
 	interceptor kod.Interceptor
 }
 
@@ -440,7 +422,7 @@ func (s testGinController_local_stub) Hello(a0 *gin.Context) {
 	info := kod.CallInfo{
 		Component:  s.name,
 		FullMethod: "github.com/go-kod/kod/tests/case1/testGinController.Hello",
-		Caller:     s.caller,
+		Method:     "Hello",
 	}
 
 	var err error
@@ -454,7 +436,6 @@ func (s testGinController_local_stub) Hello(a0 *gin.Context) {
 type testRepository_local_stub struct {
 	impl        testRepository
 	name        string
-	caller      string
 	interceptor kod.Interceptor
 }
 
@@ -476,7 +457,7 @@ func (s testRepository_local_stub) Foo(ctx context.Context) (err error) {
 	info := kod.CallInfo{
 		Component:  s.name,
 		FullMethod: "github.com/go-kod/kod/tests/case1/testRepository.Foo",
-		Caller:     s.caller,
+		Method:     "Foo",
 	}
 
 	err = s.interceptor(ctx, info, []any{}, []any{}, call)
@@ -486,7 +467,6 @@ func (s testRepository_local_stub) Foo(ctx context.Context) (err error) {
 type testService_local_stub struct {
 	impl        testService
 	name        string
-	caller      string
 	interceptor kod.Interceptor
 }
 
@@ -508,7 +488,7 @@ func (s testService_local_stub) Foo(ctx context.Context) (err error) {
 	info := kod.CallInfo{
 		Component:  s.name,
 		FullMethod: "github.com/go-kod/kod/tests/case1/testService.Foo",
-		Caller:     s.caller,
+		Method:     "Foo",
 	}
 
 	err = s.interceptor(ctx, info, []any{}, []any{}, call)

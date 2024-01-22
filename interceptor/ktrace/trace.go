@@ -21,7 +21,6 @@ func Interceptor() kod.Interceptor {
 				trace.WithSpanKind(trace.SpanKindInternal),
 				trace.WithAttributes(
 					attribute.String("component", info.Component),
-					attribute.String("caller", info.Caller),
 				),
 			)
 		}

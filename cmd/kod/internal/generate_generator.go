@@ -670,12 +670,9 @@ func (g *generator) generateRegisteredComponents(p printFn) {
 	for _, comp := range g.components {
 		name := comp.intfName()
 		myName := comp.fullIntfName()
-		var b strings.Builder
 		var inits strings.Builder
 
 		inits.Reset()
-
-		b.Reset()
 
 		g.interceptor()
 		localStubFn := fmt.Sprintf(`func(ctx context.Context, info *kod.LocalStubFnInfo) any {
@@ -689,9 +686,8 @@ func (g *generator) generateRegisteredComponents(p printFn) {
 				impl: info.Impl.(%s),
 				interceptor: interceptor.Chain(interceptors),
 				name: info.Name,
-				caller: info.Caller%s,
 			} }`,
-			inits.String(), notExported(name), g.componentRef(comp), b.String())
+			inits.String(), notExported(name), g.componentRef(comp))
 		refNames := make([]string, 0, len(comp.refs))
 		for _, ref := range comp.refs {
 			refNames = append(refNames, callgraph.MakeEdgeString(comp.fullIntfName(), fullName(ref)))
@@ -765,7 +761,6 @@ func (g *generator) generateLocalStubs(p printFn) {
 		p(`type %s struct{`, stub)
 		p(`	impl %s`, g.componentRef(comp))
 		p(`	name   string`)
-		p(` caller string`)
 		p(`	interceptor kod.Interceptor`)
 		p(`}`)
 
@@ -818,9 +813,9 @@ func (g *generator) generateLocalStubs(p printFn) {
 			p(`info := kod.CallInfo{
 					Component:  s.name,
 					FullMethod: "%s.%s",
-					Caller:     s.caller,
+					Method:    "%s",
 				}
-			`, comp.fullIntfName(), m.Name())
+			`, comp.fullIntfName(), m.Name(), m.Name())
 
 			switch firstArgTypeString {
 			case "*gin.Context":

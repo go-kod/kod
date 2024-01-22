@@ -26,7 +26,6 @@ func init() {
 				impl:        info.Impl.(kod.Main),
 				interceptor: interceptor.Chain(interceptors),
 				name:        info.Name,
-				caller:      info.Caller,
 			}
 		},
 	})
@@ -45,7 +44,6 @@ func init() {
 				impl:        info.Impl.(Test1Component),
 				interceptor: interceptor.Chain(interceptors),
 				name:        info.Name,
-				caller:      info.Caller,
 			}
 		},
 	})
@@ -64,7 +62,6 @@ func init() {
 				impl:        info.Impl.(Test2Component),
 				interceptor: interceptor.Chain(interceptors),
 				name:        info.Name,
-				caller:      info.Caller,
 			}
 		},
 	})
@@ -80,7 +77,6 @@ var _ kod.InstanceOf[Test2Component] = (*test2Component)(nil)
 type main_local_stub struct {
 	impl        kod.Main
 	name        string
-	caller      string
 	interceptor kod.Interceptor
 }
 
@@ -90,7 +86,6 @@ var _ kod.Main = (*main_local_stub)(nil)
 type test1Component_local_stub struct {
 	impl        Test1Component
 	name        string
-	caller      string
 	interceptor kod.Interceptor
 }
 
@@ -112,7 +107,7 @@ func (s test1Component_local_stub) Foo(ctx context.Context, a1 *FooReq) (err err
 	info := kod.CallInfo{
 		Component:  s.name,
 		FullMethod: "github.com/go-kod/kod/tests/case2/Test1Component.Foo",
-		Caller:     s.caller,
+		Method:     "Foo",
 	}
 
 	err = s.interceptor(ctx, info, []any{a1}, []any{}, call)
@@ -122,7 +117,6 @@ func (s test1Component_local_stub) Foo(ctx context.Context, a1 *FooReq) (err err
 type test2Component_local_stub struct {
 	impl        Test2Component
 	name        string
-	caller      string
 	interceptor kod.Interceptor
 }
 
@@ -144,7 +138,7 @@ func (s test2Component_local_stub) Foo(ctx context.Context, a1 *FooReq) (err err
 	info := kod.CallInfo{
 		Component:  s.name,
 		FullMethod: "github.com/go-kod/kod/tests/case2/Test2Component.Foo",
-		Caller:     s.caller,
+		Method:     "Foo",
 	}
 
 	err = s.interceptor(ctx, info, []any{a1}, []any{}, call)

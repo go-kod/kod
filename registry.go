@@ -8,9 +8,8 @@ import (
 
 // LocalStubFnInfo is the information passed to LocalStubFn.
 type LocalStubFnInfo struct {
-	Impl   any
-	Name   string
-	Caller string
+	Impl any
+	Name string
 }
 
 // Registration is the registration information for a component.
@@ -50,9 +49,15 @@ func (k *Kod) getImpl(ctx context.Context, t reflect.Type) (any, error) {
 
 // getIntf returns the component for the given interface type.
 func (k *Kod) getIntf(ctx context.Context, t reflect.Type, caller string) (any, error) {
+
 	reg, ok := k.registryByIface[t]
 	if !ok {
 		return nil, fmt.Errorf("kod: no component registered for interface %v", t)
+	}
+
+	intf, ok := k.components[reg.Name]
+	if ok {
+		return intf, nil
 	}
 
 	comp, err := k.get(ctx, reg)
@@ -60,11 +65,14 @@ func (k *Kod) getIntf(ctx context.Context, t reflect.Type, caller string) (any, 
 		return nil, err
 	}
 
-	return reg.LocalStubFn(ctx, &LocalStubFnInfo{
-		Name:   reg.Name,
-		Impl:   comp,
-		Caller: caller,
-	}), nil
+	intf = reg.LocalStubFn(ctx, &LocalStubFnInfo{
+		Name: reg.Name,
+		Impl: comp,
+	})
+
+	k.components[reg.Name] = intf
+
+	return intf, nil
 }
 
 // get returns the component for the given registration.

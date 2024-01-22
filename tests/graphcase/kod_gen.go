@@ -28,7 +28,6 @@ func init() {
 				impl:        info.Impl.(HTTPController),
 				interceptor: interceptor.Chain(interceptors),
 				name:        info.Name,
-				caller:      info.Caller,
 			}
 		},
 	})
@@ -48,7 +47,6 @@ func init() {
 				impl:        info.Impl.(kod.Main),
 				interceptor: interceptor.Chain(interceptors),
 				name:        info.Name,
-				caller:      info.Caller,
 			}
 		},
 	})
@@ -67,7 +65,6 @@ func init() {
 				impl:        info.Impl.(Test1Component),
 				interceptor: interceptor.Chain(interceptors),
 				name:        info.Name,
-				caller:      info.Caller,
 			}
 		},
 	})
@@ -87,7 +84,6 @@ func init() {
 				impl:        info.Impl.(test1Controller),
 				interceptor: interceptor.Chain(interceptors),
 				name:        info.Name,
-				caller:      info.Caller,
 			}
 		},
 	})
@@ -106,7 +102,6 @@ func init() {
 				impl:        info.Impl.(testModel),
 				interceptor: interceptor.Chain(interceptors),
 				name:        info.Name,
-				caller:      info.Caller,
 			}
 		},
 	})
@@ -125,7 +120,6 @@ func init() {
 				impl:        info.Impl.(testService),
 				interceptor: interceptor.Chain(interceptors),
 				name:        info.Name,
-				caller:      info.Caller,
 			}
 		},
 	})
@@ -144,7 +138,6 @@ var _ kod.InstanceOf[testService] = (*serviceImpl)(nil)
 type hTTPController_local_stub struct {
 	impl        HTTPController
 	name        string
-	caller      string
 	interceptor kod.Interceptor
 }
 
@@ -166,7 +159,7 @@ func (s hTTPController_local_stub) Foo(a0 http.ResponseWriter, a1 http.Request) 
 	info := kod.CallInfo{
 		Component:  s.name,
 		FullMethod: "github.com/go-kod/kod/tests/graphcase/HTTPController.Foo",
-		Caller:     s.caller,
+		Method:     "Foo",
 	}
 
 	ctx := context.Background()
@@ -176,7 +169,6 @@ func (s hTTPController_local_stub) Foo(a0 http.ResponseWriter, a1 http.Request) 
 type main_local_stub struct {
 	impl        kod.Main
 	name        string
-	caller      string
 	interceptor kod.Interceptor
 }
 
@@ -186,7 +178,6 @@ var _ kod.Main = (*main_local_stub)(nil)
 type test1Component_local_stub struct {
 	impl        Test1Component
 	name        string
-	caller      string
 	interceptor kod.Interceptor
 }
 
@@ -208,7 +199,7 @@ func (s test1Component_local_stub) Foo(ctx context.Context, a1 *FooReq) (err err
 	info := kod.CallInfo{
 		Component:  s.name,
 		FullMethod: "github.com/go-kod/kod/tests/graphcase/Test1Component.Foo",
-		Caller:     s.caller,
+		Method:     "Foo",
 	}
 
 	err = s.interceptor(ctx, info, []any{a1}, []any{}, call)
@@ -218,7 +209,6 @@ func (s test1Component_local_stub) Foo(ctx context.Context, a1 *FooReq) (err err
 type test1Controller_local_stub struct {
 	impl        test1Controller
 	name        string
-	caller      string
 	interceptor kod.Interceptor
 }
 
@@ -241,7 +231,7 @@ func (s test1Controller_local_stub) Foo(a0 *gin.Context) {
 	info := kod.CallInfo{
 		Component:  s.name,
 		FullMethod: "github.com/go-kod/kod/tests/graphcase/test1Controller.Foo",
-		Caller:     s.caller,
+		Method:     "Foo",
 	}
 
 	var err error
@@ -255,7 +245,6 @@ func (s test1Controller_local_stub) Foo(a0 *gin.Context) {
 type testModel_local_stub struct {
 	impl        testModel
 	name        string
-	caller      string
 	interceptor kod.Interceptor
 }
 
@@ -277,7 +266,7 @@ func (s testModel_local_stub) Foo(ctx context.Context) (err error) {
 	info := kod.CallInfo{
 		Component:  s.name,
 		FullMethod: "github.com/go-kod/kod/tests/graphcase/testModel.Foo",
-		Caller:     s.caller,
+		Method:     "Foo",
 	}
 
 	err = s.interceptor(ctx, info, []any{}, []any{}, call)
@@ -287,7 +276,6 @@ func (s testModel_local_stub) Foo(ctx context.Context) (err error) {
 type testService_local_stub struct {
 	impl        testService
 	name        string
-	caller      string
 	interceptor kod.Interceptor
 }
 
@@ -309,7 +297,7 @@ func (s testService_local_stub) Foo(ctx context.Context) (err error) {
 	info := kod.CallInfo{
 		Component:  s.name,
 		FullMethod: "github.com/go-kod/kod/tests/graphcase/testService.Foo",
-		Caller:     s.caller,
+		Method:     "Foo",
 	}
 
 	err = s.interceptor(ctx, info, []any{}, []any{}, call)

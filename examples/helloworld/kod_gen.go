@@ -26,7 +26,6 @@ func init() {
 				impl:        info.Impl.(kod.Main),
 				interceptor: interceptor.Chain(interceptors),
 				name:        info.Name,
-				caller:      info.Caller,
 			}
 		},
 	})
@@ -40,7 +39,6 @@ var _ kod.InstanceOf[kod.Main] = (*app)(nil)
 type main_local_stub struct {
 	impl        kod.Main
 	name        string
-	caller      string
 	interceptor kod.Interceptor
 }
 

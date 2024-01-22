@@ -261,3 +261,43 @@ func TestNot(t *testing.T) {
 		})
 	}
 }
+
+func TestIsMethod(t *testing.T) {
+	// Define test cases
+	testCases := []struct {
+		name     string
+		method   string
+		info     kod.CallInfo
+		expected bool
+	}{
+		{
+			name:   "Method matches",
+			method: "test",
+			info: kod.CallInfo{
+				Method: "test",
+			},
+			expected: true,
+		},
+		{
+			name:   "Method does not match",
+			method: "test",
+			info: kod.CallInfo{
+				Method: "other",
+			},
+			expected: false,
+		},
+	}
+
+	// Run test cases
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			// Call the IsMethod function with the test case input
+			result := IsMethod(tc.method)(context.Background(), tc.info)
+
+			// Check if the result matches the expected value
+			if result != tc.expected {
+				t.Errorf("Expected result: %v, but got: %v", tc.expected, result)
+			}
+		})
+	}
+}
