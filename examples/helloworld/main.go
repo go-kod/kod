@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/go-kod/kod"
 )
@@ -21,7 +22,7 @@ type app struct {
 
 func main() {
 	kod.Run(context.Background(), func(ctx context.Context, main *app) error {
-		main.helloworld.Get().SayHello()
+		fmt.Println(main.helloworld.Get().SayHello())
 		return nil
 	})
 }
