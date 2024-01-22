@@ -133,6 +133,11 @@ func (wc *WithConfig[T]) Config() *T {
 	return &wc.config
 }
 
+// getConfig returns the config.
+func (wc *WithConfig[T]) getConfig() any {
+	return &wc.config
+}
+
 // WithConfigFile is an option setter for specifying a configuration file.
 func WithConfigFile(filename string) func(*options) {
 	return func(opts *options) {

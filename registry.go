@@ -75,7 +75,7 @@ func (k *Kod) get(ctx context.Context, reg *Registration) (any, error) {
 	obj := v.Interface()
 
 	// Fill config.
-	if cfg := config(v); cfg != nil {
+	if cfg := getConfig(obj); cfg != nil {
 		err := k.viper.UnmarshalKey(reg.Name, cfg)
 		if err != nil {
 			return nil, err
