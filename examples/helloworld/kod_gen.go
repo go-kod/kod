@@ -12,10 +12,28 @@ import (
 
 func init() {
 	kod.Register(&kod.Registration{
+		Name:  "github.com/go-kod/kod/examples/helloworld/Helloworld",
+		Iface: reflect.TypeOf((*Helloworld)(nil)).Elem(),
+		Impl:  reflect.TypeOf(helloworld{}),
+		Refs:  ``,
+		LocalStubFn: func(ctx context.Context, info *kod.LocalStubFnInfo) any {
+			var interceptors []kod.Interceptor
+			if h, ok := info.Impl.(interface{ Interceptors() []kod.Interceptor }); ok {
+				interceptors = h.Interceptors()
+			}
+
+			return helloworld_local_stub{
+				impl:        info.Impl.(Helloworld),
+				interceptor: interceptor.Chain(interceptors),
+				name:        info.Name,
+			}
+		},
+	})
+	kod.Register(&kod.Registration{
 		Name:  "github.com/go-kod/kod/Main",
 		Iface: reflect.TypeOf((*kod.Main)(nil)).Elem(),
 		Impl:  reflect.TypeOf(app{}),
-		Refs:  ``,
+		Refs:  `⟦fa98fcfe:KoDeDgE:github.com/go-kod/kod/Main→github.com/go-kod/kod/examples/helloworld/Helloworld⟧`,
 		LocalStubFn: func(ctx context.Context, info *kod.LocalStubFnInfo) any {
 			var interceptors []kod.Interceptor
 			if h, ok := info.Impl.(interface{ Interceptors() []kod.Interceptor }); ok {
@@ -32,9 +50,43 @@ func init() {
 }
 
 // kod.InstanceOf checks.
+var _ kod.InstanceOf[Helloworld] = (*helloworld)(nil)
 var _ kod.InstanceOf[kod.Main] = (*app)(nil)
 
 // Local stub implementations.
+
+type helloworld_local_stub struct {
+	impl        Helloworld
+	name        string
+	interceptor kod.Interceptor
+}
+
+// Check that helloworld_local_stub implements the Helloworld interface.
+var _ Helloworld = (*helloworld_local_stub)(nil)
+
+func (s helloworld_local_stub) SayHello() (r0 string) {
+
+	if s.interceptor == nil {
+		r0 = s.impl.SayHello()
+		return
+	}
+
+	call := func(ctx context.Context, info kod.CallInfo, req, res []any) (err error) {
+		r0 = s.impl.SayHello()
+		res[0] = r0
+		return
+	}
+
+	info := kod.CallInfo{
+		Component:  s.name,
+		FullMethod: "github.com/go-kod/kod/examples/helloworld/Helloworld.SayHello",
+		Method:     "SayHello",
+	}
+
+	ctx := context.Background()
+	_ = s.interceptor(ctx, info, []any{}, []any{r0}, call)
+	return
+}
 
 type main_local_stub struct {
 	impl        kod.Main
