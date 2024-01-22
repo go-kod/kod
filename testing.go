@@ -6,6 +6,8 @@ import (
 	"reflect"
 	"testing"
 
+	"github.com/go-kod/kod/internal/reflects"
+	"github.com/go-kod/kod/internal/registry"
 	"github.com/samber/lo"
 )
 
@@ -15,7 +17,7 @@ type fakeComponent struct {
 }
 
 func Fake[T any](impl any) fakeComponent {
-	t := rtype[T]()
+	t := reflects.TypeFor[T]()
 	if _, ok := impl.(T); !ok {
 		panic(fmt.Sprintf("%T does not implement %v", impl, t))
 	}
@@ -46,7 +48,7 @@ func (r runner) sub(t testing.TB, testBody any) error {
 		cancelFn()
 	}()
 
-	runner, err := newKod(getRegs(), r.options)
+	runner, err := newKod(registry.All(), r.options)
 	if err != nil {
 		return fmt.Errorf("newKod: %v", err)
 	}

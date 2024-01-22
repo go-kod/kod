@@ -4,35 +4,18 @@ import (
 	"context"
 	"fmt"
 	"reflect"
+
+	"github.com/go-kod/kod/internal/registry"
 )
 
 // LocalStubFnInfo is the information passed to LocalStubFn.
-type LocalStubFnInfo struct {
-	Impl any
-	Name string
-}
+type LocalStubFnInfo = registry.LocalStubFnInfo
 
 // Registration is the registration information for a component.
-type Registration struct {
-	Name        string       // full package-prefixed component name
-	Iface       reflect.Type // interface type for the component
-	Impl        reflect.Type // implementation type (struct)
-	Refs        string
-	LocalStubFn func(context.Context, *LocalStubFnInfo) any
-}
-
-var (
-	regs = make([]*Registration, 0)
-)
+type Registration = registry.Registration
 
 // Register registers the given component implementations.
-func Register(reg Registration) {
-	regs = append(regs, &reg)
-}
-
-func getRegs() []*Registration {
-	return regs
-}
+var Register = registry.Register
 
 // getImpl returns the component for the given implementation type.
 func (k *Kod) getImpl(ctx context.Context, t reflect.Type) (any, error) {

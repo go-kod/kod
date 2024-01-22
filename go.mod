@@ -17,6 +17,7 @@ require (
 	go.uber.org/goleak v1.3.0
 	golang.org/x/tools v0.17.0
 	google.golang.org/grpc v1.60.1
+	gopkg.in/natefinch/lumberjack.v2 v2.2.1
 )
 
 require (

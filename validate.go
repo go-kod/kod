@@ -7,6 +7,7 @@ import (
 
 	"github.com/dominikbraun/graph"
 	"github.com/go-kod/kod/internal/callgraph"
+	"github.com/go-kod/kod/internal/reflects"
 )
 
 // checkCircularDependency checks that there are no circular dependencies
@@ -54,7 +55,7 @@ func (k *Kod) validateRegistrations() error {
 		for i := 0; i < reg.Impl.NumField(); i++ {
 			f := reg.Impl.Field(i)
 			switch {
-			case f.Type.Implements(rtype[interface{ isRef() }]()):
+			case f.Type.Implements(reflects.TypeFor[interface{ isRef() }]()):
 				// f is a kod.Ref[T].
 				v := f.Type.Field(0) // a Ref[T]'s value field
 				if _, ok := intfs[v.Type]; !ok {

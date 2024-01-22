@@ -1,13 +1,15 @@
 package kod
 
 import (
+	"context"
+	"io"
 	"log/slog"
 	"os"
-	"path/filepath"
-	"strings"
 
 	"github.com/go-kod/kod/internal/otelslog"
+	"github.com/go-kod/kod/internal/paths"
 	"github.com/samber/lo"
+	"gopkg.in/natefinch/lumberjack.v2"
 )
 
 func (k *Kod) initLog() {
@@ -15,16 +17,36 @@ func (k *Kod) initLog() {
 	k.logLevelVar = new(slog.LevelVar)
 	lo.Must0(k.logLevelVar.UnmarshalText([]byte(k.config.Log.Level)))
 
+	// Default to stdout.
+	var writer io.Writer = os.Stdout
+	// If a log file is specified, use it.
+	if k.config.Log.File != "" {
+		logger := &lumberjack.Logger{
+			Filename:   k.config.Log.File,
+			MaxSize:    500, // megabytes
+			MaxBackups: 7,
+			MaxAge:     28, //days
+			Compress:   false,
+		}
+		k.addDefer(deferFunc{
+			Name: PkgPath,
+			Fn: func(ctx context.Context) error {
+				return logger.Close()
+			},
+		})
+		writer = logger
+	}
+
 	jsonHandler := slog.NewJSONHandler(
-		os.Stdout, &slog.HandlerOptions{
+		writer, &slog.HandlerOptions{
 			AddSource: true,
 			Level:     k.logLevelVar,
 			ReplaceAttr: func(groups []string, a slog.Attr) slog.Attr {
 				// Remove the directory from the source's filename.
 				if a.Key == slog.SourceKey {
 					source := a.Value.Any().(*slog.Source)
-					source.File = customBase(source.File, 2)
-					source.Function = customBase(source.Function, 1)
+					source.File = paths.CustomBase(source.File, 2)
+					source.Function = paths.CustomBase(source.Function, 1)
 				}
 
 				return a
@@ -40,22 +62,4 @@ func (k *Kod) initLog() {
 	}
 
 	k.log = slog.New(handler)
-	// slog.SetDefault(k.log)
-}
-
-// customBase returns the last n levels of the path.
-func customBase(fullPath string, levelsToKeep int) string {
-	dir, file := filepath.Split(fullPath)
-
-	dirParts := strings.Split(dir, string(filepath.Separator))
-
-	if len(dirParts) > levelsToKeep {
-		dirParts = dirParts[len(dirParts)-levelsToKeep:]
-	}
-
-	newDir := filepath.Join(dirParts...)
-
-	result := filepath.Join(newDir, file)
-
-	return result
 }

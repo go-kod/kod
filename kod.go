@@ -10,6 +10,9 @@ import (
 	"time"
 
 	"github.com/go-kod/kod/internal/otelslog"
+	"github.com/go-kod/kod/internal/reflects"
+	"github.com/go-kod/kod/internal/registry"
+	"github.com/go-kod/kod/internal/signals"
 	"github.com/samber/lo"
 	"github.com/spf13/viper"
 )
@@ -152,39 +155,47 @@ func WithLogWrapper(h func(slog.Handler) slog.Handler) func(*options) {
 }
 
 // Run initializes and runs the application with the provided main component and options.
-func Run[T any, _ PointerToMain[T]](ctx context.Context, app func(context.Context, *T) error, opts ...func(*options)) error {
+func Run[T any, _ PointerToMain[T]](ctx context.Context, run func(context.Context, *T) error, opts ...func(*options)) error {
 	opt := &options{}
 	for _, o := range opts {
 		o(opt)
 	}
 
-	kod, err := newKod(getRegs(), *opt)
+	// Create a new Kod instance.
+	kod, err := newKod(registry.All(), *opt)
 	if err != nil {
 		return err
 	}
 
+	// create a new context with kod
 	ctx = newContext(ctx, kod)
 	ctx, cancel := context.WithCancel(ctx)
 	defer cancel()
 
-	main, err := kod.getImpl(ctx, rtype[T]())
+	// get the main component implementation
+	main, err := kod.getImpl(ctx, reflects.TypeFor[T]())
 	if err != nil {
 		return err
 	}
 
+	// wait for shutdown signal
 	stop := make(chan struct{}, 2)
-	shutdown(ctx, func(grace bool) {
+	signals.Shutdown(ctx, func(grace bool) {
 		kod.log.Info("shutdown ...")
 		cancel()
 		stop <- struct{}{}
 	})
 
+	// run the main component
 	go func() {
-		err = app(ctx, main.(*T))
+		err = run(ctx, main.(*T))
 		stop <- struct{}{}
 	}()
 
+	// wait for stop signal
 	<-stop
+
+	// run defer functions
 	kod.runDefer(ctx)
 
 	return err
@@ -193,6 +204,7 @@ func Run[T any, _ PointerToMain[T]](ctx context.Context, app func(context.Contex
 // logConfig defines the configuration for logging.
 type logConfig struct {
 	Level string
+	File  string
 }
 
 // kodConfig defines the overall configuration for the Kod application.

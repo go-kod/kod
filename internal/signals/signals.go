@@ -1,4 +1,4 @@
-package kod
+package signals
 
 import (
 	"context"
@@ -9,10 +9,10 @@ import (
 
 var shutdownSignals = []os.Signal{syscall.SIGQUIT, os.Interrupt, syscall.SIGTERM}
 
-// shutdown support twice signal must exit
+// Shutdown support twice signal must exit
 // first signal: graceful shutdown
 // second signal: exit directly
-func shutdown(ctx context.Context, stop func(grace bool)) {
+func Shutdown(ctx context.Context, stop func(grace bool)) {
 	sig := make(chan os.Signal, 2)
 	signal.Notify(
 		sig,
