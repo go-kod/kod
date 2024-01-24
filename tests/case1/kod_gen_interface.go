@@ -37,6 +37,8 @@ type Test2Component interface {
 type testEchoController interface {
 	// Hello is a method of testEchoControllerImpl
 	Hello(c echo.Context) error
+	// Error is a method of testEchoControllerImpl
+	Error(c echo.Context) error
 }
 
 // testGinControllerImpl is a component that implements testGinController.

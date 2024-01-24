@@ -5,6 +5,7 @@ go 1.21.0
 replace github.com/go-kod/kod => ../
 
 require (
+	github.com/avast/retry-go/v4 v4.5.1
 	github.com/gin-gonic/gin v1.9.1
 	github.com/go-kod/kod v0.0.0-00010101000000-000000000000
 	github.com/labstack/echo/v4 v4.11.4

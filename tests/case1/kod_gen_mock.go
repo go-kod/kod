@@ -213,6 +213,20 @@ func (m *MocktestEchoController) EXPECT() *MocktestEchoControllerMockRecorder {
 	return m.recorder
 }
 
+// Error mocks base method.
+func (m *MocktestEchoController) Error(c echo.Context) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Error", c)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Error indicates an expected call of Error.
+func (mr *MocktestEchoControllerMockRecorder) Error(c any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Error", reflect.TypeOf((*MocktestEchoController)(nil).Error), c)
+}
+
 // Hello mocks base method.
 func (m *MocktestEchoController) Hello(c echo.Context) error {
 	m.ctrl.T.Helper()

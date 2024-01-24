@@ -370,6 +370,33 @@ type testEchoController_local_stub struct {
 // Check that testEchoController_local_stub implements the testEchoController interface.
 var _ testEchoController = (*testEchoController_local_stub)(nil)
 
+func (s testEchoController_local_stub) Error(a0 echo.Context) (err error) {
+
+	if s.interceptor == nil {
+		err = s.impl.Error(a0)
+		return
+	}
+
+	call := func(ctx context.Context, info kod.CallInfo, req, res []any) (err error) {
+		a0.SetRequest(a0.Request().WithContext(ctx))
+		err = s.impl.Error(a0)
+		return
+	}
+
+	info := kod.CallInfo{
+		Component:  s.name,
+		FullMethod: "github.com/go-kod/kod/tests/case1/testEchoController.Error",
+		Method:     "Error",
+	}
+
+	ctx := a0.Request().Context()
+	err = s.interceptor(ctx, info, []any{a0}, []any{}, call)
+	if err != nil {
+		a0.Error(err)
+	}
+	return
+}
+
 func (s testEchoController_local_stub) Hello(a0 echo.Context) (err error) {
 
 	if s.interceptor == nil {

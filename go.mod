@@ -3,6 +3,7 @@ module github.com/go-kod/kod
 go 1.21.0
 
 require (
+	github.com/avast/retry-go/v4 v4.5.1
 	github.com/dominikbraun/graph v0.23.0
 	github.com/samber/lo v1.39.0
 	github.com/shirou/gopsutil/v3 v3.23.12
