@@ -8,14 +8,6 @@ import (
 	"github.com/spf13/viper"
 )
 
-// getConfig returns the config for the given component.
-func getConfig(impl any) any {
-	if c, ok := impl.(interface{ getConfig() any }); ok {
-		return c.getConfig()
-	}
-	return nil
-}
-
 // parseConfig parses the config file.
 func (k *Kod) parseConfig(filename string) error {
 	noConfigProvided := false

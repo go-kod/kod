@@ -6,6 +6,14 @@ import (
 	"reflect"
 )
 
+// getConfig returns the config for the given component.
+func getConfig(impl any) any {
+	if c, ok := impl.(interface{ getConfig() any }); ok {
+		return c.getConfig()
+	}
+	return nil
+}
+
 func fillLog(obj any, log *slog.Logger) error {
 	x, ok := obj.(interface{ setLogger(*slog.Logger) })
 	if !ok {

@@ -1,4 +1,4 @@
-package kod
+package registry
 
 import (
 	"errors"
@@ -10,19 +10,19 @@ import (
 	"github.com/go-kod/kod/internal/reflects"
 )
 
-// checkCircularDependency checks that there are no circular dependencies
+// CheckCircularDependency checks that there are no circular dependencies
 // between registered components.
-func (k *Kod) checkCircularDependency() error {
+func CheckCircularDependency(reg []*Registration) error {
 	g := graph.New(graph.StringHash, graph.Directed(), graph.PreventCycles())
 
-	for _, reg := range k.regs {
+	for _, reg := range reg {
 		if err := g.AddVertex(reg.Name); err != nil {
 			return fmt.Errorf("components [%s], error %s", reg.Name, err)
 		}
 	}
 
 	var errs []error
-	for _, reg := range k.regs {
+	for _, reg := range reg {
 		edges := callgraph.ParseEdges([]byte(reg.Refs))
 		for _, edge := range edges {
 			err := g.AddEdge(edge[0], edge[1])
@@ -39,19 +39,19 @@ func (k *Kod) checkCircularDependency() error {
 	return errors.Join(errs...)
 }
 
-// validateRegistrations checks that all registered component interfaces are
+// ValidateRegistrations checks that all registered component interfaces are
 // implemented by a registered component implementation struct.
-func (k *Kod) validateRegistrations() error {
+func ValidateRegistrations(reg []*Registration) error {
 	// Gather the set of registered interfaces.
 	intfs := map[reflect.Type]struct{}{}
-	for _, reg := range k.regs {
+	for _, reg := range reg {
 		intfs[reg.Iface] = struct{}{}
 	}
 
 	// Check that for every kod.Ref[T] field in a component implementation
 	// struct, T is a registered interface.
 	var errs []error
-	for _, reg := range k.regs {
+	for _, reg := range reg {
 		for i := 0; i < reg.Impl.NumField(); i++ {
 			f := reg.Impl.Field(i)
 			switch {

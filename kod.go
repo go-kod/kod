@@ -69,6 +69,7 @@ type Ref[T any] struct {
 func (r Ref[T]) Get() T { return r.value }
 
 // isRef is a marker method to identify a Ref type.
+// nolint
 func (r Ref[T]) isRef() {}
 
 // setRef sets the reference value.
@@ -289,11 +290,11 @@ func newKod(opts options) (*Kod, error) {
 		return nil, err
 	}
 
-	if err := kod.validateRegistrations(); err != nil {
+	if err := registry.ValidateRegistrations(kod.regs); err != nil {
 		return nil, err
 	}
 
-	if err := kod.checkCircularDependency(); err != nil {
+	if err := registry.CheckCircularDependency(kod.regs); err != nil {
 		return nil, err
 	}
 
