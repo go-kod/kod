@@ -6,9 +6,14 @@ import (
 	"reflect"
 	"testing"
 
+	"github.com/go-kod/kod/internal/kslog"
 	"github.com/go-kod/kod/internal/reflects"
 	"github.com/samber/lo"
 )
+
+type ObservedLogs kslog.ObservedLogs
+
+var NewLogObserver = kslog.NewLogObserver
 
 type fakeComponent struct {
 	intf reflect.Type

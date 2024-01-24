@@ -2,6 +2,9 @@ package kod
 
 import (
 	"context"
+	"fmt"
+	"io"
+	"io/fs"
 	"log/slog"
 	"os"
 	"path/filepath"
@@ -10,12 +13,14 @@ import (
 	"time"
 
 	"github.com/go-kod/kod/internal/hooks"
-	"github.com/go-kod/kod/internal/otelslog"
+	"github.com/go-kod/kod/internal/kslog"
+	"github.com/go-kod/kod/internal/paths"
 	"github.com/go-kod/kod/internal/reflects"
 	"github.com/go-kod/kod/internal/registry"
 	"github.com/go-kod/kod/internal/signals"
 	"github.com/samber/lo"
 	"github.com/spf13/viper"
+	"gopkg.in/natefinch/lumberjack.v2"
 )
 
 const (
@@ -32,10 +37,11 @@ type Implements[T any] struct {
 
 // L returns the associated logger.
 func (i *Implements[T]) L(ctx context.Context) *slog.Logger {
-	return otelslog.LogWithContext(ctx, i.log)
+	return kslog.LogWithContext(ctx, i.log)
 }
 
 // setLogger sets the logger for the component.
+// nolint
 func (i *Implements[T]) setLogger(log *slog.Logger) {
 	i.log = log
 }
@@ -73,6 +79,7 @@ func (r Ref[T]) Get() T { return r.value }
 func (r Ref[T]) isRef() {}
 
 // setRef sets the reference value.
+// nolint
 func (r *Ref[T]) setRef(val any) { r.value = val.(T) }
 
 // Main is the interface that should be implemented by an application's main component.
@@ -303,6 +310,21 @@ func newKod(opts options) (*Kod, error) {
 	return kod, nil
 }
 
+// Config returns the current configuration of the Kod instance.
+func (k *Kod) Config() kodConfig {
+	return k.config
+}
+
+// L() returns the logger of the Kod instance.
+func (k *Kod) L(ctx context.Context) *slog.Logger {
+	return kslog.LogWithContext(ctx, k.log)
+}
+
+// LevelVar returns the log level variable of the Kod instance.
+func (k *Kod) LevelVar() *slog.LevelVar {
+	return k.logLevelVar
+}
+
 // register adds the given implementations to the Kod instance.
 func (k *Kod) register(regs []*Registration) {
 	if len(regs) > 0 {
@@ -316,17 +338,86 @@ func (k *Kod) register(regs []*Registration) {
 	}
 }
 
-// Config returns the current configuration of the Kod instance.
-func (k *Kod) Config() kodConfig {
-	return k.config
+// parseConfig parses the config file.
+func (k *Kod) parseConfig(filename string) error {
+	noConfigProvided := false
+	if filename == "" {
+		filename = os.Getenv("KOD_CONFIG")
+		if filename == "" {
+			noConfigProvided = true
+			filename = "kod.toml"
+		}
+	}
+
+	vip := viper.New()
+
+	vip.SetConfigFile(filename)
+	vip.AddConfigPath(".")
+	err := vip.ReadInConfig()
+	if err != nil {
+		switch err.(type) {
+		case viper.ConfigFileNotFoundError, *fs.PathError:
+			if !noConfigProvided {
+				fmt.Fprintln(os.Stderr, "failed to load config file, use default config")
+			}
+		default:
+			return fmt.Errorf("read config file: %w", err)
+		}
+	}
+
+	k.viper = vip
+
+	return vip.UnmarshalKey("kod", &k.config)
 }
 
-// L() returns the logger of the Kod instance.
-func (k *Kod) L(ctx context.Context) *slog.Logger {
-	return otelslog.LogWithContext(ctx, k.log)
-}
+func (k *Kod) initLog() {
 
-// LevelVar returns the log level variable of the Kod instance.
-func (k *Kod) LevelVar() *slog.LevelVar {
-	return k.logLevelVar
+	k.logLevelVar = new(slog.LevelVar)
+	lo.Must0(k.logLevelVar.UnmarshalText([]byte(k.config.Log.Level)))
+
+	// Default to stdout.
+	var writer io.Writer = os.Stdout
+	// If a log file is specified, use it.
+	if k.config.Log.File != "" {
+		logger := &lumberjack.Logger{
+			Filename:   k.config.Log.File,
+			MaxSize:    500, // megabytes
+			MaxBackups: 7,
+			MaxAge:     28, //days
+			Compress:   false,
+		}
+		k.hooker.Add(hooks.HookFunc{
+			Name: PkgPath,
+			Fn: func(ctx context.Context) error {
+				return logger.Close()
+			},
+		})
+		writer = logger
+	}
+
+	jsonHandler := slog.NewJSONHandler(
+		writer, &slog.HandlerOptions{
+			AddSource: true,
+			Level:     k.logLevelVar,
+			ReplaceAttr: func(groups []string, a slog.Attr) slog.Attr {
+				// Remove the directory from the source's filename.
+				if a.Key == slog.SourceKey {
+					source := a.Value.Any().(*slog.Source)
+					source.File = paths.CustomBase(source.File, 2)
+					source.Function = paths.CustomBase(source.Function, 1)
+				}
+
+				return a
+			},
+		},
+	)
+
+	var handler slog.Handler
+	if k.opts.logWrapper != nil {
+		handler = kslog.NewOtelHandler(k.opts.logWrapper(jsonHandler))
+	} else {
+		handler = kslog.NewOtelHandler(jsonHandler)
+	}
+
+	k.log = slog.New(handler)
 }

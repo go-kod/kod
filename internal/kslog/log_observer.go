@@ -1,4 +1,4 @@
-package kod
+package kslog
 
 import (
 	"context"

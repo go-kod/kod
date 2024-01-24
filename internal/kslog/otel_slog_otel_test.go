@@ -1,4 +1,4 @@
-package otelslog
+package kslog
 
 import (
 	"bytes"
