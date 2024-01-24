@@ -16,6 +16,7 @@ import (
 	"github.com/go-kod/kod/interceptor/krecovery"
 	"github.com/go-kod/kod/interceptor/ktimeout"
 	"github.com/go-kod/kod/interceptor/ktrace"
+	"github.com/go-kod/kod/interceptor/kvalidate"
 	"github.com/samber/lo"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/baggage"
@@ -73,6 +74,7 @@ func (t *test1Component) Interceptors() []kod.Interceptor {
 		kratelimit.Interceptor(),
 		kaccesslog.Interceptor(),
 		kcircuitbreaker.Interceptor(),
+		kvalidate.Interceptor(),
 		ktimeout.Interceptor(ktimeout.WithTimeout(time.Second)),
 	}
 }
@@ -82,7 +84,7 @@ func (t *test1Component) Stop(ctx context.Context) error {
 }
 
 type FooReq struct {
-	Id    int
+	Id    int `validate:"lt=100"`
 	Panic bool
 }
 

@@ -72,6 +72,17 @@ func TestInterfacePanic(t *testing.T) {
 	})
 }
 
+func TestInterfacValidate(t *testing.T) {
+	t.Parallel()
+	kod.RunTest(t, func(ctx context.Context, k Test1Component) {
+
+		_, err := k.Foo(ctx, &FooReq{
+			Id: 101,
+		})
+		assert.Contains(t, err.Error(), "validate failed: Key: 'FooReq.Id' Error:Field validation for 'Id' failed on the 'lt' tag")
+	})
+}
+
 func TestFake(t *testing.T) {
 	t.Parallel()
 	fakeTest1 := &fakeTest1Component{"B"}
