@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"reflect"
 
+	"github.com/go-kod/kod/internal/hooks"
 	"github.com/go-kod/kod/internal/registry"
 )
 
@@ -103,7 +104,7 @@ func (k *Kod) get(ctx context.Context, reg *Registration) (any, error) {
 
 	// Call Stop if available.
 	if i, ok := obj.(interface{ Stop(context.Context) error }); ok {
-		k.addDefer(deferFunc{Name: reg.Name, Fn: i.Stop})
+		k.hooker.Add(hooks.HookFunc{Name: reg.Name, Fn: i.Stop})
 	}
 
 	// Cache the component.

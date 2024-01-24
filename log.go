@@ -6,6 +6,7 @@ import (
 	"log/slog"
 	"os"
 
+	"github.com/go-kod/kod/internal/hooks"
 	"github.com/go-kod/kod/internal/otelslog"
 	"github.com/go-kod/kod/internal/paths"
 	"github.com/samber/lo"
@@ -28,7 +29,7 @@ func (k *Kod) initLog() {
 			MaxAge:     28, //days
 			Compress:   false,
 		}
-		k.addDefer(deferFunc{
+		k.hooker.Add(hooks.HookFunc{
 			Name: PkgPath,
 			Fn: func(ctx context.Context) error {
 				return logger.Close()

@@ -9,6 +9,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/go-kod/kod/internal/hooks"
 	"github.com/go-kod/kod/internal/otelslog"
 	"github.com/go-kod/kod/internal/reflects"
 	"github.com/go-kod/kod/internal/registry"
@@ -207,8 +208,12 @@ func Run[T any, _ PointerToMain[T]](ctx context.Context, run func(context.Contex
 	// wait for stop signal
 	<-stop
 
-	// run defer functions
-	kod.runDefer(ctx)
+	ctx, timeoutCancel := context.WithTimeout(
+		context.WithoutCancel(ctx), kod.config.ShutdownTimeout)
+	defer timeoutCancel()
+
+	// run hook functions
+	kod.hooker.Do(ctx)
 
 	return err
 }
@@ -239,8 +244,7 @@ type Kod struct {
 	log         *slog.Logger
 	logLevelVar *slog.LevelVar
 
-	deferMux sync.Mutex
-	defers   []deferFunc
+	hooker *hooks.Hooker
 
 	regs            []*Registration
 	registryByName  map[string]*Registration
@@ -270,6 +274,7 @@ func newKod(opts options) (*Kod, error) {
 			Log:             logConfig{Level: "info"},
 			ShutdownTimeout: 5 * time.Second,
 		},
+		hooker:          hooks.New(),
 		regs:            registry.All(),
 		registryByName:  make(map[string]*Registration),
 		registryByIface: make(map[reflect.Type]*Registration),
