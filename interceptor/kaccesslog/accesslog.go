@@ -15,7 +15,6 @@ func Interceptor() kod.Interceptor {
 		attrs := []slog.Attr{
 			slog.Any("req", req),
 			slog.Any("reply", reply),
-			slog.String("component", info.Component),
 			slog.String("method", info.Method),
 		}
 
@@ -27,7 +26,7 @@ func Interceptor() kod.Interceptor {
 
 		// check if impl L(ctx context.Context) method
 		if l, ok := info.Impl.(interface {
-			L(ctx context.Context) *slog.Logger
+			L(context.Context) *slog.Logger
 		}); ok {
 			l.L(ctx).LogAttrs(ctx, level, "accesslog", attrs...)
 		}
