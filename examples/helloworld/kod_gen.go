@@ -78,6 +78,7 @@ func (s helloworld_local_stub) SayHello() (r0 string) {
 	}
 
 	info := kod.CallInfo{
+		Impl:       s.impl,
 		Component:  s.name,
 		FullMethod: "github.com/go-kod/kod/examples/helloworld/Helloworld.SayHello",
 		Method:     "SayHello",

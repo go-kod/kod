@@ -810,7 +810,8 @@ func (g *generator) generateLocalStubs(p printFn) {
 				}
 			`, g.returnsList(mt), m.Name(), g.argList(comp, mt), g.setReturnsList(mt))
 
-			p(`info := kod.CallInfo{
+			p(`info := kod.CallInfo {
+					Impl: s.impl,
 					Component:  s.name,
 					FullMethod: "%s.%s",
 					Method:    "%s",

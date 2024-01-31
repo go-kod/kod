@@ -233,6 +233,7 @@ func (s hTTPController_local_stub) Foo(a0 http.ResponseWriter, a1 *http.Request)
 	}
 
 	info := kod.CallInfo{
+		Impl:       s.impl,
 		Component:  s.name,
 		FullMethod: "github.com/go-kod/kod/tests/case1/HTTPController.Foo",
 		Method:     "Foo",
@@ -279,6 +280,7 @@ func (s test1Component_local_stub) Foo(ctx context.Context, a1 *FooReq) (r0 *Foo
 	}
 
 	info := kod.CallInfo{
+		Impl:       s.impl,
 		Component:  s.name,
 		FullMethod: "github.com/go-kod/kod/tests/case1/Test1Component.Foo",
 		Method:     "Foo",
@@ -311,6 +313,7 @@ func (s test2Component_local_stub) GetClient() (r0 *http.Client) {
 	}
 
 	info := kod.CallInfo{
+		Impl:       s.impl,
 		Component:  s.name,
 		FullMethod: "github.com/go-kod/kod/tests/case1/Test2Component.GetClient",
 		Method:     "GetClient",
@@ -343,6 +346,7 @@ func (s panicCaseInterface_local_stub) TestPanic(a0 *http.Request) {
 	}
 
 	info := kod.CallInfo{
+		Impl:       s.impl,
 		Component:  s.name,
 		FullMethod: "github.com/go-kod/kod/tests/case1/panicCaseInterface.TestPanic",
 		Method:     "TestPanic",
@@ -384,6 +388,7 @@ func (s testEchoController_local_stub) Error(a0 echo.Context) (err error) {
 	}
 
 	info := kod.CallInfo{
+		Impl:       s.impl,
 		Component:  s.name,
 		FullMethod: "github.com/go-kod/kod/tests/case1/testEchoController.Error",
 		Method:     "Error",
@@ -411,6 +416,7 @@ func (s testEchoController_local_stub) Hello(a0 echo.Context) (err error) {
 	}
 
 	info := kod.CallInfo{
+		Impl:       s.impl,
 		Component:  s.name,
 		FullMethod: "github.com/go-kod/kod/tests/case1/testEchoController.Hello",
 		Method:     "Hello",
@@ -447,6 +453,7 @@ func (s testGinController_local_stub) Hello(a0 *gin.Context) {
 	}
 
 	info := kod.CallInfo{
+		Impl:       s.impl,
 		Component:  s.name,
 		FullMethod: "github.com/go-kod/kod/tests/case1/testGinController.Hello",
 		Method:     "Hello",
@@ -482,6 +489,7 @@ func (s testRepository_local_stub) Foo(ctx context.Context) (err error) {
 	}
 
 	info := kod.CallInfo{
+		Impl:       s.impl,
 		Component:  s.name,
 		FullMethod: "github.com/go-kod/kod/tests/case1/testRepository.Foo",
 		Method:     "Foo",
@@ -513,6 +521,7 @@ func (s testService_local_stub) Foo(ctx context.Context) (err error) {
 	}
 
 	info := kod.CallInfo{
+		Impl:       s.impl,
 		Component:  s.name,
 		FullMethod: "github.com/go-kod/kod/tests/case1/testService.Foo",
 		Method:     "Foo",

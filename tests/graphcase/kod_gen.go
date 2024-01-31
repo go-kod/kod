@@ -157,6 +157,7 @@ func (s hTTPController_local_stub) Foo(a0 http.ResponseWriter, a1 http.Request) 
 	}
 
 	info := kod.CallInfo{
+		Impl:       s.impl,
 		Component:  s.name,
 		FullMethod: "github.com/go-kod/kod/tests/graphcase/HTTPController.Foo",
 		Method:     "Foo",
@@ -197,6 +198,7 @@ func (s test1Component_local_stub) Foo(ctx context.Context, a1 *FooReq) (err err
 	}
 
 	info := kod.CallInfo{
+		Impl:       s.impl,
 		Component:  s.name,
 		FullMethod: "github.com/go-kod/kod/tests/graphcase/Test1Component.Foo",
 		Method:     "Foo",
@@ -229,6 +231,7 @@ func (s test1Controller_local_stub) Foo(a0 *gin.Context) {
 	}
 
 	info := kod.CallInfo{
+		Impl:       s.impl,
 		Component:  s.name,
 		FullMethod: "github.com/go-kod/kod/tests/graphcase/test1Controller.Foo",
 		Method:     "Foo",
@@ -264,6 +267,7 @@ func (s testModel_local_stub) Foo(ctx context.Context) (err error) {
 	}
 
 	info := kod.CallInfo{
+		Impl:       s.impl,
 		Component:  s.name,
 		FullMethod: "github.com/go-kod/kod/tests/graphcase/testModel.Foo",
 		Method:     "Foo",
@@ -295,6 +299,7 @@ func (s testService_local_stub) Foo(ctx context.Context) (err error) {
 	}
 
 	info := kod.CallInfo{
+		Impl:       s.impl,
 		Component:  s.name,
 		FullMethod: "github.com/go-kod/kod/tests/graphcase/testService.Foo",
 		Method:     "Foo",

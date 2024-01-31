@@ -125,6 +125,7 @@ func (s test1Component_local_stub) Foo(ctx context.Context, a1 *FooReq) (err err
 	}
 
 	info := kod.CallInfo{
+		Impl:       s.impl,
 		Component:  s.name,
 		FullMethod: "github.com/go-kod/kod/tests/case3/Test1Component.Foo",
 		Method:     "Foo",
@@ -156,6 +157,7 @@ func (s test2Component_local_stub) Foo(ctx context.Context, a1 *FooReq) (err err
 	}
 
 	info := kod.CallInfo{
+		Impl:       s.impl,
 		Component:  s.name,
 		FullMethod: "github.com/go-kod/kod/tests/case3/Test2Component.Foo",
 		Method:     "Foo",
@@ -187,6 +189,7 @@ func (s test3Component_local_stub) Foo(ctx context.Context, a1 *FooReq) (err err
 	}
 
 	info := kod.CallInfo{
+		Impl:       s.impl,
 		Component:  s.name,
 		FullMethod: "github.com/go-kod/kod/tests/case3/Test3Component.Foo",
 		Method:     "Foo",

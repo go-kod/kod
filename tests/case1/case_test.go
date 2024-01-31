@@ -166,9 +166,13 @@ func TestPanicKod(t *testing.T) {
 }
 
 func BenchmarkCase1(b *testing.B) {
-	kod.RunTest(b, func(ctx context.Context, k *test1Component) {
-		_, err := k.Foo(ctx, &FooReq{})
-		assert.Equal(b, "B", k.Config().A)
-		assert.Equal(b, "test1:B", err.Error())
+	b.Run("case1", func(b *testing.B) {
+		kod.RunTest(b, func(ctx context.Context, k *test1Component) {
+			for i := 0; i < b.N; i++ {
+				_, err := k.Foo(ctx, &FooReq{})
+				assert.Equal(b, "B", k.Config().A)
+				assert.Equal(b, "test1:B", err.Error())
+			}
+		})
 	})
 }

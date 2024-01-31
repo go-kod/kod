@@ -25,7 +25,12 @@ func Interceptor() kod.Interceptor {
 			attrs = append(attrs, slog.String("error", err.Error()))
 		}
 
-		kod.FromContext(ctx).L(ctx).LogAttrs(ctx, level, "accesslog", attrs...)
+		// check if impl L(ctx context.Context) method
+		if l, ok := info.Impl.(interface {
+			L(ctx context.Context) *slog.Logger
+		}); ok {
+			l.L(ctx).LogAttrs(ctx, level, "accesslog", attrs...)
+		}
 
 		return err
 	}
