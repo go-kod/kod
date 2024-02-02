@@ -297,11 +297,11 @@ func newKod(opts options) (*Kod, error) {
 		return nil, err
 	}
 
-	if err := registry.ValidateRegistrations(kod.regs); err != nil {
+	if err := validateRegistrations(kod.regs); err != nil {
 		return nil, err
 	}
 
-	if err := registry.CheckCircularDependency(kod.regs); err != nil {
+	if err := checkCircularDependency(kod.regs); err != nil {
 		return nil, err
 	}
 

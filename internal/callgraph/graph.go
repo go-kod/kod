@@ -7,10 +7,12 @@ import (
 	"sort"
 )
 
+// MakeEdgeString returns a string that represents an edge in the call graph.
 func MakeEdgeString(src, dst string) string {
 	return fmt.Sprintf("⟦%s:KoDeDgE:%s→%s⟧", checksumEdge(src, dst), src, dst)
 }
 
+// ParseEdges returns a list of edges from the given data.
 func ParseEdges(data []byte) [][2]string {
 	var result [][2]string
 	re := regexp.MustCompile(`⟦([0-9a-fA-F]+):KoDeDgE:([a-zA-Z0-9\-.~_/]*?)→([a-zA-Z0-9\-.~_/]*?)⟧`)
@@ -33,8 +35,9 @@ func ParseEdges(data []byte) [][2]string {
 	return result
 }
 
+// checksumEdge returns a checksum for the given edge.
 func checksumEdge(src, dst string) string {
 	edge := fmt.Sprintf("KoDeDgE:%s→%s", src, dst)
-	sum := sha256.Sum256([]byte(edge))
-	return fmt.Sprintf("%0x", sum)[:8]
+	sum := fmt.Sprintf("%0x", sha256.Sum256([]byte(edge)))[:8]
+	return sum
 }
