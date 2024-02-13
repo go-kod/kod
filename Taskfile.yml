@@ -3,20 +3,28 @@ version: '3'
 tasks:
   default:
     cmds:
-      - go work init
-      - go work use -r .
+      - task: build:gowork
       - task: generate
       - task: mod
       - task: lint:golangci-lint
 
   github-action:
     cmds:
-      - go work init
-      - go work use -r .
+      - task: build:gowork
       - task: generate
       - task: lint:golangci-lint
       - task: lint:files-changed
       - task: test
+
+  build:gowork:
+    sources: 
+      - "**/**.go"
+    generates:
+      - go.work
+      - go.work.sum
+    cmds:
+      - go work init
+      - go work use -r .
 
   build:kod:
     cmds:
