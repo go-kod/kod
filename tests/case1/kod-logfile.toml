@@ -1,0 +1,7 @@
+[kod]
+name = "testapp"
+log.file = "testapp.json"
+log.level = "info"
+
+["github.com/go-kod/kod/tests/case1/Test1Component"]
+A="B"
