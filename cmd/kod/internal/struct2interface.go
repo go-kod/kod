@@ -247,12 +247,15 @@ func createFile(cmd *cobra.Command, objs map[string]*makeInterfaceFile) error {
 		}
 		var fileName = filepath.Join(obj.DirPath, "kod_gen_interface.go")
 		if err = os.WriteFile(fileName, result, 0644); err != nil {
-			return err
+			return fmt.Errorf("write file error: %s", err.Error())
 		}
 
 		if commandExists("mockgen") {
-			if err = exec.Command("mockgen", "-source", fileName, "-destination", filepath.Join(obj.DirPath, "kod_gen_mock.go"), "-package", pkgName).Run(); err != nil {
-				return err
+			cmd := exec.Command("mockgen", "-source", fileName, "-destination", filepath.Join(obj.DirPath, "kod_gen_mock.go"), "-package", pkgName)
+			cmd.Stderr = os.Stderr
+			cmd.Stdout = os.Stdout
+			if err = cmd.Run(); err != nil {
+				return fmt.Errorf("mockgen error: %s", err.Error())
 			}
 		}
 

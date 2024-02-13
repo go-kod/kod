@@ -3,6 +3,8 @@ version: '3'
 tasks:
   default:
     cmds:
+      - go work init
+      - go work use -r .
       - task: generate
       - task: mod
       - task: lint:golangci-lint
