@@ -398,4 +398,4 @@ Kod relies on OpenTelemetry to collect trace and metrics from your application.
 
 ### Acknowledge
 
-This project was heavily inspired by [ServiceWeaver](https://github.com/ServiceWeaver/kod).
+This project was heavily inspired by [ServiceWeaver](https://github.com/ServiceWeaver/weaver).

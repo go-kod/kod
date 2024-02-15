@@ -383,4 +383,4 @@ Kod 依赖于 OpenTelemetry 来从您的应用程序收集跟踪和指标信息�
 
 ### Acknowledge
 
-这个项目在很大程度上受到了[ServiceWeaver](https://github.com/ServiceWeaver/kod)的启发。
+这个项目在很大程度上受到了[ServiceWeaver](https://github.com/ServiceWeaver/weaver)的启发。
