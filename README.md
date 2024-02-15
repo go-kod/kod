@@ -10,8 +10,19 @@
 
 # Kod
 
-
 Kod  stands for **Killer Of Dependency**, a generics based dependency injection toolkit for Go.
+
+## Feature
+
+- **Component Based**: Kod is a component-based framework. Components are the building blocks of a Kod application.
+- **Configurable**: Kod can use TOML/YAML/JSON files to configure how applications are run.
+- **Testing**: Kod includes a Test function that you can use to test your Kod applications.
+- **Logging**: Kod provides a logging API, kod.L. Kod also integrates the logs into the environment where your application is deployed.
+- **OpenTelemetry**: Kod relies on OpenTelemetry to collect trace and metrics from your application.
+- **Hooks**: Kod provides a way to run code when a component start or stop.
+- **Interceptors**: Kod has built-in common interceptors, and components can implement the following methods to inject these interceptors into component methods.
+- **Interface Generation**: Kod provides a way to generate interface from structure.
+- **Code Generation**: Kod provides a way to generate kod related codes for your kod application.
 
 ## Installation
 
