@@ -15,6 +15,20 @@ updates:
     schedule:
       interval: daily
 
+  - package-ecosystem: gomod
+    directory: /examples
+    labels:
+      - dependencies
+    schedule:
+      interval: daily
+
+  - package-ecosystem: gomod
+    directory: /ext
+    labels:
+      - dependencies
+    schedule:
+      interval: daily
+
   - package-ecosystem: "github-actions"
     directory: "/"
     labels:
