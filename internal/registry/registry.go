@@ -14,7 +14,7 @@ type LocalStubFnInfo struct {
 // Registration is the registration information for a component.
 type Registration struct {
 	Name        string       // full package-prefixed component name
-	Iface       reflect.Type // interface type for the component
+	Interface   reflect.Type // interface type for the component
 	Impl        reflect.Type // implementation type (struct)
 	Refs        string
 	LocalStubFn func(context.Context, *LocalStubFnInfo) any

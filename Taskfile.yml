@@ -17,7 +17,8 @@ tasks:
       - task: test
 
   build:gowork:
-    sources: 
+    run: once
+    sources:
       - "**/**.go"
     generates:
       - go.work

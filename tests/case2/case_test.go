@@ -25,10 +25,10 @@ func TestRun(t *testing.T) {
 			return t.Run(ctx)
 		}, kod.WithRegistrations(
 			&kod.Registration{
-				Name:  "github.com/go-kod/kod/Main",
-				Iface: reflect.TypeOf((*kod.Main)(nil)).Elem(),
-				Impl:  reflect.TypeOf(App{}),
-				Refs:  `⟦73dc6a0b:KoDeDgE:github.com/go-kod/kod/Main→github.com/go-kod/kod/tests/case2/Test1Component⟧`,
+				Name:      "github.com/go-kod/kod/Main",
+				Interface: reflect.TypeOf((*kod.Main)(nil)).Elem(),
+				Impl:      reflect.TypeOf(App{}),
+				Refs:      `⟦73dc6a0b:KoDeDgE:github.com/go-kod/kod/Main→github.com/go-kod/kod/tests/case2/Test1Component⟧`,
 				LocalStubFn: func(ctx context.Context, info *kod.LocalStubFnInfo) any {
 					var interceptors []kod.Interceptor
 					if h, ok := info.Impl.(interface{ Interceptors() []kod.Interceptor }); ok {
@@ -43,10 +43,10 @@ func TestRun(t *testing.T) {
 				},
 			},
 			&kod.Registration{
-				Name:  "github.com/go-kod/kod/tests/case2/Test1Component",
-				Iface: reflect.TypeOf((*Test1Component)(nil)).Elem(),
-				Impl:  reflect.TypeOf(test1Component{}),
-				Refs:  `⟦3dc9f060:KoDeDgE:github.com/go-kod/kod/tests/case2/Test1Component→github.com/go-kod/kod/tests/case2/Test2Component⟧`,
+				Name:      "github.com/go-kod/kod/tests/case2/Test1Component",
+				Interface: reflect.TypeOf((*Test1Component)(nil)).Elem(),
+				Impl:      reflect.TypeOf(test1Component{}),
+				Refs:      `⟦3dc9f060:KoDeDgE:github.com/go-kod/kod/tests/case2/Test1Component→github.com/go-kod/kod/tests/case2/Test2Component⟧`,
 				LocalStubFn: func(ctx context.Context, info *kod.LocalStubFnInfo) any {
 					var interceptors []kod.Interceptor
 					if h, ok := info.Impl.(interface{ Interceptors() []kod.Interceptor }); ok {
@@ -61,10 +61,10 @@ func TestRun(t *testing.T) {
 				},
 			},
 			&kod.Registration{
-				Name:  "github.com/go-kod/kod/tests/case2/Test2Component",
-				Iface: reflect.TypeOf((*Test2Component)(nil)).Elem(),
-				Impl:  reflect.TypeOf(test2Component{}),
-				Refs:  `⟦1767cee9:KoDeDgE:github.com/go-kod/kod/tests/case2/Test2Component→github.com/go-kod/kod/tests/case2/Test1Component⟧`,
+				Name:      "github.com/go-kod/kod/tests/case2/Test2Component",
+				Interface: reflect.TypeOf((*Test2Component)(nil)).Elem(),
+				Impl:      reflect.TypeOf(test2Component{}),
+				Refs:      `⟦1767cee9:KoDeDgE:github.com/go-kod/kod/tests/case2/Test2Component→github.com/go-kod/kod/tests/case2/Test1Component⟧`,
 				LocalStubFn: func(ctx context.Context, info *kod.LocalStubFnInfo) any {
 					var interceptors []kod.Interceptor
 					if h, ok := info.Impl.(interface{ Interceptors() []kod.Interceptor }); ok {

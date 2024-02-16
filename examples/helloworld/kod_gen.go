@@ -12,10 +12,10 @@ import (
 
 func init() {
 	kod.Register(&kod.Registration{
-		Name:  "github.com/go-kod/kod/examples/helloworld/HelloWorld",
-		Iface: reflect.TypeOf((*HelloWorld)(nil)).Elem(),
-		Impl:  reflect.TypeOf(helloWorld{}),
-		Refs:  ``,
+		Name:      "github.com/go-kod/kod/examples/helloworld/HelloWorld",
+		Interface: reflect.TypeOf((*HelloWorld)(nil)).Elem(),
+		Impl:      reflect.TypeOf(helloWorld{}),
+		Refs:      ``,
 		LocalStubFn: func(ctx context.Context, info *kod.LocalStubFnInfo) any {
 			var interceptors []kod.Interceptor
 			if h, ok := info.Impl.(interface{ Interceptors() []kod.Interceptor }); ok {
@@ -30,10 +30,10 @@ func init() {
 		},
 	})
 	kod.Register(&kod.Registration{
-		Name:  "github.com/go-kod/kod/Main",
-		Iface: reflect.TypeOf((*kod.Main)(nil)).Elem(),
-		Impl:  reflect.TypeOf(app{}),
-		Refs:  `⟦bda493e9:KoDeDgE:github.com/go-kod/kod/Main→github.com/go-kod/kod/examples/helloworld/HelloWorld⟧`,
+		Name:      "github.com/go-kod/kod/Main",
+		Interface: reflect.TypeOf((*kod.Main)(nil)).Elem(),
+		Impl:      reflect.TypeOf(app{}),
+		Refs:      `⟦bda493e9:KoDeDgE:github.com/go-kod/kod/Main→github.com/go-kod/kod/examples/helloworld/HelloWorld⟧`,
 		LocalStubFn: func(ctx context.Context, info *kod.LocalStubFnInfo) any {
 			var interceptors []kod.Interceptor
 			if h, ok := info.Impl.(interface{ Interceptors() []kod.Interceptor }); ok {

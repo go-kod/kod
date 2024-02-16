@@ -14,10 +14,10 @@ import (
 
 func init() {
 	kod.Register(&kod.Registration{
-		Name:  "github.com/go-kod/kod/tests/graphcase/HTTPController",
-		Iface: reflect.TypeOf((*HTTPController)(nil)).Elem(),
-		Impl:  reflect.TypeOf(httpControllerImpl{}),
-		Refs:  `⟦38b48264:KoDeDgE:github.com/go-kod/kod/tests/graphcase/HTTPController→github.com/go-kod/kod/tests/graphcase/testService⟧`,
+		Name:      "github.com/go-kod/kod/tests/graphcase/HTTPController",
+		Interface: reflect.TypeOf((*HTTPController)(nil)).Elem(),
+		Impl:      reflect.TypeOf(httpControllerImpl{}),
+		Refs:      `⟦38b48264:KoDeDgE:github.com/go-kod/kod/tests/graphcase/HTTPController→github.com/go-kod/kod/tests/graphcase/testService⟧`,
 		LocalStubFn: func(ctx context.Context, info *kod.LocalStubFnInfo) any {
 			var interceptors []kod.Interceptor
 			if h, ok := info.Impl.(interface{ Interceptors() []kod.Interceptor }); ok {
@@ -32,9 +32,9 @@ func init() {
 		},
 	})
 	kod.Register(&kod.Registration{
-		Name:  "github.com/go-kod/kod/Main",
-		Iface: reflect.TypeOf((*kod.Main)(nil)).Elem(),
-		Impl:  reflect.TypeOf(App{}),
+		Name:      "github.com/go-kod/kod/Main",
+		Interface: reflect.TypeOf((*kod.Main)(nil)).Elem(),
+		Impl:      reflect.TypeOf(App{}),
 		Refs: `⟦b628eb85:KoDeDgE:github.com/go-kod/kod/Main→github.com/go-kod/kod/tests/graphcase/test1Controller⟧,
 ⟦75680c21:KoDeDgE:github.com/go-kod/kod/Main→github.com/go-kod/kod/tests/graphcase/Test1Component⟧`,
 		LocalStubFn: func(ctx context.Context, info *kod.LocalStubFnInfo) any {
@@ -51,10 +51,10 @@ func init() {
 		},
 	})
 	kod.Register(&kod.Registration{
-		Name:  "github.com/go-kod/kod/tests/graphcase/Test1Component",
-		Iface: reflect.TypeOf((*Test1Component)(nil)).Elem(),
-		Impl:  reflect.TypeOf(test1Component{}),
-		Refs:  ``,
+		Name:      "github.com/go-kod/kod/tests/graphcase/Test1Component",
+		Interface: reflect.TypeOf((*Test1Component)(nil)).Elem(),
+		Impl:      reflect.TypeOf(test1Component{}),
+		Refs:      ``,
 		LocalStubFn: func(ctx context.Context, info *kod.LocalStubFnInfo) any {
 			var interceptors []kod.Interceptor
 			if h, ok := info.Impl.(interface{ Interceptors() []kod.Interceptor }); ok {
@@ -69,9 +69,9 @@ func init() {
 		},
 	})
 	kod.Register(&kod.Registration{
-		Name:  "github.com/go-kod/kod/tests/graphcase/test1Controller",
-		Iface: reflect.TypeOf((*test1Controller)(nil)).Elem(),
-		Impl:  reflect.TypeOf(test1ControllerImpl{}),
+		Name:      "github.com/go-kod/kod/tests/graphcase/test1Controller",
+		Interface: reflect.TypeOf((*test1Controller)(nil)).Elem(),
+		Impl:      reflect.TypeOf(test1ControllerImpl{}),
 		Refs: `⟦54c533d5:KoDeDgE:github.com/go-kod/kod/tests/graphcase/test1Controller→github.com/go-kod/kod/tests/graphcase/HTTPController⟧,
 ⟦f932c69a:KoDeDgE:github.com/go-kod/kod/tests/graphcase/test1Controller→github.com/go-kod/kod/tests/graphcase/Test1Component⟧`,
 		LocalStubFn: func(ctx context.Context, info *kod.LocalStubFnInfo) any {
@@ -88,10 +88,10 @@ func init() {
 		},
 	})
 	kod.Register(&kod.Registration{
-		Name:  "github.com/go-kod/kod/tests/graphcase/testModel",
-		Iface: reflect.TypeOf((*testModel)(nil)).Elem(),
-		Impl:  reflect.TypeOf(modelImpl{}),
-		Refs:  ``,
+		Name:      "github.com/go-kod/kod/tests/graphcase/testModel",
+		Interface: reflect.TypeOf((*testModel)(nil)).Elem(),
+		Impl:      reflect.TypeOf(modelImpl{}),
+		Refs:      ``,
 		LocalStubFn: func(ctx context.Context, info *kod.LocalStubFnInfo) any {
 			var interceptors []kod.Interceptor
 			if h, ok := info.Impl.(interface{ Interceptors() []kod.Interceptor }); ok {
@@ -106,10 +106,10 @@ func init() {
 		},
 	})
 	kod.Register(&kod.Registration{
-		Name:  "github.com/go-kod/kod/tests/graphcase/testService",
-		Iface: reflect.TypeOf((*testService)(nil)).Elem(),
-		Impl:  reflect.TypeOf(serviceImpl{}),
-		Refs:  `⟦e691e13e:KoDeDgE:github.com/go-kod/kod/tests/graphcase/testService→github.com/go-kod/kod/tests/graphcase/testModel⟧`,
+		Name:      "github.com/go-kod/kod/tests/graphcase/testService",
+		Interface: reflect.TypeOf((*testService)(nil)).Elem(),
+		Impl:      reflect.TypeOf(serviceImpl{}),
+		Refs:      `⟦e691e13e:KoDeDgE:github.com/go-kod/kod/tests/graphcase/testService→github.com/go-kod/kod/tests/graphcase/testModel⟧`,
 		LocalStubFn: func(ctx context.Context, info *kod.LocalStubFnInfo) any {
 			var interceptors []kod.Interceptor
 			if h, ok := info.Impl.(interface{ Interceptors() []kod.Interceptor }); ok {

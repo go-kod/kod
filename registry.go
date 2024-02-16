@@ -35,7 +35,7 @@ func (k *Kod) getImpl(ctx context.Context, t reflect.Type) (any, error) {
 // getIntf returns the component for the given interface type.
 func (k *Kod) getIntf(ctx context.Context, t reflect.Type, caller string) (any, error) {
 
-	reg, ok := k.registryByIface[t]
+	reg, ok := k.registryByInterface[t]
 	if !ok {
 		return nil, fmt.Errorf("kod: no component registered for interface %v", t)
 	}
@@ -67,7 +67,7 @@ func (k *Kod) get(ctx context.Context, reg *Registration) (any, error) {
 		return c, nil
 	}
 
-	if fake, ok := k.opts.fakes[reg.Iface]; ok {
+	if fake, ok := k.opts.fakes[reg.Interface]; ok {
 		// We have a fake registered for this component.
 		return fake, nil
 	}

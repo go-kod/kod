@@ -254,10 +254,10 @@ type Kod struct {
 
 	hooker *hooks.Hooker
 
-	regs            []*Registration
-	registryByName  map[string]*Registration
-	registryByIface map[reflect.Type]*Registration
-	registryByImpl  map[reflect.Type]*Registration
+	regs                []*Registration
+	registryByName      map[string]*Registration
+	registryByInterface map[reflect.Type]*Registration
+	registryByImpl      map[reflect.Type]*Registration
 
 	components map[string]any
 	opts       options
@@ -282,13 +282,13 @@ func newKod(opts options) (*Kod, error) {
 			Log:             logConfig{Level: "info"},
 			ShutdownTimeout: 5 * time.Second,
 		},
-		hooker:          hooks.New(),
-		regs:            registry.All(),
-		registryByName:  make(map[string]*Registration),
-		registryByIface: make(map[reflect.Type]*Registration),
-		registryByImpl:  make(map[reflect.Type]*Registration),
-		components:      make(map[string]any),
-		opts:            opts,
+		hooker:              hooks.New(),
+		regs:                registry.All(),
+		registryByName:      make(map[string]*Registration),
+		registryByInterface: make(map[reflect.Type]*Registration),
+		registryByImpl:      make(map[reflect.Type]*Registration),
+		components:          make(map[string]any),
+		opts:                opts,
 	}
 
 	kod.register(opts.registrations)
@@ -333,7 +333,7 @@ func (k *Kod) register(regs []*Registration) {
 
 	for _, v := range k.regs {
 		k.registryByName[v.Name] = v
-		k.registryByIface[v.Iface] = v
+		k.registryByInterface[v.Interface] = v
 		k.registryByImpl[v.Impl] = v
 	}
 }

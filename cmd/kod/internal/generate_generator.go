@@ -699,7 +699,7 @@ func (g *generator) generateRegisteredComponents(p printFn) {
 		// To get a reflect.Type for an interface, we have to first get a type
 		// of its pointer and then resolve the underlying type. See:
 		//   https://pkg.go.dev/reflect#example-TypeOf
-		p(`		Iface: %s((*%s)(nil)).Elem(),`, reflect.qualify("TypeOf"), g.componentRef(comp))
+		p(`		Interface: %s((*%s)(nil)).Elem(),`, reflect.qualify("TypeOf"), g.componentRef(comp))
 		p(`		Impl: %s(%s{}),`, reflect.qualify("TypeOf"), comp.implName())
 		p("		Refs: `%s`,", strings.Join(refNames, ",\n"))
 		p(`		LocalStubFn: %s,`, localStubFn)

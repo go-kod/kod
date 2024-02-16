@@ -15,9 +15,9 @@ func TestValidateUnregisteredRef(t *testing.T) {
 	type fooImpl struct{ Ref[io.Reader] }
 	regs := []*registry.Registration{
 		{
-			Name:  "foo",
-			Iface: reflects.TypeFor[foo](),
-			Impl:  reflects.TypeFor[fooImpl](),
+			Name:      "foo",
+			Interface: reflects.TypeFor[foo](),
+			Impl:      reflects.TypeFor[fooImpl](),
 		},
 	}
 	err := validateRegistrations(regs)
@@ -43,16 +43,16 @@ func TestMultipleRegistrations(t *testing.T) {
 	type fooImpl struct{ Ref[io.Reader] }
 	regs := []*Registration{
 		{
-			Name:  "github.com/go-kod/kod/Main",
-			Iface: reflect.TypeOf((*Main)(nil)).Elem(),
-			Impl:  reflect.TypeOf(fooImpl{}),
-			Refs:  `⟦48699770:KoDeDgE:github.com/go-kod/kod/Main→github.com/go-kod/kod/tests/graphcase/test1Controller⟧`,
+			Name:      "github.com/go-kod/kod/Main",
+			Interface: reflect.TypeOf((*Main)(nil)).Elem(),
+			Impl:      reflect.TypeOf(fooImpl{}),
+			Refs:      `⟦48699770:KoDeDgE:github.com/go-kod/kod/Main→github.com/go-kod/kod/tests/graphcase/test1Controller⟧`,
 		},
 		{
-			Name:  "github.com/go-kod/kod/Main",
-			Iface: reflect.TypeOf((*foo)(nil)).Elem(),
-			Impl:  reflect.TypeOf(fooImpl{}),
-			Refs:  `⟦48699770:KoDeDgE:github.com/go-kod/kod/tests/graphcase/test1Controller→github.com/go-kod/kod/Main⟧`,
+			Name:      "github.com/go-kod/kod/Main",
+			Interface: reflect.TypeOf((*foo)(nil)).Elem(),
+			Impl:      reflect.TypeOf(fooImpl{}),
+			Refs:      `⟦48699770:KoDeDgE:github.com/go-kod/kod/tests/graphcase/test1Controller→github.com/go-kod/kod/Main⟧`,
 		},
 	}
 	err := checkCircularDependency(regs)
@@ -71,16 +71,16 @@ func TestCycleRegistrations(t *testing.T) {
 	type mainImpl struct{ Ref[test1Controller] }
 	regs := []*Registration{
 		{
-			Name:  "github.com/go-kod/kod/Main",
-			Iface: reflect.TypeOf((*Main)(nil)).Elem(),
-			Impl:  reflect.TypeOf(mainImpl{}),
-			Refs:  `⟦48699770:KoDeDgE:github.com/go-kod/kod/Main→github.com/go-kod/kod/test1Controller⟧`,
+			Name:      "github.com/go-kod/kod/Main",
+			Interface: reflect.TypeOf((*Main)(nil)).Elem(),
+			Impl:      reflect.TypeOf(mainImpl{}),
+			Refs:      `⟦48699770:KoDeDgE:github.com/go-kod/kod/Main→github.com/go-kod/kod/test1Controller⟧`,
 		},
 		{
-			Name:  "github.com/go-kod/kod/test1Controller",
-			Iface: reflect.TypeOf((*test1Controller)(nil)).Elem(),
-			Impl:  reflect.TypeOf(test1ControllerImpl{}),
-			Refs:  `⟦b8422d0e:KoDeDgE:github.com/go-kod/kod/test1Controller→github.com/go-kod/kod/Main⟧`,
+			Name:      "github.com/go-kod/kod/test1Controller",
+			Interface: reflect.TypeOf((*test1Controller)(nil)).Elem(),
+			Impl:      reflect.TypeOf(test1ControllerImpl{}),
+			Refs:      `⟦b8422d0e:KoDeDgE:github.com/go-kod/kod/test1Controller→github.com/go-kod/kod/Main⟧`,
 		},
 	}
 	err := checkCircularDependency(regs)

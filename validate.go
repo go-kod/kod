@@ -45,7 +45,7 @@ func validateRegistrations(regs []*Registration) error {
 	// Gather the set of registered interfaces.
 	intfs := map[reflect.Type]struct{}{}
 	for _, reg := range regs {
-		intfs[reg.Iface] = struct{}{}
+		intfs[reg.Interface] = struct{}{}
 	}
 
 	// Check that for every kod.Ref[T] field in a component implementation
