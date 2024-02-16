@@ -30,6 +30,7 @@ func TestAppMockHelloWorld(t *testing.T) {
 	}, kod.WithFakes(kod.Fake[HelloWorld](mockHelloWorld)))
 }
 
+// BenchmarkAppHelloWorld benchmarks the app component.
 func BenchmarkAppHelloWorld(b *testing.B) {
 	kod.RunTest(b, func(ctx context.Context, comp *app) {
 		b.ResetTimer()
