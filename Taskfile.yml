@@ -19,7 +19,9 @@ tasks:
   build:gowork:
     run: once
     sources:
-      - "**/**.go"
+      - /ext
+      - /tests
+      - /examples
     generates:
       - go.work
       - go.work.sum
@@ -59,7 +61,7 @@ tasks:
 
   test:
     cmd: |
-        go test -race -cover -coverprofile=coverage.out -covermode=atomic ./... ./tests/... -coverpkg .,./cmd/...,./interceptor/...,./internal/...
+        go test -race -cover -coverprofile=coverage.out -covermode=atomic ./... ./tests/... ./examples/... -coverpkg .,./cmd/...,./interceptor/...,./internal/...
     sources:
       - "**/**.go"
     generates:
@@ -91,3 +93,5 @@ tasks:
     cmds:
       - go mod tidy
       - cd tests && go mod tidy
+      - cd examples && go mod tidy
+      - cd ext && go mod tidy
