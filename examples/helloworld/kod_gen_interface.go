@@ -2,7 +2,7 @@
 
 package main
 
-// helloworld is a component that implements Helloworld.
-type Helloworld interface {
+// helloWorld is a component that implements HelloWorld.
+type HelloWorld interface {
 	SayHello() string
 }

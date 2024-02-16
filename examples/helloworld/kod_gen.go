@@ -12,9 +12,9 @@ import (
 
 func init() {
 	kod.Register(&kod.Registration{
-		Name:  "github.com/go-kod/kod/examples/helloworld/Helloworld",
-		Iface: reflect.TypeOf((*Helloworld)(nil)).Elem(),
-		Impl:  reflect.TypeOf(helloworld{}),
+		Name:  "github.com/go-kod/kod/examples/helloworld/HelloWorld",
+		Iface: reflect.TypeOf((*HelloWorld)(nil)).Elem(),
+		Impl:  reflect.TypeOf(helloWorld{}),
 		Refs:  ``,
 		LocalStubFn: func(ctx context.Context, info *kod.LocalStubFnInfo) any {
 			var interceptors []kod.Interceptor
@@ -22,8 +22,8 @@ func init() {
 				interceptors = h.Interceptors()
 			}
 
-			return helloworld_local_stub{
-				impl:        info.Impl.(Helloworld),
+			return helloWorld_local_stub{
+				impl:        info.Impl.(HelloWorld),
 				interceptor: interceptor.Chain(interceptors),
 				name:        info.Name,
 			}
@@ -33,7 +33,7 @@ func init() {
 		Name:  "github.com/go-kod/kod/Main",
 		Iface: reflect.TypeOf((*kod.Main)(nil)).Elem(),
 		Impl:  reflect.TypeOf(app{}),
-		Refs:  `⟦fa98fcfe:KoDeDgE:github.com/go-kod/kod/Main→github.com/go-kod/kod/examples/helloworld/Helloworld⟧`,
+		Refs:  `⟦bda493e9:KoDeDgE:github.com/go-kod/kod/Main→github.com/go-kod/kod/examples/helloworld/HelloWorld⟧`,
 		LocalStubFn: func(ctx context.Context, info *kod.LocalStubFnInfo) any {
 			var interceptors []kod.Interceptor
 			if h, ok := info.Impl.(interface{ Interceptors() []kod.Interceptor }); ok {
@@ -50,21 +50,21 @@ func init() {
 }
 
 // kod.InstanceOf checks.
-var _ kod.InstanceOf[Helloworld] = (*helloworld)(nil)
+var _ kod.InstanceOf[HelloWorld] = (*helloWorld)(nil)
 var _ kod.InstanceOf[kod.Main] = (*app)(nil)
 
 // Local stub implementations.
 
-type helloworld_local_stub struct {
-	impl        Helloworld
+type helloWorld_local_stub struct {
+	impl        HelloWorld
 	name        string
 	interceptor kod.Interceptor
 }
 
-// Check that helloworld_local_stub implements the Helloworld interface.
-var _ Helloworld = (*helloworld_local_stub)(nil)
+// Check that helloWorld_local_stub implements the HelloWorld interface.
+var _ HelloWorld = (*helloWorld_local_stub)(nil)
 
-func (s helloworld_local_stub) SayHello() (r0 string) {
+func (s helloWorld_local_stub) SayHello() (r0 string) {
 
 	if s.interceptor == nil {
 		r0 = s.impl.SayHello()
@@ -80,7 +80,7 @@ func (s helloworld_local_stub) SayHello() (r0 string) {
 	info := kod.CallInfo{
 		Impl:       s.impl,
 		Component:  s.name,
-		FullMethod: "github.com/go-kod/kod/examples/helloworld/Helloworld.SayHello",
+		FullMethod: "github.com/go-kod/kod/examples/helloworld/HelloWorld.SayHello",
 		Method:     "SayHello",
 	}
 

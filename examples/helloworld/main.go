@@ -7,22 +7,22 @@ import (
 	"github.com/go-kod/kod"
 )
 
-type helloworld struct {
-	kod.Implements[Helloworld]
+type helloWorld struct {
+	kod.Implements[HelloWorld]
 }
 
-func (h *helloworld) SayHello() string {
+func (h *helloWorld) SayHello() string {
 	return "Hello, World!"
 }
 
 type app struct {
 	kod.Implements[kod.Main]
-	helloworld kod.Ref[Helloworld]
+	helloWorld kod.Ref[HelloWorld]
 }
 
 func main() {
 	kod.Run(context.Background(), func(ctx context.Context, main *app) error {
-		fmt.Println(main.helloworld.Get().SayHello())
+		fmt.Println(main.helloWorld.Get().SayHello())
 		return nil
 	})
 }

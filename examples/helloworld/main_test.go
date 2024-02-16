@@ -14,18 +14,27 @@ func TestApp(t *testing.T) {
 	t.Parallel()
 
 	kod.RunTest(t, func(ctx context.Context, comp *app) {
-		assert.Equal(t, "Hello, World!", comp.helloworld.Get().SayHello())
+		assert.Equal(t, "Hello, World!", comp.helloWorld.Get().SayHello())
 	})
 }
 
-// TestAppMockHelloworld tests the app component with a mock helloworld.
-func TestAppMockHelloworld(t *testing.T) {
+// TestAppMockHelloWorld tests the app component with a mock helloWorld.
+func TestAppMockHelloWorld(t *testing.T) {
 	t.Parallel()
 
-	mockHelloworld := NewMockHelloworld(gomock.NewController(t))
-	mockHelloworld.EXPECT().SayHello().Return("Hello, Mocker!").Times(1)
+	mockHelloWorld := NewMockHelloWorld(gomock.NewController(t))
+	mockHelloWorld.EXPECT().SayHello().Return("Hello, Mocker!").Times(1)
 
 	kod.RunTest(t, func(ctx context.Context, comp *app) {
-		assert.Equal(t, "Hello, Mocker!", comp.helloworld.Get().SayHello())
-	}, kod.WithFakes(kod.Fake[Helloworld](mockHelloworld)))
+		assert.Equal(t, "Hello, Mocker!", comp.helloWorld.Get().SayHello())
+	}, kod.WithFakes(kod.Fake[HelloWorld](mockHelloWorld)))
+}
+
+func BenchmarkAppHelloWorld(b *testing.B) {
+	kod.RunTest(b, func(ctx context.Context, comp *app) {
+		b.ResetTimer()
+		for i := 0; i < b.N; i++ {
+			comp.helloWorld.Get().SayHello()
+		}
+	})
 }

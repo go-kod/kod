@@ -14,31 +14,31 @@ import (
 	gomock "go.uber.org/mock/gomock"
 )
 
-// MockHelloworld is a mock of Helloworld interface.
-type MockHelloworld struct {
+// MockHelloWorld is a mock of HelloWorld interface.
+type MockHelloWorld struct {
 	ctrl     *gomock.Controller
-	recorder *MockHelloworldMockRecorder
+	recorder *MockHelloWorldMockRecorder
 }
 
-// MockHelloworldMockRecorder is the mock recorder for MockHelloworld.
-type MockHelloworldMockRecorder struct {
-	mock *MockHelloworld
+// MockHelloWorldMockRecorder is the mock recorder for MockHelloWorld.
+type MockHelloWorldMockRecorder struct {
+	mock *MockHelloWorld
 }
 
-// NewMockHelloworld creates a new mock instance.
-func NewMockHelloworld(ctrl *gomock.Controller) *MockHelloworld {
-	mock := &MockHelloworld{ctrl: ctrl}
-	mock.recorder = &MockHelloworldMockRecorder{mock}
+// NewMockHelloWorld creates a new mock instance.
+func NewMockHelloWorld(ctrl *gomock.Controller) *MockHelloWorld {
+	mock := &MockHelloWorld{ctrl: ctrl}
+	mock.recorder = &MockHelloWorldMockRecorder{mock}
 	return mock
 }
 
 // EXPECT returns an object that allows the caller to indicate expected use.
-func (m *MockHelloworld) EXPECT() *MockHelloworldMockRecorder {
+func (m *MockHelloWorld) EXPECT() *MockHelloWorldMockRecorder {
 	return m.recorder
 }
 
 // SayHello mocks base method.
-func (m *MockHelloworld) SayHello() string {
+func (m *MockHelloWorld) SayHello() string {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "SayHello")
 	ret0, _ := ret[0].(string)
@@ -46,7 +46,7 @@ func (m *MockHelloworld) SayHello() string {
 }
 
 // SayHello indicates an expected call of SayHello.
-func (mr *MockHelloworldMockRecorder) SayHello() *gomock.Call {
+func (mr *MockHelloWorldMockRecorder) SayHello() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SayHello", reflect.TypeOf((*MockHelloworld)(nil).SayHello))
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SayHello", reflect.TypeOf((*MockHelloWorld)(nil).SayHello))
 }
