@@ -5,6 +5,7 @@ go 1.21.0
 require (
 	github.com/avast/retry-go/v4 v4.5.1
 	github.com/dominikbraun/graph v0.23.0
+	github.com/fsnotify/fsnotify v1.7.0
 	github.com/go-playground/validator/v10 v10.17.0
 	github.com/samber/lo v1.39.0
 	github.com/shirou/gopsutil/v3 v3.24.1
@@ -24,7 +25,6 @@ require (
 
 require (
 	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc // indirect
-	github.com/fsnotify/fsnotify v1.7.0 // indirect
 	github.com/gabriel-vasile/mimetype v1.4.2 // indirect
 	github.com/go-logr/logr v1.4.1 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
