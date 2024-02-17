@@ -1,7 +1,9 @@
 <div align="center">
 
 [![Build and Test](https://github.com/go-kod/kod/actions/workflows/go.yml/badge.svg)](https://github.com/go-kod/kod/actions/workflows/go.yml)
-[![codecov](https://codecov.io/github/go-kod/kod/graph/badge.svg?token=OOZNKQJL38)](https://codecov.io/github/go-kod/kod)
+[![Go Report Card](https://goreportcard.com/badge/github.com/go-kod/kod)](https://goreportcard.com/report/github.com/go-kod/kod)
+[![Code Cov](https://codecov.io/github/go-kod/kod/graph/badge.svg?token=FKCHAE6M2R)](https://codecov.io/github/go-kod/kod)
+[![Go Reference](https://pkg.go.dev/badge/github.com/go-kod/kod.svg)](https://pkg.go.dev/github.com/go-kod/kod)
 
 [**English**](./README.md) •
 [**简体中文**](./README_CN.md)
