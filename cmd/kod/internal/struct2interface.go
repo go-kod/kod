@@ -314,7 +314,7 @@ func makeFile(file string) (*makeInterfaceFile, error) {
 
 func Struct2Interface(cmd *cobra.Command, dir string) error {
 	var mapDirPath = make(map[string]*makeInterfaceFile)
-	lo.Must0(filepath.WalkDir(dir, func(path string, d fs.DirEntry, err error) error {
+	lo.Must0(filepath.WalkDir(dir, func(path string, d fs.DirEntry, _ error) error {
 		if d == nil || d.IsDir() {
 			return nil
 		}

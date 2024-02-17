@@ -38,7 +38,11 @@ func doGenerate(cmd *cobra.Command, dir string, args []string) {
 	startTime := time.Now()
 
 	if s2i := cmd.Flag("struct2interface").Changed; s2i {
-		Struct2Interface(cmd, ".")
+		err := Struct2Interface(cmd, ".")
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
 		fmt.Printf("[struct2interface] %s \n", time.Since(startTime).String())
 	}
 

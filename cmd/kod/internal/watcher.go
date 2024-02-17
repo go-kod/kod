@@ -9,6 +9,7 @@ import (
 	"strings"
 
 	"github.com/fsnotify/fsnotify"
+	"github.com/samber/lo"
 )
 
 // Watch watches the directory and calls the callback function when a file is modified.
@@ -20,13 +21,13 @@ func Watch(ctx context.Context, dir string, callback func()) {
 	}
 	defer watcher.Close()
 
-	filepath.Walk(dir, func(path string, info os.FileInfo, err error) error {
+	lo.Must0(filepath.Walk(dir, func(path string, info os.FileInfo, _ error) error {
 		if info != nil && info.IsDir() {
 			if isHiddenDirectory(path) {
 				return filepath.SkipDir
 			}
 
-			err = watcher.Add(path)
+			err := watcher.Add(path)
 			if err != nil {
 				return err
 			}
@@ -35,7 +36,7 @@ func Watch(ctx context.Context, dir string, callback func()) {
 		}
 
 		return nil
-	})
+	}))
 
 	stop := make(chan struct{}, 1)
 	// Start listening for events.
