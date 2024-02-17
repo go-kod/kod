@@ -14,7 +14,7 @@ func TestGraph(t *testing.T) {
 		assert.Equal(t, "please input the binary filepath", execute("callgraph"))
 	})
 
-	t.Run("unkown format", func(t *testing.T) {
+	t.Run("unknown format", func(t *testing.T) {
 		assert.Panics(t, func() {
 			execute("callgraph callgraph.go")
 		})
