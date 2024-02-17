@@ -1,10 +1,11 @@
 package internal
 
 import (
-	"context"
 	"fmt"
+	"log"
 	"time"
 
+	"github.com/fsnotify/fsnotify"
 	"github.com/spf13/cobra"
 )
 
@@ -16,15 +17,15 @@ var generate = &cobra.Command{
 	// Run: func(cmd *cobra.Command, args []string) { },
 	Run: func(cmd *cobra.Command, args []string) {
 		{
-			ctx := cmd.Context()
-			if timeout, _ := cmd.Flags().GetDuration("timeout"); timeout > 0 {
-				var cancel context.CancelFunc
-				ctx, cancel = context.WithTimeout(ctx, timeout)
-				defer cancel()
-			}
-
 			if watch, _ := cmd.Flags().GetBool("watch"); watch {
-				Watch(ctx, ".", func() {
+				// Create new watcher.
+				w, err := fsnotify.NewWatcher()
+				if err != nil {
+					log.Fatal(err)
+				}
+				defer w.Close()
+
+				Watch(&watcher{w: w}, ".", func() {
 					doGenerate(cmd, ".", args)
 				})
 			}
@@ -56,7 +57,6 @@ func doGenerate(cmd *cobra.Command, dir string, args []string) {
 }
 
 func init() {
-	generate.Flags().DurationP("timeout", "t", 0, "timeout for the generation.")
 	generate.Flags().BoolP("struct2interface", "s", false, "generate interface from struct.")
 	generate.Flags().BoolP("watch", "w", false, "watch the changes of the files and regenerate the codes.")
 	rootCmd.AddCommand(generate)

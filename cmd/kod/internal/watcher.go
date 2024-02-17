@@ -1,7 +1,6 @@
 package internal
 
 import (
-	"context"
 	"fmt"
 	"log"
 	"os"
@@ -12,14 +11,30 @@ import (
 	"github.com/samber/lo"
 )
 
+type Watcher interface {
+	Add(string) error
+	Events() chan fsnotify.Event
+	Errors() chan error
+}
+
+type watcher struct {
+	w *fsnotify.Watcher
+}
+
+func (w *watcher) Add(name string) error {
+	return w.w.Add(name)
+}
+
+func (w *watcher) Events() chan fsnotify.Event {
+	return w.w.Events
+}
+
+func (w *watcher) Errors() chan error {
+	return w.w.Errors
+}
+
 // Watch watches the directory and calls the callback function when a file is modified.
-func Watch(ctx context.Context, dir string, callback func()) {
-	// Create new watcher.
-	watcher, err := fsnotify.NewWatcher()
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer watcher.Close()
+func Watch(watcher Watcher, dir string, callback func()) {
 
 	lo.Must0(filepath.Walk(dir, func(path string, info os.FileInfo, _ error) error {
 		if info != nil && info.IsDir() {
@@ -29,7 +44,7 @@ func Watch(ctx context.Context, dir string, callback func()) {
 
 			err := watcher.Add(path)
 			if err != nil {
-				return err
+				return filepath.SkipDir
 			}
 
 			fmt.Println("watching", path)
@@ -43,10 +58,7 @@ func Watch(ctx context.Context, dir string, callback func()) {
 	go func() {
 		for {
 			select {
-			case <-ctx.Done():
-				stop <- struct{}{}
-				return
-			case event, ok := <-watcher.Events:
+			case event, ok := <-watcher.Events():
 				if !ok {
 					stop <- struct{}{}
 					return
@@ -62,7 +74,7 @@ func Watch(ctx context.Context, dir string, callback func()) {
 
 				log.Println("modified file:", event.Name)
 				callback()
-			case err, ok := <-watcher.Errors:
+			case err, ok := <-watcher.Errors():
 				if !ok {
 					stop <- struct{}{}
 					return
