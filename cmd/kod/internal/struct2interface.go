@@ -281,7 +281,10 @@ func makeFile(file string) (*makeInterfaceFile, error) {
 
 	src := lo.Must(os.ReadFile(file))
 
-	structInfo := lo.Must(parseStruct(src))
+	structInfo, err := parseStruct(src)
+	if err != nil {
+		return nil, fmt.Errorf("parseStruct error: %s", err.Error())
+	}
 
 	for _, i := range structInfo.imports {
 		if _, ok := iset[i]; !ok {
@@ -309,7 +312,7 @@ func makeFile(file string) (*makeInterfaceFile, error) {
 	}, nil
 }
 
-func MakeDir(cmd *cobra.Command, dir string) error {
+func Struct2Interface(cmd *cobra.Command, dir string) error {
 	var mapDirPath = make(map[string]*makeInterfaceFile)
 	lo.Must0(filepath.WalkDir(dir, func(path string, d fs.DirEntry, err error) error {
 		if d == nil || d.IsDir() {
@@ -323,7 +326,11 @@ func MakeDir(cmd *cobra.Command, dir string) error {
 			return nil
 		}
 
-		result := lo.Must(makeFile(path))
+		result, err := makeFile(path)
+		if err != nil {
+			return fmt.Errorf("makeFile error: %s", err.Error())
+		}
+
 		if result == nil {
 			return nil
 		}
@@ -370,7 +377,7 @@ var struct2interface = &cobra.Command{
 		startTime := time.Now()
 
 		for _, arg := range args {
-			lo.Must0(MakeDir(cmd, arg))
+			lo.Must0(Struct2Interface(cmd, arg))
 		}
 
 		fmt.Printf("[struct2interface] %s \n", time.Since(startTime).String())
