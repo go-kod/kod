@@ -2,10 +2,10 @@ package internal
 
 import (
 	"fmt"
-	"log"
 	"time"
 
 	"github.com/fsnotify/fsnotify"
+	"github.com/samber/lo"
 	"github.com/spf13/cobra"
 )
 
@@ -19,15 +19,10 @@ var generate = &cobra.Command{
 		{
 			if watch, _ := cmd.Flags().GetBool("watch"); watch {
 				// Create new watcher.
-				w, err := fsnotify.NewWatcher()
-				if err != nil {
-					log.Fatal(err)
-				}
+				w := lo.Must(fsnotify.NewWatcher())
 				defer w.Close()
 
-				Watch(&watcher{w: w}, ".", func() {
-					doGenerate(cmd, ".", args)
-				})
+				Watch(&watcher{w: w}, ".", func() { doGenerate(cmd, ".", args) })
 			}
 
 			doGenerate(cmd, ".", args)
@@ -38,7 +33,7 @@ var generate = &cobra.Command{
 func doGenerate(cmd *cobra.Command, dir string, args []string) {
 	startTime := time.Now()
 
-	if s2i := cmd.Flag("struct2interface").Changed; s2i {
+	if s2i, _ := cmd.Flags().GetBool("struct2interface"); s2i {
 		err := Struct2Interface(cmd, ".")
 		if err != nil {
 			fmt.Println(err)
