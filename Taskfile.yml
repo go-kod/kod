@@ -75,7 +75,7 @@ tasks:
 
   install:mockgen:
     vars:
-      VERSION: v0.3.0
+      VERSION: cat go.mod|grep go.uber.org/mock |awk -F ' ' '{print $2}'
     status:
       - go version -m $GOPATH/bin/mockgen | grep go.uber.org/mock | grep {{.VERSION}}
     cmd: |
