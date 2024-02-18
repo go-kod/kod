@@ -12,7 +12,7 @@
 
 # Kod
 
-Kod  stands for **Killer Of Dependency**, a generics based dependency injection toolkit for Go.
+Kod  stands for **Killer Of Dependency**, a generics based dependency injection framework for Go.
 
 ## Feature
 
