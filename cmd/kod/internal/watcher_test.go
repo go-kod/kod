@@ -19,7 +19,29 @@ func TestWatcherNormal(t *testing.T) {
 
 	events := make(chan fsnotify.Event, 2)
 	events <- fsnotify.Event{
-		Name: "test",
+		Name: "test.go",
+		Op:   fsnotify.Write,
+	}
+
+	w.EXPECT().Events().Return(events).AnyTimes()
+	w.EXPECT().Errors().Return(nil).AnyTimes()
+
+	time.AfterFunc(time.Second, func() {
+		close(events)
+	})
+
+	Watch(w, ".", func() {})
+}
+
+func TestWatcherNonGofile(t *testing.T) {
+	t.Parallel()
+
+	w := NewMockWatcher(gomock.NewController(t))
+	w.EXPECT().Add(".").Return(nil)
+
+	events := make(chan fsnotify.Event, 2)
+	events <- fsnotify.Event{
+		Name: "test.txt",
 		Op:   fsnotify.Write,
 	}
 
