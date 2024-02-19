@@ -1,0 +1,2 @@
+["github.com/go-kod/kod/examples/shorturl/Component"]
+redisconfig = { addr = "localhost:6379" }
