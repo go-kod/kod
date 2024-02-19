@@ -13,7 +13,7 @@ require (
 	github.com/grafana/pyroscope-go v1.1.1
 	github.com/grpc-ecosystem/go-grpc-middleware/v2 v2.0.1
 	github.com/redis/go-redis/extra/redisotel/v9 v9.0.5
-	github.com/redis/go-redis/v9 v9.4.0
+	github.com/redis/go-redis/v9 v9.5.0
 	github.com/samber/lo v1.39.0
 	github.com/uptrace/opentelemetry-go-extra/otelsql v0.2.3
 	github.com/uptrace/uptrace-go v1.21.0
