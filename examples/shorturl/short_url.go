@@ -11,6 +11,7 @@ import (
 )
 
 type config struct {
+	Prefix      string
 	RedisConfig kredis.Config
 }
 
@@ -25,6 +26,10 @@ type impl struct {
 func (i *impl) Init(ctx context.Context) error {
 	i.redis = i.Config().RedisConfig.Build()
 	i.uuid = uuid.New()
+
+	if i.Config().Prefix == "" {
+		i.Config().Prefix = "shorturl:"
+	}
 
 	return nil
 }
@@ -41,14 +46,15 @@ type GenerateResponse struct {
 // Generate generates a short url.
 func (i *impl) Generate(ctx context.Context, req *GenerateRequest) (*GenerateResponse, error) {
 
-	key := i.uuid.String()
+	short := i.uuid.String()
+	key := i.Config().Prefix + short
 	_, err := i.redis.SetEx(ctx, key, req.URL, req.Duration).Result()
 	if err != nil {
 		i.L(ctx).Error("failed to set key", "key", key, "req", req, "error", err)
 		return nil, err
 	}
 	return &GenerateResponse{
-		Short: key,
+		Short: short,
 	}, nil
 }
 
@@ -62,7 +68,9 @@ type GetResponse struct {
 
 // Get gets the original url from short url.
 func (i *impl) Get(ctx context.Context, req *GetRequest) (*GetResponse, error) {
-	result, err := i.redis.Get(ctx, req.Short).Result()
+	key := i.Config().Prefix + req.Short
+
+	result, err := i.redis.Get(ctx, key).Result()
 	if err != nil {
 		i.L(ctx).Error("failed to get key", "req", req, "error", err)
 		return nil, err
