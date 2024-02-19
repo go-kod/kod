@@ -1,6 +1,6 @@
 module github.com/go-kod/kod/ext
 
-go 1.21.7
+go 1.21.0
 
 replace github.com/go-kod/kod => ../
 

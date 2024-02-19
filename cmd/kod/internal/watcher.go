@@ -72,6 +72,10 @@ func Watch(watcher Watcher, dir string, callback func()) {
 					continue
 				}
 
+				if !strings.HasSuffix(filepath.Base(event.Name), ".go") {
+					continue
+				}
+
 				log.Println("modified file:", event.Name)
 				callback()
 			case err, ok := <-watcher.Errors():
