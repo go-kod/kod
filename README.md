@@ -402,3 +402,13 @@ Kod relies on OpenTelemetry to collect trace and metrics from your application.
 ### Acknowledge
 
 This project was heavily inspired by [ServiceWeaver](https://github.com/ServiceWeaver/weaver).
+
+## Star History
+
+<a>
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=go-kod/kod&type=Timeline&theme=dark" />
+    <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=go-kod/kod&type=Timeline" />
+    <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=go-kod/kod&type=Timeline" />
+  </picture>
+</a>

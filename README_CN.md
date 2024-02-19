@@ -387,3 +387,13 @@ Kod 依赖于 OpenTelemetry 来从您的应用程序收集跟踪和指标信息�
 ### Acknowledge
 
 这个项目在很大程度上受到了[ServiceWeaver](https://github.com/ServiceWeaver/weaver)的启发。
+
+## Star History
+
+<a>
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=go-kod/kod&type=Timeline&theme=dark" />
+    <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=go-kod/kod&type=Timeline" />
+    <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=go-kod/kod&type=Timeline" />
+  </picture>
+</a>
