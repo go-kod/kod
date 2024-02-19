@@ -4,9 +4,11 @@ go 1.21.0
 
 replace github.com/go-kod/kod => ../
 
+replace github.com/go-kod/kod/ext => ../ext
+
 require (
 	github.com/go-kod/kod v0.0.0-00010101000000-000000000000
-	github.com/go-kod/kod/ext v0.0.0-20240219143819-52cbc1b74baa
+	github.com/go-kod/kod/ext v0.0.0-00010101000000-000000000000
 	github.com/google/uuid v1.4.0
 	github.com/redis/go-redis/v9 v9.5.0
 	github.com/stretchr/testify v1.8.4
