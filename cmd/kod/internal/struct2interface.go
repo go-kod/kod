@@ -331,10 +331,6 @@ func Struct2Interface(cmd *cobra.Command, dir string) error {
 			return fmt.Errorf("makeFile error: %s", err.Error())
 		}
 
-		if result == nil {
-			return nil
-		}
-
 		if obj, ok := mapDirPath[filepath.Dir(path)+result.PkgName]; ok {
 
 			obj.AllImports = append(obj.AllImports, result.AllImports...)
