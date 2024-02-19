@@ -13,6 +13,9 @@ jobs:
       fail-fast: false
       matrix:
         version: ["1.21"]
+    services:
+      redis:
+        image: redis
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
