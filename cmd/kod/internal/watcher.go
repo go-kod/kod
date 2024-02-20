@@ -68,9 +68,9 @@ func Watch(watcher Watcher, dir string, callback func()) {
 
 				if isDir, _ := isDirectory(event.Name); isDir {
 					if event.Op&fsnotify.Create == fsnotify.Create {
-						addWatch(watcher, event.Name)
+						_ = addWatch(watcher, event.Name)
 					} else if event.Op&fsnotify.Remove == fsnotify.Remove {
-						watcher.Remove(event.Name)
+						_ = watcher.Remove(event.Name)
 					}
 					continue
 				}
