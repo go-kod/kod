@@ -30,7 +30,7 @@ func TestWatcherNormal(t *testing.T) {
 		close(events)
 	})
 
-	Watch(w, ".", func() {})
+	Watch(w, ".", func() {}, true)
 }
 
 func TestWatcherNotExistFile(t *testing.T) {
@@ -52,7 +52,7 @@ func TestWatcherNotExistFile(t *testing.T) {
 		close(events)
 	})
 
-	Watch(w, ".", func() {})
+	Watch(w, ".", func() {}, true)
 }
 
 func TestWatcherAddDir(t *testing.T) {
@@ -74,7 +74,7 @@ func TestWatcherAddDir(t *testing.T) {
 		close(events)
 	})
 
-	Watch(w, ".", func() {})
+	Watch(w, ".", func() {}, true)
 }
 
 func TestWatcherRemoveDir(t *testing.T) {
@@ -97,7 +97,7 @@ func TestWatcherRemoveDir(t *testing.T) {
 		close(events)
 	})
 
-	Watch(w, ".", func() {})
+	Watch(w, ".", func() {}, true)
 }
 
 func TestWatcherNonGofile(t *testing.T) {
@@ -119,7 +119,7 @@ func TestWatcherNonGofile(t *testing.T) {
 		close(events)
 	})
 
-	Watch(w, ".", func() {})
+	Watch(w, ".", func() {}, true)
 }
 
 func TestWatcherInvalidEvents(t *testing.T) {
@@ -141,7 +141,7 @@ func TestWatcherInvalidEvents(t *testing.T) {
 		close(events)
 	})
 
-	Watch(w, ".", func() {})
+	Watch(w, ".", func() {}, true)
 }
 
 func TestWatcherErrors(t *testing.T) {
@@ -155,7 +155,7 @@ func TestWatcherErrors(t *testing.T) {
 	w.EXPECT().Events().Return(nil).AnyTimes()
 	w.EXPECT().Errors().Return(events).AnyTimes()
 
-	Watch(w, ".", func() {})
+	Watch(w, ".", func() {}, true)
 }
 
 func TestWatcherAddFail(t *testing.T) {
@@ -169,7 +169,7 @@ func TestWatcherAddFail(t *testing.T) {
 	w.EXPECT().Events().Return(nil).AnyTimes()
 	w.EXPECT().Errors().Return(events).AnyTimes()
 
-	Watch(w, ".", func() {})
+	Watch(w, ".", func() {}, true)
 }
 
 func TestWatcherErrorsClose(t *testing.T) {
@@ -186,7 +186,7 @@ func TestWatcherErrorsClose(t *testing.T) {
 		close(events)
 	})
 
-	Watch(w, ".", func() {})
+	Watch(w, ".", func() {}, true)
 }
 
 func TestWatcherFilterGenPath(t *testing.T) {
@@ -208,5 +208,5 @@ func TestWatcherFilterGenPath(t *testing.T) {
 		close(events)
 	})
 
-	Watch(w, ".", func() {})
+	Watch(w, ".", func() {}, true)
 }
