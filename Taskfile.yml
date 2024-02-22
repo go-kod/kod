@@ -83,7 +83,7 @@ tasks:
 
   install:golangci-lint:
     vars:
-      VERSION: v1.54.2
+      VERSION: v1.56.2
     status:
       - go version -m $GOPATH/bin/golangci-lint | grep github.com/golangci/golangci-lint | grep {{.VERSION}}
     cmd: |
