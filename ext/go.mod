@@ -19,7 +19,7 @@ require (
 	github.com/uptrace/uptrace-go v1.23.1
 	go.etcd.io/etcd/client/v3 v3.5.12
 	go.opentelemetry.io/contrib/instrumentation/github.com/gin-gonic/gin/otelgin v0.48.0
-	go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc v0.48.0
+	go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc v0.49.0
 	go.opentelemetry.io/contrib/instrumentation/host v0.49.0
 	go.opentelemetry.io/contrib/instrumentation/net/http/httptrace/otelhttptrace v0.49.0
 	go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp v0.49.0
