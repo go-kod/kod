@@ -222,8 +222,8 @@ go.opentelemetry.io/contrib/instrumentation/net/http/httptrace/otelhttptrace v0.
 go.opentelemetry.io/contrib/instrumentation/net/http/httptrace/otelhttptrace v0.49.0/go.mod h1:f/PbKbRd4cdUICWell6DmzvVJ7QrmBgFrRHjXmAXbK4=
 go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp v0.49.0 h1:jq9TW8u3so/bN+JPT166wjOI6/vQPF6Xe7nMNIltagk=
 go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp v0.49.0/go.mod h1:p8pYQP+m5XfbZm9fxtSKAbM6oIllS7s2AfxrChvc7iw=
-go.opentelemetry.io/contrib/instrumentation/runtime v0.48.0 h1:dJlCKeq+zmO5Og4kgxqPvvJrzuD/mygs1g/NYM9dAsU=
-go.opentelemetry.io/contrib/instrumentation/runtime v0.48.0/go.mod h1:p+hpBCpLHpuUrR0lHgnHbUnbCBll1IhrcMIlycC+xYs=
+go.opentelemetry.io/contrib/instrumentation/runtime v0.49.0 h1:dg9y+7ArpumB6zwImJv47RHfdgOGQ1EMkzP5vLkEnTU=
+go.opentelemetry.io/contrib/instrumentation/runtime v0.49.0/go.mod h1:Ul4MtXqu/hJBM+v7a6dCF0nHwckPMLpIpLeCi4+zfdw=
 go.opentelemetry.io/contrib/propagators/b3 v1.24.0 h1:n4xwCdTx3pZqZs2CjS/CUZAs03y3dZcGhC/FepKtEUY=
 go.opentelemetry.io/contrib/propagators/b3 v1.24.0/go.mod h1:k5wRxKRU2uXx2F8uNJ4TaonuEO/V7/5xoz7kdsDACT8=
 go.opentelemetry.io/contrib/samplers/probability/consistent v0.18.0 h1:C5n7Hvf0yOwohs14kXIC53WGWe+I7SoZ1kZIasNp92E=
