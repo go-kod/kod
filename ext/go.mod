@@ -6,7 +6,7 @@ replace github.com/go-kod/kod => ../
 
 require (
 	dario.cat/mergo v1.0.0
-	github.com/bufbuild/protovalidate-go v0.5.2
+	github.com/bufbuild/protovalidate-go v0.6.0
 	github.com/gin-gonic/gin v1.9.1
 	github.com/go-kod/kod v0.0.0-00010101000000-000000000000
 	github.com/go-resty/resty/v2 v2.11.0
@@ -35,7 +35,7 @@ require (
 )
 
 require (
-	buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go v1.32.0-20240212200630-3014d81c3a48.1 // indirect
+	buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go v1.32.0-20240221180331-f05a6f4403ce.1 // indirect
 	github.com/antlr4-go/antlr/v4 v4.13.0 // indirect
 	github.com/bytedance/sonic v1.9.1 // indirect
 	github.com/cenkalti/backoff/v4 v4.2.1 // indirect
@@ -59,7 +59,7 @@ require (
 	github.com/goccy/go-json v0.10.2 // indirect
 	github.com/gogo/protobuf v1.3.2 // indirect
 	github.com/golang/protobuf v1.5.3 // indirect
-	github.com/google/cel-go v0.19.0 // indirect
+	github.com/google/cel-go v0.20.0 // indirect
 	github.com/grafana/pyroscope-go/godeltaprof v0.1.6 // indirect
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.19.1 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
