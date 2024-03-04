@@ -87,6 +87,24 @@ func init() {
 		},
 	})
 	kod.Register(&kod.Registration{
+		Name:      "github.com/go-kod/kod/tests/case1/ctxInterface",
+		Interface: reflect.TypeOf((*ctxInterface)(nil)).Elem(),
+		Impl:      reflect.TypeOf(ctxImpl{}),
+		Refs:      ``,
+		LocalStubFn: func(ctx context.Context, info *kod.LocalStubFnInfo) any {
+			var interceptors []kod.Interceptor
+			if h, ok := info.Impl.(interface{ Interceptors() []kod.Interceptor }); ok {
+				interceptors = h.Interceptors()
+			}
+
+			return ctxInterface_local_stub{
+				impl:        info.Impl.(ctxInterface),
+				interceptor: interceptor.Chain(interceptors),
+				name:        info.Name,
+			}
+		},
+	})
+	kod.Register(&kod.Registration{
 		Name:      "github.com/go-kod/kod/tests/case1/panicCaseInterface",
 		Interface: reflect.TypeOf((*panicCaseInterface)(nil)).Elem(),
 		Impl:      reflect.TypeOf(panicCase{}),
@@ -201,6 +219,7 @@ var _ kod.InstanceOf[HTTPController] = (*httpControllerImpl)(nil)
 var _ kod.InstanceOf[kod.Main] = (*App)(nil)
 var _ kod.InstanceOf[Test1Component] = (*test1Component)(nil)
 var _ kod.InstanceOf[Test2Component] = (*test2Component)(nil)
+var _ kod.InstanceOf[ctxInterface] = (*ctxImpl)(nil)
 var _ kod.InstanceOf[panicCaseInterface] = (*panicCase)(nil)
 var _ kod.InstanceOf[test1Controller] = (*test1ControllerImpl)(nil)
 var _ kod.InstanceOf[testEchoController] = (*testEchoControllerImpl)(nil)
@@ -220,32 +239,9 @@ type hTTPController_local_stub struct {
 var _ HTTPController = (*hTTPController_local_stub)(nil)
 
 func (s hTTPController_local_stub) Foo(a0 http.ResponseWriter, a1 *http.Request) {
-
-	if s.interceptor == nil {
-		s.impl.Foo(a0, a1)
-		return
-	}
-
-	call := func(ctx context.Context, info kod.CallInfo, req, res []any) (err error) {
-		a1 = a1.WithContext(ctx)
-		s.impl.Foo(a0, a1)
-		return
-	}
-
-	info := kod.CallInfo{
-		Impl:       s.impl,
-		Component:  s.name,
-		FullMethod: "github.com/go-kod/kod/tests/case1/HTTPController.Foo",
-		Method:     "Foo",
-	}
-
-	var err error
-	ctx := a1.Context()
-	_ = s.interceptor(ctx, info, []any{a0, a1}, []any{}, call)
-	if err != nil {
-		a0.WriteHeader(http.StatusInternalServerError)
-		a0.Write([]byte(err.Error()))
-	}
+	// Because the first argument is not context.Context, so interceptors are not supported.
+	s.impl.Foo(a0, a1)
+	return
 }
 
 type main_local_stub struct {
@@ -300,28 +296,40 @@ type test2Component_local_stub struct {
 var _ Test2Component = (*test2Component_local_stub)(nil)
 
 func (s test2Component_local_stub) GetClient() (r0 *http.Client) {
+	// Because the first argument is not context.Context, so interceptors are not supported.
+	r0 = s.impl.GetClient()
+	return
+}
+
+type ctxInterface_local_stub struct {
+	impl        ctxInterface
+	name        string
+	interceptor kod.Interceptor
+}
+
+// Check that ctxInterface_local_stub implements the ctxInterface interface.
+var _ ctxInterface = (*ctxInterface_local_stub)(nil)
+
+func (s ctxInterface_local_stub) Foo(ctx context.Context) {
 
 	if s.interceptor == nil {
-		r0 = s.impl.GetClient()
+		s.impl.Foo(ctx)
 		return
 	}
 
 	call := func(ctx context.Context, info kod.CallInfo, req, res []any) (err error) {
-		r0 = s.impl.GetClient()
-		res[0] = r0
+		s.impl.Foo(ctx)
 		return
 	}
 
 	info := kod.CallInfo{
 		Impl:       s.impl,
 		Component:  s.name,
-		FullMethod: "github.com/go-kod/kod/tests/case1/Test2Component.GetClient",
-		Method:     "GetClient",
+		FullMethod: "github.com/go-kod/kod/tests/case1/ctxInterface.Foo",
+		Method:     "Foo",
 	}
 
-	ctx := context.Background()
-	_ = s.interceptor(ctx, info, []any{}, []any{r0}, call)
-	return
+	_ = s.interceptor(ctx, info, []any{}, []any{}, call)
 }
 
 type panicCaseInterface_local_stub struct {
@@ -333,15 +341,15 @@ type panicCaseInterface_local_stub struct {
 // Check that panicCaseInterface_local_stub implements the panicCaseInterface interface.
 var _ panicCaseInterface = (*panicCaseInterface_local_stub)(nil)
 
-func (s panicCaseInterface_local_stub) TestPanic(a0 *http.Request) {
+func (s panicCaseInterface_local_stub) TestPanic(ctx context.Context) {
 
 	if s.interceptor == nil {
-		s.impl.TestPanic(a0)
+		s.impl.TestPanic(ctx)
 		return
 	}
 
 	call := func(ctx context.Context, info kod.CallInfo, req, res []any) (err error) {
-		s.impl.TestPanic(a0)
+		s.impl.TestPanic(ctx)
 		return
 	}
 
@@ -352,8 +360,7 @@ func (s panicCaseInterface_local_stub) TestPanic(a0 *http.Request) {
 		Method:     "TestPanic",
 	}
 
-	ctx := context.Background()
-	_ = s.interceptor(ctx, info, []any{a0}, []any{}, call)
+	_ = s.interceptor(ctx, info, []any{}, []any{}, call)
 }
 
 type test1Controller_local_stub struct {
@@ -375,58 +382,14 @@ type testEchoController_local_stub struct {
 var _ testEchoController = (*testEchoController_local_stub)(nil)
 
 func (s testEchoController_local_stub) Error(a0 echo.Context) (err error) {
-
-	if s.interceptor == nil {
-		err = s.impl.Error(a0)
-		return
-	}
-
-	call := func(ctx context.Context, info kod.CallInfo, req, res []any) (err error) {
-		a0.SetRequest(a0.Request().WithContext(ctx))
-		err = s.impl.Error(a0)
-		return
-	}
-
-	info := kod.CallInfo{
-		Impl:       s.impl,
-		Component:  s.name,
-		FullMethod: "github.com/go-kod/kod/tests/case1/testEchoController.Error",
-		Method:     "Error",
-	}
-
-	ctx := a0.Request().Context()
-	err = s.interceptor(ctx, info, []any{a0}, []any{}, call)
-	if err != nil {
-		a0.Error(err)
-	}
+	// Because the first argument is not context.Context, so interceptors are not supported.
+	err = s.impl.Error(a0)
 	return
 }
 
 func (s testEchoController_local_stub) Hello(a0 echo.Context) (err error) {
-
-	if s.interceptor == nil {
-		err = s.impl.Hello(a0)
-		return
-	}
-
-	call := func(ctx context.Context, info kod.CallInfo, req, res []any) (err error) {
-		a0.SetRequest(a0.Request().WithContext(ctx))
-		err = s.impl.Hello(a0)
-		return
-	}
-
-	info := kod.CallInfo{
-		Impl:       s.impl,
-		Component:  s.name,
-		FullMethod: "github.com/go-kod/kod/tests/case1/testEchoController.Hello",
-		Method:     "Hello",
-	}
-
-	ctx := a0.Request().Context()
-	err = s.interceptor(ctx, info, []any{a0}, []any{}, call)
-	if err != nil {
-		a0.Error(err)
-	}
+	// Because the first argument is not context.Context, so interceptors are not supported.
+	err = s.impl.Hello(a0)
 	return
 }
 
@@ -440,31 +403,9 @@ type testGinController_local_stub struct {
 var _ testGinController = (*testGinController_local_stub)(nil)
 
 func (s testGinController_local_stub) Hello(a0 *gin.Context) {
-
-	if s.interceptor == nil {
-		s.impl.Hello(a0)
-		return
-	}
-
-	call := func(ctx context.Context, info kod.CallInfo, req, res []any) (err error) {
-		a0.Request = a0.Request.WithContext(ctx)
-		s.impl.Hello(a0)
-		return
-	}
-
-	info := kod.CallInfo{
-		Impl:       s.impl,
-		Component:  s.name,
-		FullMethod: "github.com/go-kod/kod/tests/case1/testGinController.Hello",
-		Method:     "Hello",
-	}
-
-	var err error
-	ctx := a0.Request.Context()
-	err = s.interceptor(ctx, info, []any{a0}, []any{}, call)
-	if err != nil {
-		a0.Error(err)
-	}
+	// Because the first argument is not context.Context, so interceptors are not supported.
+	s.impl.Hello(a0)
+	return
 }
 
 type testRepository_local_stub struct {

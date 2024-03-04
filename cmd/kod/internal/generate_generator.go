@@ -724,16 +724,6 @@ func (g *generator) codegen() importPkg {
 	return g.tset.importPackage(path, "kod")
 }
 
-// ginContext imports and returns the kerror package.
-func (g *generator) ginContext() importPkg {
-	return g.tset.importPackage("github.com/gin-gonic/gin", "gin")
-}
-
-// echoContext imports and returns the kerror package.
-func (g *generator) echoContext() importPkg {
-	return g.tset.importPackage("github.com/labstack/echo/v4", "echo")
-}
-
 // formatType pretty prints the provided type, encountered in the provided
 // currentPackage.
 func formatType(currentPackage *packages.Package, t types.Type) string {
@@ -774,16 +764,22 @@ func (g *generator) generateLocalStubs(p printFn) {
 			mt := m.Type().(*types.Signature)
 
 			firstArgTypeString := ""
-			secondArgTypeString := ""
 			if mt.Params().Len() > 0 {
 				firstArgTypeString = g.tset.genTypeString(mt.Params().At(0).Type())
-			}
-			if mt.Params().Len() > 1 {
-				secondArgTypeString = g.tset.genTypeString(mt.Params().At(1).Type())
 			}
 
 			p(``)
 			p(`func (s %s) %s(%s) (%s) {`, stub, m.Name(), g.args(mt), g.returns(mt))
+
+			// If the first argument is not context.Context, then we don't support interceptors.
+			if firstArgTypeString != "context.Context" {
+				p(`// Because the first argument is not context.Context, so interceptors are not supported.`)
+				p(`	%s s.impl.%s(%s)
+					return
+				}`, g.returnsList(mt), m.Name(), g.argList(comp, mt))
+
+				continue
+			}
 
 			p(`
 				if s.interceptor == nil {
@@ -793,17 +789,6 @@ func (g *generator) generateLocalStubs(p printFn) {
 			`, g.returnsList(mt), m.Name(), g.argList(comp, mt))
 
 			p(`call := func(ctx context.Context, info kod.CallInfo, req, res []any) (err error) {`)
-
-			switch firstArgTypeString {
-			case "*gin.Context":
-				p(`a0.Request = a0.Request.WithContext(ctx)`)
-			case "echo.Context":
-				p(`a0.SetRequest(a0.Request().WithContext(ctx))`)
-			}
-
-			if firstArgTypeString == "http.ResponseWriter" && secondArgTypeString == "*http.Request" {
-				p(`a1 = a1.WithContext(ctx)`)
-			}
 
 			p(`	%s s.impl.%s(%s)
 					%sreturn
@@ -818,51 +803,12 @@ func (g *generator) generateLocalStubs(p printFn) {
 				}
 			`, comp.fullIntfName(), m.Name(), m.Name())
 
-			switch firstArgTypeString {
-			case "*gin.Context":
-				p(`var err error`)
-				p(`ctx := a0.Request.Context()`)
-			case "echo.Context":
-				p(`ctx := a0.Request().Context()`)
-			case "http.ResponseWriter":
-				if secondArgTypeString == "*http.Request" {
-					p(`var err error`)
-					p(`ctx := a1.Context()`)
-				} else {
-					p(`ctx := context.Background()`)
-				}
-			case "context.Context":
-				// don't need to do anything
-			default:
-				p(`ctx := context.Background()`)
-			}
-
 			p(`%s = s.interceptor(ctx, info, []any{%s}, []any{%s}, call)`,
-				lo.If(haveError(mt) || haveGinContext(mt), "err").Else("_"),
+				lo.If(haveError(mt), "err").Else("_"),
 				g.argsReflectList(comp, mt), g.returnsReflectList(mt))
 
 			// Call the local method.
 			b.Reset()
-
-			switch firstArgTypeString {
-			case "*gin.Context":
-				g.ginContext()
-				p(`if err != nil {`)
-				p(`	a0.Error(err)`)
-				p(`}`)
-			case "echo.Context":
-				g.echoContext()
-				p(`if err != nil {`)
-				p(`	a0.Error(err)`)
-				p(`}`)
-			case "http.ResponseWriter":
-				if secondArgTypeString == "*http.Request" {
-					p(`if err != nil {`)
-					p(`	a0.WriteHeader(http.StatusInternalServerError)`)
-					p(` a0.Write([]byte(err.Error()))`)
-					p(`}`)
-				}
-			}
 
 			if mt.Results().Len() > 0 {
 				p(`	return`)
@@ -1028,32 +974,9 @@ func notExported(name string) string {
 	return string(a)
 }
 
-// func isPointerToStruct(t types.Type) bool {
-// 	ptr, ok := t.(*types.Pointer)
-// 	if !ok {
-// 		return false
-// 	}
-// 	_, ok = ptr.Elem().Underlying().(*types.Struct)
-// 	return ok
-// }
-
-// func needInterceptor(m *types.Signature) bool {
-// 	return haveContext(m) || haveGinContext(m)
-// }
-
 func haveContext(mt *types.Signature) bool {
 	for i := 0; i < mt.Params().Len(); i++ {
 		if isContext(mt.Params().At(i).Type()) {
-			return true
-		}
-	}
-
-	return false
-}
-
-func haveGinContext(mt *types.Signature) bool {
-	if mt.Params().Len() == 1 {
-		if isGinContext(mt.Params().At(0).Type()) {
 			return true
 		}
 	}

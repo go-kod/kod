@@ -139,7 +139,7 @@ func (tset *typeSet) genTypeString(t types.Type) string {
 	// more information on qualifiers and pretty printing types.
 	//
 	// [1]: https://github.com/golang/example/tree/master/gotypes#formatting-support
-	var qualifier = func(pkg *types.Package) string {
+	qualifier := func(pkg *types.Package) string {
 		if pkg == tset.pkg.Types {
 			return ""
 		}
@@ -177,18 +177,6 @@ func isContext(t types.Type) bool {
 		return false
 	}
 	return n.Obj().Pkg().Path() == "context" && n.Obj().Name() == "Context"
-}
-
-func isGinContext(t types.Type) bool {
-	p, ok := t.(*types.Pointer)
-	if !ok {
-		return false
-	}
-	n, ok := p.Elem().(*types.Named)
-	if !ok {
-		return false
-	}
-	return n.Obj().Pkg().Path() == "github.com/gin-gonic/gin" && n.Obj().Name() == "Context"
 }
 
 func isError(t types.Type) bool {

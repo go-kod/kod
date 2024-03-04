@@ -1,7 +1,7 @@
 package case1
 
 import (
-	"net/http"
+	"context"
 
 	"github.com/go-kod/kod"
 	"github.com/go-kod/kod/interceptor/krecovery"
@@ -11,7 +11,7 @@ type panicCase struct {
 	kod.Implements[panicCaseInterface]
 }
 
-func (t *panicCase) TestPanic(r *http.Request) {
+func (t *panicCase) TestPanic(ctx context.Context) {
 	panic("panic")
 }
 

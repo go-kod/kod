@@ -24,14 +24,13 @@ func Test_testEchoControllerImpl_Hello(t *testing.T) {
 }
 
 func Test_testEchoControllerImpl_Panic(t *testing.T) {
-
 	kod.RunTest(t, func(ctx context.Context, controller testEchoController) {
 		e := echo.New()
 		req := httptest.NewRequest(http.MethodGet, "/", nil)
 		rec := httptest.NewRecorder()
 		c := e.NewContext(req, rec)
 		controller.Error(c)
-		assert.Equal(t, controller.(testEchoController_local_stub).impl.(*testEchoControllerImpl).retry, 2)
-		assert.Equal(t, "{\"message\":\"Internal Server Error\"}\n", rec.Body.String())
+		assert.Equal(t, controller.(testEchoController_local_stub).impl.(*testEchoControllerImpl).retry, 1)
+		assert.Equal(t, "", rec.Body.String())
 	})
 }

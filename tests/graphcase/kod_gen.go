@@ -145,26 +145,9 @@ type hTTPController_local_stub struct {
 var _ HTTPController = (*hTTPController_local_stub)(nil)
 
 func (s hTTPController_local_stub) Foo(a0 http.ResponseWriter, a1 http.Request) {
-
-	if s.interceptor == nil {
-		s.impl.Foo(a0, a1)
-		return
-	}
-
-	call := func(ctx context.Context, info kod.CallInfo, req, res []any) (err error) {
-		s.impl.Foo(a0, a1)
-		return
-	}
-
-	info := kod.CallInfo{
-		Impl:       s.impl,
-		Component:  s.name,
-		FullMethod: "github.com/go-kod/kod/tests/graphcase/HTTPController.Foo",
-		Method:     "Foo",
-	}
-
-	ctx := context.Background()
-	_ = s.interceptor(ctx, info, []any{a0, a1}, []any{}, call)
+	// Because the first argument is not context.Context, so interceptors are not supported.
+	s.impl.Foo(a0, a1)
+	return
 }
 
 type main_local_stub struct {
@@ -218,31 +201,9 @@ type test1Controller_local_stub struct {
 var _ test1Controller = (*test1Controller_local_stub)(nil)
 
 func (s test1Controller_local_stub) Foo(a0 *gin.Context) {
-
-	if s.interceptor == nil {
-		s.impl.Foo(a0)
-		return
-	}
-
-	call := func(ctx context.Context, info kod.CallInfo, req, res []any) (err error) {
-		a0.Request = a0.Request.WithContext(ctx)
-		s.impl.Foo(a0)
-		return
-	}
-
-	info := kod.CallInfo{
-		Impl:       s.impl,
-		Component:  s.name,
-		FullMethod: "github.com/go-kod/kod/tests/graphcase/test1Controller.Foo",
-		Method:     "Foo",
-	}
-
-	var err error
-	ctx := a0.Request.Context()
-	err = s.interceptor(ctx, info, []any{a0}, []any{}, call)
-	if err != nil {
-		a0.Error(err)
-	}
+	// Because the first argument is not context.Context, so interceptors are not supported.
+	s.impl.Foo(a0)
+	return
 }
 
 type testModel_local_stub struct {

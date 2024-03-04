@@ -11,6 +11,6 @@ func TestPanicRecovery(t *testing.T) {
 	t.Parallel()
 
 	kod.RunTest(t, func(ctx context.Context, t panicCaseInterface) {
-		t.TestPanic(nil)
+		t.TestPanic(ctx)
 	})
 }

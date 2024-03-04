@@ -33,6 +33,12 @@ type Test2Component interface {
 	GetClient() *http.Client
 }
 
+// ctxImpl is a component that implements ctxInterface.
+type ctxInterface interface {
+	// Foo is a http handler
+	Foo(ctx context.Context)
+}
+
 // testEchoControllerImpl is a component that implements testEchoController.
 type testEchoController interface {
 	// Hello is a method of testEchoControllerImpl
@@ -55,5 +61,5 @@ type HTTPController interface {
 
 // panicCase is a component that implements panicCaseInterface.
 type panicCaseInterface interface {
-	TestPanic(r *http.Request)
+	TestPanic(ctx context.Context)
 }
