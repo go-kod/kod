@@ -20,7 +20,7 @@ require (
 	go.uber.org/goleak v1.3.0
 	go.uber.org/mock v0.4.0
 	golang.org/x/tools v0.19.0
-	google.golang.org/grpc v1.62.0
+	google.golang.org/grpc v1.62.1
 	gopkg.in/natefinch/lumberjack.v2 v2.2.1
 )
 
