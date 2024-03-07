@@ -27,7 +27,7 @@ require (
 	go.opentelemetry.io/contrib/samplers/probability/consistent v0.18.0
 	go.opentelemetry.io/otel v1.24.0
 	go.opentelemetry.io/otel/trace v1.24.0
-	google.golang.org/grpc v1.62.0
+	google.golang.org/grpc v1.62.1
 	google.golang.org/protobuf v1.33.0
 	gorm.io/driver/mysql v1.5.4
 	gorm.io/gorm v1.25.7
