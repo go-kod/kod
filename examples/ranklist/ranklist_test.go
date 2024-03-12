@@ -11,6 +11,11 @@ import (
 func TestRankList(t *testing.T) {
 	kod.RunTest(t, func(ctx context.Context, impl Component) {
 		err := impl.Add(ctx, &AddRequest{
+			Key: "key",
+		})
+		assert.EqualError(t, err, "validate failed: Key: 'AddRequest.Member' Error:Field validation for 'Member' failed on the 'required' tag\nKey: 'AddRequest.Score' Error:Field validation for 'Score' failed on the 'required' tag")
+
+		err = impl.Add(ctx, &AddRequest{
 			Key:    "key",
 			Member: "member1",
 			Score:  1,

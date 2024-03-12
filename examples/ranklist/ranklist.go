@@ -5,6 +5,7 @@ import (
 
 	"github.com/go-kod/kod"
 	"github.com/go-kod/kod/ext/client/kredis"
+	"github.com/go-kod/kod/interceptor/kvalidate"
 	"github.com/redis/go-redis/v9"
 )
 
@@ -24,6 +25,12 @@ func (i *impl) Init(ctx context.Context) error {
 	i.redis = i.Config().RedisConfig.Build()
 
 	return nil
+}
+
+func (i *impl) Interceptors() []kod.Interceptor {
+	return []kod.Interceptor{
+		kvalidate.Interceptor(),
+	}
 }
 
 type AddRequest struct {
