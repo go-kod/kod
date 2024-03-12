@@ -5,6 +5,7 @@
 //
 //	mockgen -source tests/graphcase/kod_gen_interface.go -destination tests/graphcase/kod_gen_mock.go -package main
 //
+
 // Package main is a generated GoMock package.
 package main
 

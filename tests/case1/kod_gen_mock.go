@@ -5,6 +5,7 @@
 //
 //	mockgen -source tests/case1/kod_gen_interface.go -destination tests/case1/kod_gen_mock.go -package case1
 //
+
 // Package case1 is a generated GoMock package.
 package case1
 
@@ -190,6 +191,41 @@ func (mr *MockTest2ComponentMockRecorder) GetClient() *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetClient", reflect.TypeOf((*MockTest2Component)(nil).GetClient))
 }
 
+// MockctxInterface is a mock of ctxInterface interface.
+type MockctxInterface struct {
+	ctrl     *gomock.Controller
+	recorder *MockctxInterfaceMockRecorder
+}
+
+// MockctxInterfaceMockRecorder is the mock recorder for MockctxInterface.
+type MockctxInterfaceMockRecorder struct {
+	mock *MockctxInterface
+}
+
+// NewMockctxInterface creates a new mock instance.
+func NewMockctxInterface(ctrl *gomock.Controller) *MockctxInterface {
+	mock := &MockctxInterface{ctrl: ctrl}
+	mock.recorder = &MockctxInterfaceMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MockctxInterface) EXPECT() *MockctxInterfaceMockRecorder {
+	return m.recorder
+}
+
+// Foo mocks base method.
+func (m *MockctxInterface) Foo(ctx context.Context) {
+	m.ctrl.T.Helper()
+	m.ctrl.Call(m, "Foo", ctx)
+}
+
+// Foo indicates an expected call of Foo.
+func (mr *MockctxInterfaceMockRecorder) Foo(ctx any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Foo", reflect.TypeOf((*MockctxInterface)(nil).Foo), ctx)
+}
+
 // MocktestEchoController is a mock of testEchoController interface.
 type MocktestEchoController struct {
 	ctrl     *gomock.Controller
@@ -335,13 +371,13 @@ func (m *MockpanicCaseInterface) EXPECT() *MockpanicCaseInterfaceMockRecorder {
 }
 
 // TestPanic mocks base method.
-func (m *MockpanicCaseInterface) TestPanic(r *http.Request) {
+func (m *MockpanicCaseInterface) TestPanic(ctx context.Context) {
 	m.ctrl.T.Helper()
-	m.ctrl.Call(m, "TestPanic", r)
+	m.ctrl.Call(m, "TestPanic", ctx)
 }
 
 // TestPanic indicates an expected call of TestPanic.
-func (mr *MockpanicCaseInterfaceMockRecorder) TestPanic(r any) *gomock.Call {
+func (mr *MockpanicCaseInterfaceMockRecorder) TestPanic(ctx any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "TestPanic", reflect.TypeOf((*MockpanicCaseInterface)(nil).TestPanic), r)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "TestPanic", reflect.TypeOf((*MockpanicCaseInterface)(nil).TestPanic), ctx)
 }

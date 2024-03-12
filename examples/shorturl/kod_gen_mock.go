@@ -5,6 +5,7 @@
 //
 //	mockgen -source examples/shorturl/kod_gen_interface.go -destination examples/shorturl/kod_gen_mock.go -package shorturl
 //
+
 // Package shorturl is a generated GoMock package.
 package shorturl
 

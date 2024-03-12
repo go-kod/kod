@@ -5,6 +5,7 @@
 //
 //	mockgen -source examples/ranklist/kod_gen_interface.go -destination examples/ranklist/kod_gen_mock.go -package ranklist
 //
+
 // Package ranklist is a generated GoMock package.
 package ranklist
 
