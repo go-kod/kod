@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"github.com/go-kod/kod"
-	"github.com/go-kod/kod/examples/redis"
+	"github.com/go-kod/kod/examples/infra/redis"
 	"github.com/sony/sonyflake"
 )
 

@@ -12,7 +12,7 @@ import (
 
 func init() {
 	kod.Register(&kod.Registration{
-		Name:      "github.com/go-kod/kod/examples/ranklist/Component",
+		Name:      "github.com/go-kod/kod/examples/domain/ranklist/Component",
 		Interface: reflect.TypeOf((*Component)(nil)).Elem(),
 		Impl:      reflect.TypeOf(impl{}),
 		Refs:      ``,
@@ -60,7 +60,7 @@ func (s component_local_stub) Add(ctx context.Context, a1 *AddRequest) (err erro
 	info := kod.CallInfo{
 		Impl:       s.impl,
 		Component:  s.name,
-		FullMethod: "github.com/go-kod/kod/examples/ranklist/Component.Add",
+		FullMethod: "github.com/go-kod/kod/examples/domain/ranklist/Component.Add",
 		Method:     "Add",
 	}
 
@@ -84,7 +84,7 @@ func (s component_local_stub) RankList(ctx context.Context, a1 *RankListRequest)
 	info := kod.CallInfo{
 		Impl:       s.impl,
 		Component:  s.name,
-		FullMethod: "github.com/go-kod/kod/examples/ranklist/Component.RankList",
+		FullMethod: "github.com/go-kod/kod/examples/domain/ranklist/Component.RankList",
 		Method:     "RankList",
 	}
 

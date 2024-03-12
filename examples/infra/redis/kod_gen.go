@@ -13,7 +13,7 @@ import (
 
 func init() {
 	kod.Register(&kod.Registration{
-		Name:      "github.com/go-kod/kod/examples/redis/Component",
+		Name:      "github.com/go-kod/kod/examples/infra/redis/Component",
 		Interface: reflect.TypeOf((*Component)(nil)).Elem(),
 		Impl:      reflect.TypeOf(impl{}),
 		Refs:      ``,
@@ -47,7 +47,26 @@ type component_local_stub struct {
 var _ Component = (*component_local_stub)(nil)
 
 func (s component_local_stub) Client() (r0 *redis.Client) {
-	// Because the first argument is not context.Context, so interceptors are not supported.
-	r0 = s.impl.Client()
+
+	if s.interceptor == nil {
+		r0 = s.impl.Client()
+		return
+	}
+
+	call := func(ctx context.Context, info kod.CallInfo, req, res []any) (err error) {
+		r0 = s.impl.Client()
+		res[0] = r0
+		return
+	}
+
+	info := kod.CallInfo{
+		Impl:       s.impl,
+		Component:  s.name,
+		FullMethod: "github.com/go-kod/kod/examples/infra/redis/Component.Client",
+		Method:     "Client",
+	}
+
+	ctx := context.Background()
+	_ = s.interceptor(ctx, info, []any{}, []any{r0}, call)
 	return
 }

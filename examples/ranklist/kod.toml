@@ -1,2 +1,0 @@
-["github.com/go-kod/kod/examples/ranklist/Component"]
-redisconfig = { addr = "localhost:6379" }

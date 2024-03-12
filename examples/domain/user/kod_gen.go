@@ -12,11 +12,11 @@ import (
 
 func init() {
 	kod.Register(&kod.Registration{
-		Name:      "github.com/go-kod/kod/examples/user/Component",
+		Name:      "github.com/go-kod/kod/examples/domain/user/Component",
 		Interface: reflect.TypeOf((*Component)(nil)).Elem(),
 		Impl:      reflect.TypeOf(impl{}),
-		Refs: `⟦37b67a2f:KoDeDgE:github.com/go-kod/kod/examples/user/Component→github.com/go-kod/kod/examples/snowflake/Component⟧,
-⟦a5a870e1:KoDeDgE:github.com/go-kod/kod/examples/user/Component→github.com/go-kod/kod/examples/redis/Component⟧`,
+		Refs: `⟦8792a680:KoDeDgE:github.com/go-kod/kod/examples/domain/user/Component→github.com/go-kod/kod/examples/domain/snowflake/Component⟧,
+⟦8bb50e61:KoDeDgE:github.com/go-kod/kod/examples/domain/user/Component→github.com/go-kod/kod/examples/infra/redis/Component⟧`,
 		LocalStubFn: func(ctx context.Context, info *kod.LocalStubFnInfo) any {
 			var interceptors []kod.Interceptor
 			if h, ok := info.Impl.(interface{ Interceptors() []kod.Interceptor }); ok {
@@ -62,7 +62,7 @@ func (s component_local_stub) Auth(ctx context.Context, a1 *AuthRequest) (r0 *Au
 	info := kod.CallInfo{
 		Impl:       s.impl,
 		Component:  s.name,
-		FullMethod: "github.com/go-kod/kod/examples/user/Component.Auth",
+		FullMethod: "github.com/go-kod/kod/examples/domain/user/Component.Auth",
 		Method:     "Auth",
 	}
 
@@ -86,7 +86,7 @@ func (s component_local_stub) DeRegister(ctx context.Context, a1 *DeRegisterRequ
 	info := kod.CallInfo{
 		Impl:       s.impl,
 		Component:  s.name,
-		FullMethod: "github.com/go-kod/kod/examples/user/Component.DeRegister",
+		FullMethod: "github.com/go-kod/kod/examples/domain/user/Component.DeRegister",
 		Method:     "DeRegister",
 	}
 
@@ -110,7 +110,7 @@ func (s component_local_stub) Login(ctx context.Context, a1 *LoginRequest) (r0 *
 	info := kod.CallInfo{
 		Impl:       s.impl,
 		Component:  s.name,
-		FullMethod: "github.com/go-kod/kod/examples/user/Component.Login",
+		FullMethod: "github.com/go-kod/kod/examples/domain/user/Component.Login",
 		Method:     "Login",
 	}
 
@@ -134,7 +134,7 @@ func (s component_local_stub) Register(ctx context.Context, a1 *RegisterRequest)
 	info := kod.CallInfo{
 		Impl:       s.impl,
 		Component:  s.name,
-		FullMethod: "github.com/go-kod/kod/examples/user/Component.Register",
+		FullMethod: "github.com/go-kod/kod/examples/domain/user/Component.Register",
 		Method:     "Register",
 	}
 

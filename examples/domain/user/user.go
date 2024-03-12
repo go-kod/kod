@@ -7,8 +7,8 @@ import (
 	"time"
 
 	"github.com/go-kod/kod"
-	redisC "github.com/go-kod/kod/examples/redis"
-	"github.com/go-kod/kod/examples/snowflake"
+	"github.com/go-kod/kod/examples/domain/snowflake"
+	redisC "github.com/go-kod/kod/examples/infra/redis"
 	"github.com/go-kod/kod/ext/client/kredis"
 	"github.com/go-kod/kod/interceptor/kmetric"
 	"github.com/go-kod/kod/interceptor/krecovery"

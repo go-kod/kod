@@ -5,7 +5,6 @@
 //
 //	mockgen -source tests/case1/kod_gen_interface.go -destination tests/case1/kod_gen_mock.go -package case1
 //
-
 // Package case1 is a generated GoMock package.
 package case1
 
