@@ -1,0 +1,2 @@
+["github.com/go-kod/kod/examples/user/Component"]
+redisConfig = { addr = "localhost:6379" }
