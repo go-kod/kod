@@ -15,7 +15,8 @@ func init() {
 		Name:      "github.com/go-kod/kod/examples/user/Component",
 		Interface: reflect.TypeOf((*Component)(nil)).Elem(),
 		Impl:      reflect.TypeOf(impl{}),
-		Refs:      `⟦37b67a2f:KoDeDgE:github.com/go-kod/kod/examples/user/Component→github.com/go-kod/kod/examples/snowflake/Component⟧`,
+		Refs: `⟦37b67a2f:KoDeDgE:github.com/go-kod/kod/examples/user/Component→github.com/go-kod/kod/examples/snowflake/Component⟧,
+⟦a5a870e1:KoDeDgE:github.com/go-kod/kod/examples/user/Component→github.com/go-kod/kod/examples/redis/Component⟧`,
 		LocalStubFn: func(ctx context.Context, info *kod.LocalStubFnInfo) any {
 			var interceptors []kod.Interceptor
 			if h, ok := info.Impl.(interface{ Interceptors() []kod.Interceptor }); ok {

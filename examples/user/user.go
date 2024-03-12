@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/go-kod/kod"
+	redisC "github.com/go-kod/kod/examples/redis"
 	"github.com/go-kod/kod/examples/snowflake"
 	"github.com/go-kod/kod/ext/client/kredis"
 	"github.com/go-kod/kod/interceptor/kmetric"
@@ -21,6 +22,7 @@ type impl struct {
 	kod.Implements[Component]
 	kod.WithConfig[config]
 	snowflake kod.Ref[snowflake.Component]
+	redisComp kod.Ref[redisC.Component]
 
 	redis *redis.Client
 }
@@ -37,7 +39,7 @@ type claims struct {
 }
 
 func (ins *impl) Init(ctx context.Context) error {
-	ins.redis = ins.Config().Redis.Build()
+	ins.redis = ins.redisComp.Get().Client()
 
 	if ins.Config().SecretKey == "" {
 		ins.Config().SecretKey = "my-secret"

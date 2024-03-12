@@ -5,11 +5,14 @@ import (
 	"time"
 
 	"github.com/go-kod/kod"
+	"github.com/go-kod/kod/examples/redis"
 	"github.com/sony/sonyflake"
 )
 
 type impl struct {
 	kod.Implements[Component]
+	redis kod.Ref[redis.Component]
+
 	snowflake *sonyflake.Sonyflake
 }
 
@@ -17,8 +20,8 @@ func (ins *impl) Init(ctx context.Context) error {
 	ins.snowflake = sonyflake.NewSonyflake(sonyflake.Settings{
 		StartTime: time.Now(),
 		MachineID: func() (uint16, error) {
-			// TODO use redis to get machine id
-			return 1, nil
+			machineId, err := ins.redis.Get().Client().Incr(ctx, "snowflake:id").Uint64()
+			return uint16(machineId), err
 		},
 	})
 
