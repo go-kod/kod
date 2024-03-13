@@ -11,7 +11,7 @@ require (
 	github.com/go-kod/kod v0.0.0-00010101000000-000000000000
 	github.com/go-resty/resty/v2 v2.11.0
 	github.com/grafana/pyroscope-go v1.1.1
-	github.com/grpc-ecosystem/go-grpc-middleware/v2 v2.0.1
+	github.com/grpc-ecosystem/go-grpc-middleware/v2 v2.1.0
 	github.com/redis/go-redis/extra/redisotel/v9 v9.0.5
 	github.com/redis/go-redis/v9 v9.5.1
 	github.com/samber/lo v1.39.0
