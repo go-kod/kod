@@ -5,6 +5,7 @@
 //
 //	mockgen -source examples/domain/snowflake/kod_gen_interface.go -destination examples/domain/snowflake/kod_gen_mock.go -package snowflake
 //
+
 // Package snowflake is a generated GoMock package.
 package snowflake
 

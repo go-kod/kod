@@ -24,7 +24,7 @@ func main() {
 		// wont print
 		app.L(ctx).Info("hello world info1")
 		// will print
-		app.L(ctx).Error("hello world error")
+		app.L(ctx).Error("hello world error", slog.String("error", "error message"))
 
 		return nil
 	})

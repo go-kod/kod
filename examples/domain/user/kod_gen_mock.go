@@ -5,6 +5,7 @@
 //
 //	mockgen -source examples/domain/user/kod_gen_interface.go -destination examples/domain/user/kod_gen_mock.go -package user
 //
+
 // Package user is a generated GoMock package.
 package user
 

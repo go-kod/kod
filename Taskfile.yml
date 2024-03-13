@@ -45,7 +45,7 @@ tasks:
 
   generate:
     cmds:
-      - go run ./cmd/kod generate ./... ./tests/...
+      - go run ./cmd/kod generate ./... ./tests/... ./examples/... ./ext/...
     deps:
       - generate:struct2interface
 

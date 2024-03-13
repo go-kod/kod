@@ -5,6 +5,7 @@
 //
 //	mockgen -source examples/app/helloworld/kod_gen_interface.go -destination examples/app/helloworld/kod_gen_mock.go -package main
 //
+
 // Package main is a generated GoMock package.
 package main
 
