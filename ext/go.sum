@@ -196,8 +196,8 @@ github.com/twitchyliquid64/golang-asm v0.15.1 h1:SU5vSMR7hnwNxj24w34ZyCi/FmDZTkS
 github.com/twitchyliquid64/golang-asm v0.15.1/go.mod h1:a1lVb/DtPvCB8fslRZhAngC2+aY1QWCk3Cedj/Gdt08=
 github.com/ugorji/go/codec v1.2.11 h1:BMaWp1Bb6fHwEtbplGBGJ498wD+LKlNSl25MjdZY4dU=
 github.com/ugorji/go/codec v1.2.11/go.mod h1:UNopzCgEMSXjBc6AOMqYvWC1ktqTAfzJZUZgYf6w6lg=
-github.com/uptrace/opentelemetry-go-extra/otelsql v0.2.3 h1:LNi0Qa7869/loPjz2kmMvp/jwZZnMZ9scMJKhDJ1DIo=
-github.com/uptrace/opentelemetry-go-extra/otelsql v0.2.3/go.mod h1:jyigonKik3C5V895QNiAGpKYKEvFuqjw9qAEZks1mUg=
+github.com/uptrace/opentelemetry-go-extra/otelsql v0.2.4 h1:x3omFAG2XkvWFg1hvXRinY2ExAL1Aacl7W9ZlYjo6gc=
+github.com/uptrace/opentelemetry-go-extra/otelsql v0.2.4/go.mod h1:qMKJr5fTnY0p7hqCQMNrAk62bCARWR5rAbTrGUFRuh4=
 github.com/uptrace/uptrace-go v1.23.1 h1:oZzWBRZf49lHohrYqPWb6qVutNwkpnO4vj9zK3AyZSE=
 github.com/uptrace/uptrace-go v1.23.1/go.mod h1:BEoEwkuLWcCyUY0mbcQ86jPq6WWHF9UwktVnCpFZtCs=
 github.com/yuin/goldmark v1.1.27/go.mod h1:3hX8gzYuyVAZsxl0MRgGTJEmQBFcNTphYh9decYSb74=
