@@ -268,7 +268,7 @@ func TestAdd(t *testing.T) {
      })
 }
 ```
-运行go test来运行测试。kod.Test将创建一个子测试，并在其中创建一个Adder组件并将其传递给提供的函数。如果要测试组件的实现而不是其接口，请将指向实现结构的指针指定为参数。例如，如果adderImpl结构实现了Adder接口，我们可以编写如下内容：
+运行go test来运行测试。kod.RunTest将创建一个子测试，并在其中创建一个Adder组件并将其传递给提供的函数。如果要测试组件的实现而不是其接口，请将指向实现结构的指针指定为参数。例如，如果adderImpl结构实现了Adder接口，我们可以编写如下内容：
 
 ```go
 kod.RunTest(t, func(ctx context.Context, adder *adderImpl) {
@@ -277,7 +277,7 @@ kod.RunTest(t, func(ctx context.Context, adder *adderImpl) {
 ```
 
 #### 基准测试
-您还可以使用kod.Test来对应用程序进行基准测试。例如，创建一个包含以下内容的adder_benchmark.go文件。
+您还可以使用kod.RunTest来对应用程序进行基准测试。例如，创建一个包含以下内容的adder_benchmark.go文件。
 
 ```go
 package main

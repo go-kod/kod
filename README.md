@@ -277,7 +277,7 @@ func TestAdd(t *testing.T) {
 }
 ```
 
-Run go test to run the test. kod.Test will create a sub-test and within it will create an Adder component and pass it to the supplied function. If you want to test the implementation of a component, rather than its interface, specify a pointer to the implementing struct as an argument. For example, if the adderImpl struct implemented the Adder interface, we could write the following:
+Run go test to run the test. kod.RunTest will create a sub-test and within it will create an Adder component and pass it to the supplied function. If you want to test the implementation of a component, rather than its interface, specify a pointer to the implementing struct as an argument. For example, if the adderImpl struct implemented the Adder interface, we could write the following:
 
 ```go
 kod.RunTest(t, func(ctx context.Context, adder *adderImpl) {
@@ -287,7 +287,7 @@ kod.RunTest(t, func(ctx context.Context, adder *adderImpl) {
 
 #### Benchmark
 
-You can also use kod.Test to benchmark your application. For example, create an adder_benchmark.go file with the following contents.
+You can also use kod.RunTest to benchmark your application. For example, create an adder_benchmark.go file with the following contents.
 
 ```go
 package main
