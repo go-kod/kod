@@ -5,19 +5,12 @@ import (
 	"fmt"
 
 	"github.com/go-kod/kod"
+	"github.com/go-kod/kod/examples/app/helloworld"
 )
-
-type helloWorld struct {
-	kod.Implements[HelloWorld]
-}
-
-func (h *helloWorld) SayHello() string {
-	return "Hello, World!"
-}
 
 type app struct {
 	kod.Implements[kod.Main]
-	helloWorld kod.Ref[HelloWorld]
+	helloWorld kod.Ref[helloworld.HelloWorld]
 }
 
 func main() {
