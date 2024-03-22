@@ -8,6 +8,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/go-kod/kod"
 	"github.com/go-kod/kod/interceptor"
+	"github.com/go-kod/kod/tests/proto/examplev1"
 	"github.com/labstack/echo/v4"
 	"net/http"
 	"reflect"
@@ -45,6 +46,24 @@ func init() {
 
 			return main_local_stub{
 				impl:        info.Impl.(kod.Main),
+				interceptor: interceptor.Chain(interceptors),
+				name:        info.Name,
+			}
+		},
+	})
+	kod.Register(&kod.Registration{
+		Name:      "github.com/go-kod/kod/tests/case1/ProtoValidateComponent",
+		Interface: reflect.TypeOf((*ProtoValidateComponent)(nil)).Elem(),
+		Impl:      reflect.TypeOf(protoValidateComponent{}),
+		Refs:      ``,
+		LocalStubFn: func(ctx context.Context, info *kod.LocalStubFnInfo) any {
+			var interceptors []kod.Interceptor
+			if h, ok := info.Impl.(interface{ Interceptors() []kod.Interceptor }); ok {
+				interceptors = h.Interceptors()
+			}
+
+			return protoValidateComponent_local_stub{
+				impl:        info.Impl.(ProtoValidateComponent),
 				interceptor: interceptor.Chain(interceptors),
 				name:        info.Name,
 			}
@@ -217,6 +236,7 @@ func init() {
 // kod.InstanceOf checks.
 var _ kod.InstanceOf[HTTPController] = (*httpControllerImpl)(nil)
 var _ kod.InstanceOf[kod.Main] = (*App)(nil)
+var _ kod.InstanceOf[ProtoValidateComponent] = (*protoValidateComponent)(nil)
 var _ kod.InstanceOf[Test1Component] = (*test1Component)(nil)
 var _ kod.InstanceOf[Test2Component] = (*test2Component)(nil)
 var _ kod.InstanceOf[ctxInterface] = (*ctxImpl)(nil)
@@ -252,6 +272,38 @@ type main_local_stub struct {
 
 // Check that main_local_stub implements the kod.Main interface.
 var _ kod.Main = (*main_local_stub)(nil)
+
+type protoValidateComponent_local_stub struct {
+	impl        ProtoValidateComponent
+	name        string
+	interceptor kod.Interceptor
+}
+
+// Check that protoValidateComponent_local_stub implements the ProtoValidateComponent interface.
+var _ ProtoValidateComponent = (*protoValidateComponent_local_stub)(nil)
+
+func (s protoValidateComponent_local_stub) Validate(ctx context.Context, a1 *examplev1.Person) (err error) {
+
+	if s.interceptor == nil {
+		err = s.impl.Validate(ctx, a1)
+		return
+	}
+
+	call := func(ctx context.Context, info kod.CallInfo, req, res []any) (err error) {
+		err = s.impl.Validate(ctx, a1)
+		return
+	}
+
+	info := kod.CallInfo{
+		Impl:       s.impl,
+		Component:  s.name,
+		FullMethod: "github.com/go-kod/kod/tests/case1/ProtoValidateComponent.Validate",
+		Method:     "Validate",
+	}
+
+	err = s.interceptor(ctx, info, []any{a1}, []any{}, call)
+	return
+}
 
 type test1Component_local_stub struct {
 	impl        Test1Component

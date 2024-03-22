@@ -7,6 +7,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/go-kod/kod/tests/proto/examplev1"
 	"github.com/labstack/echo/v4"
 )
 
@@ -57,6 +58,11 @@ type testGinController interface {
 type HTTPController interface {
 	// Foo is a http handler
 	Foo(w http.ResponseWriter, r *http.Request)
+}
+
+// protoValidateComponent is a component that implements ProtoValidateComponent.
+type ProtoValidateComponent interface {
+	Validate(ctx context.Context, req *examplev1.Person) error
 }
 
 // panicCase is a component that implements panicCaseInterface.
