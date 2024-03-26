@@ -22,6 +22,7 @@ tasks:
       - /ext
       - /tests
       - /examples
+      - /interceptor
     generates:
       - go.work
       - go.work.sum
@@ -45,7 +46,7 @@ tasks:
 
   generate:
     cmds:
-      - go run ./cmd/kod generate ./... ./tests/... ./examples/... ./ext/...
+      - go run ./cmd/kod generate ./... ./tests/... ./examples/... ./ext/... ./interceptor/...
     deps:
       - generate:struct2interface
 
@@ -95,3 +96,4 @@ tasks:
       - cd tests && go mod tidy
       - cd examples && go mod tidy
       - cd ext && go mod tidy
+      - cd interceptor && go mod tidy

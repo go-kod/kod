@@ -1,14 +1,17 @@
 module github.com/go-kod/kod/tests
 
-go 1.21.0
+go 1.21.7
 
 replace github.com/go-kod/kod => ../
+
+replace github.com/go-kod/kod/interceptor => ../interceptor
 
 require (
 	buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go v1.33.0-20240221180331-f05a6f4403ce.1
 	github.com/avast/retry-go/v4 v4.5.1
 	github.com/gin-gonic/gin v1.9.1
 	github.com/go-kod/kod v0.0.0-00010101000000-000000000000
+	github.com/go-kod/kod/interceptor v0.0.0-00010101000000-000000000000
 	github.com/labstack/echo/v4 v4.11.4
 	github.com/samber/lo v1.39.0
 	github.com/stretchr/testify v1.9.0
@@ -38,7 +41,7 @@ require (
 	github.com/go-playground/universal-translator v0.18.1 // indirect
 	github.com/go-playground/validator/v10 v10.19.0 // indirect
 	github.com/goccy/go-json v0.10.2 // indirect
-	github.com/golang/protobuf v1.5.3 // indirect
+	github.com/golang/protobuf v1.5.4 // indirect
 	github.com/google/cel-go v0.20.0 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
@@ -82,8 +85,8 @@ require (
 	golang.org/x/net v0.22.0 // indirect
 	golang.org/x/sys v0.18.0 // indirect
 	golang.org/x/text v0.14.0 // indirect
-	google.golang.org/genproto/googleapis/api v0.0.0-20240123012728-ef4313101c80 // indirect
-	google.golang.org/genproto/googleapis/rpc v0.0.0-20240123012728-ef4313101c80 // indirect
+	google.golang.org/genproto/googleapis/api v0.0.0-20240318140521-94a12d6c2237 // indirect
+	google.golang.org/genproto/googleapis/rpc v0.0.0-20240318140521-94a12d6c2237 // indirect
 	google.golang.org/grpc v1.62.1 // indirect
 	gopkg.in/ini.v1 v1.67.0 // indirect
 	gopkg.in/natefinch/lumberjack.v2 v2.2.1 // indirect
