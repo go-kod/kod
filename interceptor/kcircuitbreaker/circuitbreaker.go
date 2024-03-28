@@ -6,7 +6,7 @@ import (
 	"sync"
 
 	"github.com/go-kod/kod"
-	"github.com/go-kod/kod/internal/circuitbreaker"
+	"github.com/go-kod/kod/interceptor/internal/circuitbreaker"
 	"github.com/go-kod/kod/internal/singleton"
 )
 
