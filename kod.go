@@ -273,7 +273,6 @@ type options struct {
 
 // newKod creates a new instance of Kod with the provided registrations and options.
 func newKod(opts options) (*Kod, error) {
-
 	kod := &Kod{
 		mu: &sync.Mutex{},
 		config: kodConfig{
@@ -371,7 +370,6 @@ func (k *Kod) parseConfig(filename string) error {
 }
 
 func (k *Kod) initLog() {
-
 	k.logLevelVar = new(slog.LevelVar)
 	lo.Must0(k.logLevelVar.UnmarshalText([]byte(k.config.Log.Level)))
 
@@ -383,7 +381,7 @@ func (k *Kod) initLog() {
 			Filename:   k.config.Log.File,
 			MaxSize:    500, // megabytes
 			MaxBackups: 7,
-			MaxAge:     28, //days
+			MaxAge:     28, // days
 			Compress:   false,
 		}
 		k.hooker.Add(hooks.HookFunc{
