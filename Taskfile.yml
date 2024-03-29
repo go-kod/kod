@@ -62,7 +62,9 @@ tasks:
 
   test:
     cmd: |
-        go test -race -cover -coverprofile=coverage.out -covermode=atomic ./... ./tests/... ./examples/... -coverpkg .,./cmd/...,./interceptor/...,./internal/...
+      GOEXPERIMENT=nocoverageredesign go test -race -cover -coverprofile=coverage.out \
+        -covermode=atomic ./... ./tests/... ./examples/... ./interceptor/... \
+        -coverpkg .,./cmd/...,./interceptor/...,./internal/...
     sources:
       - "**/**.go"
     generates:

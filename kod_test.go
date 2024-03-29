@@ -8,7 +8,10 @@ import (
 )
 
 func TestMain(m *testing.M) {
-	goleak.VerifyTestMain(m)
+	goleak.VerifyTestMain(m,
+		goleak.IgnoreAnyFunction("github.com/go-kod/kod/internal/ratelimit.cpuproc"),
+		goleak.IgnoreAnyFunction("gopkg.in/natefinch/lumberjack%2ev2.(*Logger).millRun"),
+	)
 }
 
 func TestConfigNoSuffix(t *testing.T) {
