@@ -12,7 +12,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        version: ["1.21", "1.22"]
+        version: ["1.21.x", "1.22.x"]
     services:
       redis:
         image: redis
