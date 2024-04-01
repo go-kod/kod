@@ -10,7 +10,7 @@ require (
 	github.com/go-kod/kod v0.0.0-00010101000000-000000000000
 	github.com/go-playground/validator/v10 v10.19.0
 	github.com/samber/lo v1.39.0
-	github.com/shirou/gopsutil/v3 v3.24.2
+	github.com/shirou/gopsutil/v3 v3.24.3
 	github.com/sony/gobreaker v0.5.0
 	github.com/stretchr/testify v1.9.0
 	go.opentelemetry.io/otel v1.24.0
