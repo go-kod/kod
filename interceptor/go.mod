@@ -10,6 +10,7 @@ require (
 	github.com/go-kod/kod v0.0.0-00010101000000-000000000000
 	github.com/go-playground/validator/v10 v10.19.0
 	github.com/samber/lo v1.39.0
+	github.com/shirou/gopsutil/v3 v3.24.2
 	github.com/sony/gobreaker v0.5.0
 	github.com/stretchr/testify v1.9.0
 	go.opentelemetry.io/otel v1.24.0
@@ -43,7 +44,6 @@ require (
 	github.com/power-devops/perfstat v0.0.0-20210106213030-5aafc221ea8c // indirect
 	github.com/sagikazarmark/locafero v0.4.0 // indirect
 	github.com/sagikazarmark/slog-shim v0.1.0 // indirect
-	github.com/shirou/gopsutil/v3 v3.24.2 // indirect
 	github.com/shoenig/go-m1cpu v0.1.6 // indirect
 	github.com/sourcegraph/conc v0.3.0 // indirect
 	github.com/spf13/afero v1.11.0 // indirect
