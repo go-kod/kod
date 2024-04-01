@@ -18,7 +18,7 @@ import (
 
 func TestMain(m *testing.M) {
 	goleak.VerifyTestMain(m,
-		goleak.IgnoreAnyFunction("github.com/go-kod/kod/internal/ratelimit.cpuproc"),
+		goleak.IgnoreAnyFunction("github.com/go-kod/kod/interceptor/internal/ratelimit.cpuproc"),
 		goleak.IgnoreAnyFunction("gopkg.in/natefinch/lumberjack%2ev2.(*Logger).millRun"),
 	)
 }
@@ -64,7 +64,6 @@ func TestInterface(t *testing.T) {
 func TestInterfacePanic(t *testing.T) {
 	t.Parallel()
 	kod.RunTest(t, func(ctx context.Context, k Test1Component) {
-
 		_, err := k.Foo(ctx, &FooReq{
 			Panic: true,
 		})
@@ -75,7 +74,6 @@ func TestInterfacePanic(t *testing.T) {
 func TestInterfacValidate(t *testing.T) {
 	t.Parallel()
 	kod.RunTest(t, func(ctx context.Context, k Test1Component) {
-
 		_, err := k.Foo(ctx, &FooReq{
 			Id: 101,
 		})
@@ -145,7 +143,6 @@ func TestConfigNotFound(t *testing.T) {
 }
 
 func TestRunKill(t *testing.T) {
-
 	t.Run("case1", func(t *testing.T) {
 		err := kod.Run(context.Background(), Run)
 
@@ -153,7 +150,6 @@ func TestRunKill(t *testing.T) {
 
 		assert.Equal(t, "test1:B", err.Error())
 	})
-
 }
 
 func TestPanicKod(t *testing.T) {
