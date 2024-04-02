@@ -4,8 +4,6 @@ import (
 	"context"
 	"errors"
 	"testing"
-
-	"github.com/go-kod/kod"
 )
 
 func TestIf(t *testing.T) {
@@ -17,7 +15,7 @@ func TestIf(t *testing.T) {
 	}{
 		{
 			name: "Condition is true",
-			condition: func(ctx context.Context, info kod.CallInfo) bool {
+			condition: func(ctx context.Context, info CallInfo) bool {
 				// TODO: Implement condition logic
 				return true
 			},
@@ -25,7 +23,7 @@ func TestIf(t *testing.T) {
 		},
 		{
 			name: "Condition is false",
-			condition: func(ctx context.Context, info kod.CallInfo) bool {
+			condition: func(ctx context.Context, info CallInfo) bool {
 				// TODO: Implement condition logic
 				return false
 			},
@@ -37,19 +35,19 @@ func TestIf(t *testing.T) {
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
 			// Create a mock invoker function
-			invoker := func(ctx context.Context, info kod.CallInfo, req, reply []interface{}) error {
+			invoker := func(ctx context.Context, info CallInfo, req, reply []interface{}) error {
 				// TODO: Implement invoker logic
 				return nil
 			}
 
 			// Create a mock interceptor function
-			interceptor := func(ctx context.Context, info kod.CallInfo, req, reply []interface{}, invoker kod.HandleFunc) error {
+			interceptor := func(ctx context.Context, info CallInfo, req, reply []interface{}, invoker HandleFunc) error {
 				// TODO: Implement interceptor logic
 				return errors.New("not implemented")
 			}
 
 			// Call the If function with the test case inputs
-			err := If(interceptor, tc.condition)(context.Background(), kod.CallInfo{}, []interface{}{}, []interface{}{}, invoker)
+			err := If(interceptor, tc.condition)(context.Background(), CallInfo{}, []interface{}{}, []interface{}{}, invoker)
 
 			// Check if the result matches the expected value
 			if (err == nil) != tc.expected {
@@ -69,13 +67,13 @@ func TestAnd(t *testing.T) {
 		{
 			name: "All conditions are true",
 			conditions: []Condition{
-				func(ctx context.Context, info kod.CallInfo) bool {
+				func(ctx context.Context, info CallInfo) bool {
 					return true
 				},
-				func(ctx context.Context, info kod.CallInfo) bool {
+				func(ctx context.Context, info CallInfo) bool {
 					return true
 				},
-				func(ctx context.Context, info kod.CallInfo) bool {
+				func(ctx context.Context, info CallInfo) bool {
 					return true
 				},
 			},
@@ -84,13 +82,13 @@ func TestAnd(t *testing.T) {
 		{
 			name: "At least one condition is false",
 			conditions: []Condition{
-				func(ctx context.Context, info kod.CallInfo) bool {
+				func(ctx context.Context, info CallInfo) bool {
 					return true
 				},
-				func(ctx context.Context, info kod.CallInfo) bool {
+				func(ctx context.Context, info CallInfo) bool {
 					return false
 				},
-				func(ctx context.Context, info kod.CallInfo) bool {
+				func(ctx context.Context, info CallInfo) bool {
 					return true
 				},
 			},
@@ -99,13 +97,13 @@ func TestAnd(t *testing.T) {
 		{
 			name: "At least one condition is false",
 			conditions: []Condition{
-				func(ctx context.Context, info kod.CallInfo) bool {
+				func(ctx context.Context, info CallInfo) bool {
 					return true
 				},
-				func(ctx context.Context, info kod.CallInfo) bool {
+				func(ctx context.Context, info CallInfo) bool {
 					return true
 				},
-				func(ctx context.Context, info kod.CallInfo) bool {
+				func(ctx context.Context, info CallInfo) bool {
 					return false
 				},
 			},
@@ -117,13 +115,13 @@ func TestAnd(t *testing.T) {
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
 			// Create a mock invoker function
-			invoker := func(ctx context.Context, info kod.CallInfo, req, reply []interface{}) error {
+			invoker := func(ctx context.Context, info CallInfo, req, reply []interface{}) error {
 				// TODO: Implement invoker logic
 				return nil
 			}
 
 			// Create a mock interceptor function
-			interceptor := func(ctx context.Context, info kod.CallInfo, req, reply []interface{}, invoker kod.HandleFunc) error {
+			interceptor := func(ctx context.Context, info CallInfo, req, reply []interface{}, invoker HandleFunc) error {
 				// TODO: Implement interceptor logic
 				return errors.New("not implemented")
 			}
@@ -132,7 +130,7 @@ func TestAnd(t *testing.T) {
 			combinedCondition := And(tc.conditions[0], tc.conditions[1], tc.conditions[2:]...)
 
 			// Call the If function with the combined condition
-			err := If(interceptor, combinedCondition)(context.Background(), kod.CallInfo{}, []interface{}{}, []interface{}{}, invoker)
+			err := If(interceptor, combinedCondition)(context.Background(), CallInfo{}, []interface{}{}, []interface{}{}, invoker)
 
 			// Check if the result matches the expected value
 			if (err == nil) != tc.expected {
@@ -152,13 +150,13 @@ func TestOr(t *testing.T) {
 		{
 			name: "At least one condition is true",
 			conditions: []Condition{
-				func(ctx context.Context, info kod.CallInfo) bool {
+				func(ctx context.Context, info CallInfo) bool {
 					return false
 				},
-				func(ctx context.Context, info kod.CallInfo) bool {
+				func(ctx context.Context, info CallInfo) bool {
 					return true
 				},
-				func(ctx context.Context, info kod.CallInfo) bool {
+				func(ctx context.Context, info CallInfo) bool {
 					return false
 				},
 			},
@@ -167,13 +165,13 @@ func TestOr(t *testing.T) {
 		{
 			name: "All conditions are false",
 			conditions: []Condition{
-				func(ctx context.Context, info kod.CallInfo) bool {
+				func(ctx context.Context, info CallInfo) bool {
 					return false
 				},
-				func(ctx context.Context, info kod.CallInfo) bool {
+				func(ctx context.Context, info CallInfo) bool {
 					return false
 				},
-				func(ctx context.Context, info kod.CallInfo) bool {
+				func(ctx context.Context, info CallInfo) bool {
 					return false
 				},
 			},
@@ -182,13 +180,13 @@ func TestOr(t *testing.T) {
 		{
 			name: "The last condition is false",
 			conditions: []Condition{
-				func(ctx context.Context, info kod.CallInfo) bool {
+				func(ctx context.Context, info CallInfo) bool {
 					return false
 				},
-				func(ctx context.Context, info kod.CallInfo) bool {
+				func(ctx context.Context, info CallInfo) bool {
 					return false
 				},
-				func(ctx context.Context, info kod.CallInfo) bool {
+				func(ctx context.Context, info CallInfo) bool {
 					return true
 				},
 			},
@@ -200,13 +198,13 @@ func TestOr(t *testing.T) {
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
 			// Create a mock invoker function
-			invoker := func(ctx context.Context, info kod.CallInfo, req, reply []interface{}) error {
+			invoker := func(ctx context.Context, info CallInfo, req, reply []interface{}) error {
 				// TODO: Implement invoker logic
 				return nil
 			}
 
 			// Create a mock interceptor function
-			interceptor := func(ctx context.Context, info kod.CallInfo, req, reply []interface{}, invoker kod.HandleFunc) error {
+			interceptor := func(ctx context.Context, info CallInfo, req, reply []interface{}, invoker HandleFunc) error {
 				// TODO: Implement interceptor logic
 				return errors.New("not implemented")
 			}
@@ -215,7 +213,7 @@ func TestOr(t *testing.T) {
 			combinedCondition := Or(tc.conditions[0], tc.conditions[1], tc.conditions[2:]...)
 
 			// Call the If function with the combined condition
-			err := If(interceptor, combinedCondition)(context.Background(), kod.CallInfo{}, []interface{}{}, []interface{}{}, invoker)
+			err := If(interceptor, combinedCondition)(context.Background(), CallInfo{}, []interface{}{}, []interface{}{}, invoker)
 
 			// Check if the result matches the expected value
 			if (err == nil) != tc.expected {
@@ -234,14 +232,14 @@ func TestNot(t *testing.T) {
 	}{
 		{
 			name: "Condition is true",
-			condition: func(ctx context.Context, info kod.CallInfo) bool {
+			condition: func(ctx context.Context, info CallInfo) bool {
 				return true
 			},
 			expected: false,
 		},
 		{
 			name: "Condition is false",
-			condition: func(ctx context.Context, info kod.CallInfo) bool {
+			condition: func(ctx context.Context, info CallInfo) bool {
 				return false
 			},
 			expected: true,
@@ -252,7 +250,7 @@ func TestNot(t *testing.T) {
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
 			// Call the Not function with the test case input
-			result := Not(tc.condition)(context.Background(), kod.CallInfo{})
+			result := Not(tc.condition)(context.Background(), CallInfo{})
 
 			// Check if the result matches the expected value
 			if result != tc.expected {
@@ -267,13 +265,13 @@ func TestIsMethod(t *testing.T) {
 	testCases := []struct {
 		name     string
 		method   string
-		info     kod.CallInfo
+		info     CallInfo
 		expected bool
 	}{
 		{
 			name:   "Method matches",
 			method: "test",
-			info: kod.CallInfo{
+			info: CallInfo{
 				Method: "test",
 			},
 			expected: true,
@@ -281,7 +279,7 @@ func TestIsMethod(t *testing.T) {
 		{
 			name:   "Method does not match",
 			method: "test",
-			info: kod.CallInfo{
+			info: CallInfo{
 				Method: "other",
 			},
 			expected: false,

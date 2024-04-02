@@ -21,9 +21,11 @@ func init() {
 		Impl:      reflect.TypeOf(httpControllerImpl{}),
 		Refs:      ``,
 		LocalStubFn: func(ctx context.Context, info *kod.LocalStubFnInfo) any {
-			var interceptors []kod.Interceptor
-			if h, ok := info.Impl.(interface{ Interceptors() []kod.Interceptor }); ok {
-				interceptors = h.Interceptors()
+			interceptors := info.Interceptors
+			if h, ok := info.Impl.(interface {
+				Interceptors() []interceptor.Interceptor
+			}); ok {
+				interceptors = append(interceptors, h.Interceptors()...)
 			}
 
 			return hTTPController_local_stub{
@@ -39,9 +41,11 @@ func init() {
 		Impl:      reflect.TypeOf(App{}),
 		Refs:      `⟦d40a644a:KoDeDgE:github.com/go-kod/kod/Main→github.com/go-kod/kod/tests/case1/Test1Component⟧`,
 		LocalStubFn: func(ctx context.Context, info *kod.LocalStubFnInfo) any {
-			var interceptors []kod.Interceptor
-			if h, ok := info.Impl.(interface{ Interceptors() []kod.Interceptor }); ok {
-				interceptors = h.Interceptors()
+			interceptors := info.Interceptors
+			if h, ok := info.Impl.(interface {
+				Interceptors() []interceptor.Interceptor
+			}); ok {
+				interceptors = append(interceptors, h.Interceptors()...)
 			}
 
 			return main_local_stub{
@@ -57,9 +61,11 @@ func init() {
 		Impl:      reflect.TypeOf(protoValidateComponent{}),
 		Refs:      ``,
 		LocalStubFn: func(ctx context.Context, info *kod.LocalStubFnInfo) any {
-			var interceptors []kod.Interceptor
-			if h, ok := info.Impl.(interface{ Interceptors() []kod.Interceptor }); ok {
-				interceptors = h.Interceptors()
+			interceptors := info.Interceptors
+			if h, ok := info.Impl.(interface {
+				Interceptors() []interceptor.Interceptor
+			}); ok {
+				interceptors = append(interceptors, h.Interceptors()...)
 			}
 
 			return protoValidateComponent_local_stub{
@@ -75,9 +81,11 @@ func init() {
 		Impl:      reflect.TypeOf(test1Component{}),
 		Refs:      ``,
 		LocalStubFn: func(ctx context.Context, info *kod.LocalStubFnInfo) any {
-			var interceptors []kod.Interceptor
-			if h, ok := info.Impl.(interface{ Interceptors() []kod.Interceptor }); ok {
-				interceptors = h.Interceptors()
+			interceptors := info.Interceptors
+			if h, ok := info.Impl.(interface {
+				Interceptors() []interceptor.Interceptor
+			}); ok {
+				interceptors = append(interceptors, h.Interceptors()...)
 			}
 
 			return test1Component_local_stub{
@@ -93,9 +101,11 @@ func init() {
 		Impl:      reflect.TypeOf(test2Component{}),
 		Refs:      ``,
 		LocalStubFn: func(ctx context.Context, info *kod.LocalStubFnInfo) any {
-			var interceptors []kod.Interceptor
-			if h, ok := info.Impl.(interface{ Interceptors() []kod.Interceptor }); ok {
-				interceptors = h.Interceptors()
+			interceptors := info.Interceptors
+			if h, ok := info.Impl.(interface {
+				Interceptors() []interceptor.Interceptor
+			}); ok {
+				interceptors = append(interceptors, h.Interceptors()...)
 			}
 
 			return test2Component_local_stub{
@@ -111,9 +121,11 @@ func init() {
 		Impl:      reflect.TypeOf(ctxImpl{}),
 		Refs:      ``,
 		LocalStubFn: func(ctx context.Context, info *kod.LocalStubFnInfo) any {
-			var interceptors []kod.Interceptor
-			if h, ok := info.Impl.(interface{ Interceptors() []kod.Interceptor }); ok {
-				interceptors = h.Interceptors()
+			interceptors := info.Interceptors
+			if h, ok := info.Impl.(interface {
+				Interceptors() []interceptor.Interceptor
+			}); ok {
+				interceptors = append(interceptors, h.Interceptors()...)
 			}
 
 			return ctxInterface_local_stub{
@@ -129,13 +141,35 @@ func init() {
 		Impl:      reflect.TypeOf(panicCase{}),
 		Refs:      ``,
 		LocalStubFn: func(ctx context.Context, info *kod.LocalStubFnInfo) any {
-			var interceptors []kod.Interceptor
-			if h, ok := info.Impl.(interface{ Interceptors() []kod.Interceptor }); ok {
-				interceptors = h.Interceptors()
+			interceptors := info.Interceptors
+			if h, ok := info.Impl.(interface {
+				Interceptors() []interceptor.Interceptor
+			}); ok {
+				interceptors = append(interceptors, h.Interceptors()...)
 			}
 
 			return panicCaseInterface_local_stub{
 				impl:        info.Impl.(panicCaseInterface),
+				interceptor: interceptor.Chain(interceptors),
+				name:        info.Name,
+			}
+		},
+	})
+	kod.Register(&kod.Registration{
+		Name:      "github.com/go-kod/kod/tests/case1/panicNoRecvoeryCaseInterface",
+		Interface: reflect.TypeOf((*panicNoRecvoeryCaseInterface)(nil)).Elem(),
+		Impl:      reflect.TypeOf(panicNoRecvoeryCase{}),
+		Refs:      ``,
+		LocalStubFn: func(ctx context.Context, info *kod.LocalStubFnInfo) any {
+			interceptors := info.Interceptors
+			if h, ok := info.Impl.(interface {
+				Interceptors() []interceptor.Interceptor
+			}); ok {
+				interceptors = append(interceptors, h.Interceptors()...)
+			}
+
+			return panicNoRecvoeryCaseInterface_local_stub{
+				impl:        info.Impl.(panicNoRecvoeryCaseInterface),
 				interceptor: interceptor.Chain(interceptors),
 				name:        info.Name,
 			}
@@ -147,9 +181,11 @@ func init() {
 		Impl:      reflect.TypeOf(test1ControllerImpl{}),
 		Refs:      `⟦dd37e4d0:KoDeDgE:github.com/go-kod/kod/tests/case1/test1Controller→github.com/go-kod/kod/tests/case1/Test1Component⟧`,
 		LocalStubFn: func(ctx context.Context, info *kod.LocalStubFnInfo) any {
-			var interceptors []kod.Interceptor
-			if h, ok := info.Impl.(interface{ Interceptors() []kod.Interceptor }); ok {
-				interceptors = h.Interceptors()
+			interceptors := info.Interceptors
+			if h, ok := info.Impl.(interface {
+				Interceptors() []interceptor.Interceptor
+			}); ok {
+				interceptors = append(interceptors, h.Interceptors()...)
 			}
 
 			return test1Controller_local_stub{
@@ -165,9 +201,11 @@ func init() {
 		Impl:      reflect.TypeOf(testEchoControllerImpl{}),
 		Refs:      ``,
 		LocalStubFn: func(ctx context.Context, info *kod.LocalStubFnInfo) any {
-			var interceptors []kod.Interceptor
-			if h, ok := info.Impl.(interface{ Interceptors() []kod.Interceptor }); ok {
-				interceptors = h.Interceptors()
+			interceptors := info.Interceptors
+			if h, ok := info.Impl.(interface {
+				Interceptors() []interceptor.Interceptor
+			}); ok {
+				interceptors = append(interceptors, h.Interceptors()...)
 			}
 
 			return testEchoController_local_stub{
@@ -183,9 +221,11 @@ func init() {
 		Impl:      reflect.TypeOf(testGinControllerImpl{}),
 		Refs:      ``,
 		LocalStubFn: func(ctx context.Context, info *kod.LocalStubFnInfo) any {
-			var interceptors []kod.Interceptor
-			if h, ok := info.Impl.(interface{ Interceptors() []kod.Interceptor }); ok {
-				interceptors = h.Interceptors()
+			interceptors := info.Interceptors
+			if h, ok := info.Impl.(interface {
+				Interceptors() []interceptor.Interceptor
+			}); ok {
+				interceptors = append(interceptors, h.Interceptors()...)
 			}
 
 			return testGinController_local_stub{
@@ -201,9 +241,11 @@ func init() {
 		Impl:      reflect.TypeOf(modelImpl{}),
 		Refs:      ``,
 		LocalStubFn: func(ctx context.Context, info *kod.LocalStubFnInfo) any {
-			var interceptors []kod.Interceptor
-			if h, ok := info.Impl.(interface{ Interceptors() []kod.Interceptor }); ok {
-				interceptors = h.Interceptors()
+			interceptors := info.Interceptors
+			if h, ok := info.Impl.(interface {
+				Interceptors() []interceptor.Interceptor
+			}); ok {
+				interceptors = append(interceptors, h.Interceptors()...)
 			}
 
 			return testRepository_local_stub{
@@ -219,9 +261,11 @@ func init() {
 		Impl:      reflect.TypeOf(serviceImpl{}),
 		Refs:      ``,
 		LocalStubFn: func(ctx context.Context, info *kod.LocalStubFnInfo) any {
-			var interceptors []kod.Interceptor
-			if h, ok := info.Impl.(interface{ Interceptors() []kod.Interceptor }); ok {
-				interceptors = h.Interceptors()
+			interceptors := info.Interceptors
+			if h, ok := info.Impl.(interface {
+				Interceptors() []interceptor.Interceptor
+			}); ok {
+				interceptors = append(interceptors, h.Interceptors()...)
 			}
 
 			return testService_local_stub{
@@ -241,6 +285,7 @@ var _ kod.InstanceOf[Test1Component] = (*test1Component)(nil)
 var _ kod.InstanceOf[Test2Component] = (*test2Component)(nil)
 var _ kod.InstanceOf[ctxInterface] = (*ctxImpl)(nil)
 var _ kod.InstanceOf[panicCaseInterface] = (*panicCase)(nil)
+var _ kod.InstanceOf[panicNoRecvoeryCaseInterface] = (*panicNoRecvoeryCase)(nil)
 var _ kod.InstanceOf[test1Controller] = (*test1ControllerImpl)(nil)
 var _ kod.InstanceOf[testEchoController] = (*testEchoControllerImpl)(nil)
 var _ kod.InstanceOf[testGinController] = (*testGinControllerImpl)(nil)
@@ -252,7 +297,7 @@ var _ kod.InstanceOf[testService] = (*serviceImpl)(nil)
 type hTTPController_local_stub struct {
 	impl        HTTPController
 	name        string
-	interceptor kod.Interceptor
+	interceptor interceptor.Interceptor
 }
 
 // Check that hTTPController_local_stub implements the HTTPController interface.
@@ -267,7 +312,7 @@ func (s hTTPController_local_stub) Foo(a0 http.ResponseWriter, a1 *http.Request)
 type main_local_stub struct {
 	impl        kod.Main
 	name        string
-	interceptor kod.Interceptor
+	interceptor interceptor.Interceptor
 }
 
 // Check that main_local_stub implements the kod.Main interface.
@@ -276,7 +321,7 @@ var _ kod.Main = (*main_local_stub)(nil)
 type protoValidateComponent_local_stub struct {
 	impl        ProtoValidateComponent
 	name        string
-	interceptor kod.Interceptor
+	interceptor interceptor.Interceptor
 }
 
 // Check that protoValidateComponent_local_stub implements the ProtoValidateComponent interface.
@@ -289,12 +334,12 @@ func (s protoValidateComponent_local_stub) Validate(ctx context.Context, a1 *exa
 		return
 	}
 
-	call := func(ctx context.Context, info kod.CallInfo, req, res []any) (err error) {
+	call := func(ctx context.Context, info interceptor.CallInfo, req, res []any) (err error) {
 		err = s.impl.Validate(ctx, a1)
 		return
 	}
 
-	info := kod.CallInfo{
+	info := interceptor.CallInfo{
 		Impl:       s.impl,
 		Component:  s.name,
 		FullMethod: "github.com/go-kod/kod/tests/case1/ProtoValidateComponent.Validate",
@@ -308,7 +353,7 @@ func (s protoValidateComponent_local_stub) Validate(ctx context.Context, a1 *exa
 type test1Component_local_stub struct {
 	impl        Test1Component
 	name        string
-	interceptor kod.Interceptor
+	interceptor interceptor.Interceptor
 }
 
 // Check that test1Component_local_stub implements the Test1Component interface.
@@ -321,13 +366,13 @@ func (s test1Component_local_stub) Foo(ctx context.Context, a1 *FooReq) (r0 *Foo
 		return
 	}
 
-	call := func(ctx context.Context, info kod.CallInfo, req, res []any) (err error) {
+	call := func(ctx context.Context, info interceptor.CallInfo, req, res []any) (err error) {
 		r0, err = s.impl.Foo(ctx, a1)
 		res[0] = r0
 		return
 	}
 
-	info := kod.CallInfo{
+	info := interceptor.CallInfo{
 		Impl:       s.impl,
 		Component:  s.name,
 		FullMethod: "github.com/go-kod/kod/tests/case1/Test1Component.Foo",
@@ -341,7 +386,7 @@ func (s test1Component_local_stub) Foo(ctx context.Context, a1 *FooReq) (r0 *Foo
 type test2Component_local_stub struct {
 	impl        Test2Component
 	name        string
-	interceptor kod.Interceptor
+	interceptor interceptor.Interceptor
 }
 
 // Check that test2Component_local_stub implements the Test2Component interface.
@@ -356,7 +401,7 @@ func (s test2Component_local_stub) GetClient() (r0 *http.Client) {
 type ctxInterface_local_stub struct {
 	impl        ctxInterface
 	name        string
-	interceptor kod.Interceptor
+	interceptor interceptor.Interceptor
 }
 
 // Check that ctxInterface_local_stub implements the ctxInterface interface.
@@ -369,12 +414,12 @@ func (s ctxInterface_local_stub) Foo(ctx context.Context) {
 		return
 	}
 
-	call := func(ctx context.Context, info kod.CallInfo, req, res []any) (err error) {
+	call := func(ctx context.Context, info interceptor.CallInfo, req, res []any) (err error) {
 		s.impl.Foo(ctx)
 		return
 	}
 
-	info := kod.CallInfo{
+	info := interceptor.CallInfo{
 		Impl:       s.impl,
 		Component:  s.name,
 		FullMethod: "github.com/go-kod/kod/tests/case1/ctxInterface.Foo",
@@ -387,7 +432,7 @@ func (s ctxInterface_local_stub) Foo(ctx context.Context) {
 type panicCaseInterface_local_stub struct {
 	impl        panicCaseInterface
 	name        string
-	interceptor kod.Interceptor
+	interceptor interceptor.Interceptor
 }
 
 // Check that panicCaseInterface_local_stub implements the panicCaseInterface interface.
@@ -400,12 +445,12 @@ func (s panicCaseInterface_local_stub) TestPanic(ctx context.Context) {
 		return
 	}
 
-	call := func(ctx context.Context, info kod.CallInfo, req, res []any) (err error) {
+	call := func(ctx context.Context, info interceptor.CallInfo, req, res []any) (err error) {
 		s.impl.TestPanic(ctx)
 		return
 	}
 
-	info := kod.CallInfo{
+	info := interceptor.CallInfo{
 		Impl:       s.impl,
 		Component:  s.name,
 		FullMethod: "github.com/go-kod/kod/tests/case1/panicCaseInterface.TestPanic",
@@ -415,10 +460,41 @@ func (s panicCaseInterface_local_stub) TestPanic(ctx context.Context) {
 	_ = s.interceptor(ctx, info, []any{}, []any{}, call)
 }
 
+type panicNoRecvoeryCaseInterface_local_stub struct {
+	impl        panicNoRecvoeryCaseInterface
+	name        string
+	interceptor interceptor.Interceptor
+}
+
+// Check that panicNoRecvoeryCaseInterface_local_stub implements the panicNoRecvoeryCaseInterface interface.
+var _ panicNoRecvoeryCaseInterface = (*panicNoRecvoeryCaseInterface_local_stub)(nil)
+
+func (s panicNoRecvoeryCaseInterface_local_stub) TestPanic(ctx context.Context) {
+
+	if s.interceptor == nil {
+		s.impl.TestPanic(ctx)
+		return
+	}
+
+	call := func(ctx context.Context, info interceptor.CallInfo, req, res []any) (err error) {
+		s.impl.TestPanic(ctx)
+		return
+	}
+
+	info := interceptor.CallInfo{
+		Impl:       s.impl,
+		Component:  s.name,
+		FullMethod: "github.com/go-kod/kod/tests/case1/panicNoRecvoeryCaseInterface.TestPanic",
+		Method:     "TestPanic",
+	}
+
+	_ = s.interceptor(ctx, info, []any{}, []any{}, call)
+}
+
 type test1Controller_local_stub struct {
 	impl        test1Controller
 	name        string
-	interceptor kod.Interceptor
+	interceptor interceptor.Interceptor
 }
 
 // Check that test1Controller_local_stub implements the test1Controller interface.
@@ -427,7 +503,7 @@ var _ test1Controller = (*test1Controller_local_stub)(nil)
 type testEchoController_local_stub struct {
 	impl        testEchoController
 	name        string
-	interceptor kod.Interceptor
+	interceptor interceptor.Interceptor
 }
 
 // Check that testEchoController_local_stub implements the testEchoController interface.
@@ -448,7 +524,7 @@ func (s testEchoController_local_stub) Hello(a0 echo.Context) (err error) {
 type testGinController_local_stub struct {
 	impl        testGinController
 	name        string
-	interceptor kod.Interceptor
+	interceptor interceptor.Interceptor
 }
 
 // Check that testGinController_local_stub implements the testGinController interface.
@@ -463,7 +539,7 @@ func (s testGinController_local_stub) Hello(a0 *gin.Context) {
 type testRepository_local_stub struct {
 	impl        testRepository
 	name        string
-	interceptor kod.Interceptor
+	interceptor interceptor.Interceptor
 }
 
 // Check that testRepository_local_stub implements the testRepository interface.
@@ -476,12 +552,12 @@ func (s testRepository_local_stub) Foo(ctx context.Context) (err error) {
 		return
 	}
 
-	call := func(ctx context.Context, info kod.CallInfo, req, res []any) (err error) {
+	call := func(ctx context.Context, info interceptor.CallInfo, req, res []any) (err error) {
 		err = s.impl.Foo(ctx)
 		return
 	}
 
-	info := kod.CallInfo{
+	info := interceptor.CallInfo{
 		Impl:       s.impl,
 		Component:  s.name,
 		FullMethod: "github.com/go-kod/kod/tests/case1/testRepository.Foo",
@@ -495,7 +571,7 @@ func (s testRepository_local_stub) Foo(ctx context.Context) (err error) {
 type testService_local_stub struct {
 	impl        testService
 	name        string
-	interceptor kod.Interceptor
+	interceptor interceptor.Interceptor
 }
 
 // Check that testService_local_stub implements the testService interface.
@@ -508,12 +584,12 @@ func (s testService_local_stub) Foo(ctx context.Context) (err error) {
 		return
 	}
 
-	call := func(ctx context.Context, info kod.CallInfo, req, res []any) (err error) {
+	call := func(ctx context.Context, info interceptor.CallInfo, req, res []any) (err error) {
 		err = s.impl.Foo(ctx)
 		return
 	}
 
-	info := kod.CallInfo{
+	info := interceptor.CallInfo{
 		Impl:       s.impl,
 		Component:  s.name,
 		FullMethod: "github.com/go-kod/kod/tests/case1/testService.Foo",

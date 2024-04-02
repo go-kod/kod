@@ -162,8 +162,8 @@ func (f *foo) Stop(context.Context) error {
 Kod 内置了常用的拦截器，组件可以实现以下拦截器方法，将这些拦截器注入到组件方法中：
 
 ```go
-func (f *foo) Interceptors() []kod.Interceptor {
-    return []kod.Interceptor{
+func (f *foo) Interceptors() []interceptor.Interceptor {
+    return []interceptor.Interceptor{
         kmetric.New(),
         ktrace.New(),
     }

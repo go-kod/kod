@@ -4,12 +4,12 @@ import (
 	"context"
 	"log/slog"
 
-	"github.com/go-kod/kod"
+	"github.com/go-kod/kod/interceptor"
 )
 
 // Interceptor returns a server interceptor that logs requests and responses.
-func Interceptor() kod.Interceptor {
-	return func(ctx context.Context, info kod.CallInfo, req, reply []any, invoker kod.HandleFunc) error {
+func Interceptor() interceptor.Interceptor {
+	return func(ctx context.Context, info interceptor.CallInfo, req, reply []any, invoker interceptor.HandleFunc) error {
 		err := invoker(ctx, info, req, reply)
 
 		attrs := []slog.Attr{

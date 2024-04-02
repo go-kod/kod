@@ -5,12 +5,12 @@ import (
 	"fmt"
 
 	"github.com/avast/retry-go/v4"
-	"github.com/go-kod/kod"
+	"github.com/go-kod/kod/interceptor"
 )
 
 // Interceptor returns a interceptor that retries the call specified by info.
-func Interceptor(opts ...retry.Option) kod.Interceptor {
-	return func(ctx context.Context, info kod.CallInfo, req, reply []any, invoker kod.HandleFunc) error {
+func Interceptor(opts ...retry.Option) interceptor.Interceptor {
+	return func(ctx context.Context, info interceptor.CallInfo, req, reply []any, invoker interceptor.HandleFunc) error {
 		err := retry.Do(func() error {
 			return invoker(ctx, info, req, reply)
 		}, opts...)

@@ -5,18 +5,18 @@ import (
 	"fmt"
 
 	"github.com/bufbuild/protovalidate-go"
-	"github.com/go-kod/kod"
+	"github.com/go-kod/kod/interceptor"
 	"github.com/samber/lo"
 	"google.golang.org/protobuf/proto"
 )
 
 // Interceptor returns a interceptor that validates the call specified by info.
-func Interceptor() kod.Interceptor {
+func Interceptor() interceptor.Interceptor {
 	validate := lo.Must(protovalidate.New(
 		protovalidate.WithFailFast(true),
 	))
 
-	return func(ctx context.Context, info kod.CallInfo, req, reply []any, invoker kod.HandleFunc) error {
+	return func(ctx context.Context, info interceptor.CallInfo, req, reply []any, invoker interceptor.HandleFunc) error {
 		for _, v := range req {
 			if obj, ok := v.(proto.Message); ok {
 				if err := validate.Validate(obj); err != nil {

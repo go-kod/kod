@@ -6,6 +6,7 @@ import (
 
 	"github.com/go-kod/kod"
 	"github.com/go-kod/kod/ext/client/kredis"
+	"github.com/go-kod/kod/interceptor"
 	"github.com/go-kod/kod/interceptor/kvalidate"
 	"github.com/google/uuid"
 )
@@ -45,7 +46,6 @@ type GenerateResponse struct {
 
 // Generate generates a short url.
 func (i *impl) Generate(ctx context.Context, req *GenerateRequest) (*GenerateResponse, error) {
-
 	short := i.uuid.String()
 	key := i.Config().Prefix + short
 	_, err := i.redis.SetEx(ctx, key, req.URL, req.Duration).Result()
@@ -80,8 +80,8 @@ func (i *impl) Get(ctx context.Context, req *GetRequest) (*GetResponse, error) {
 	}, nil
 }
 
-func (i *impl) Interceptors() []kod.Interceptor {
-	return []kod.Interceptor{
+func (i *impl) Interceptors() []interceptor.Interceptor {
+	return []interceptor.Interceptor{
 		kvalidate.Interceptor(),
 	}
 }

@@ -419,3 +419,38 @@ func (mr *MockpanicCaseInterfaceMockRecorder) TestPanic(ctx any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "TestPanic", reflect.TypeOf((*MockpanicCaseInterface)(nil).TestPanic), ctx)
 }
+
+// MockpanicNoRecvoeryCaseInterface is a mock of panicNoRecvoeryCaseInterface interface.
+type MockpanicNoRecvoeryCaseInterface struct {
+	ctrl     *gomock.Controller
+	recorder *MockpanicNoRecvoeryCaseInterfaceMockRecorder
+}
+
+// MockpanicNoRecvoeryCaseInterfaceMockRecorder is the mock recorder for MockpanicNoRecvoeryCaseInterface.
+type MockpanicNoRecvoeryCaseInterfaceMockRecorder struct {
+	mock *MockpanicNoRecvoeryCaseInterface
+}
+
+// NewMockpanicNoRecvoeryCaseInterface creates a new mock instance.
+func NewMockpanicNoRecvoeryCaseInterface(ctrl *gomock.Controller) *MockpanicNoRecvoeryCaseInterface {
+	mock := &MockpanicNoRecvoeryCaseInterface{ctrl: ctrl}
+	mock.recorder = &MockpanicNoRecvoeryCaseInterfaceMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MockpanicNoRecvoeryCaseInterface) EXPECT() *MockpanicNoRecvoeryCaseInterfaceMockRecorder {
+	return m.recorder
+}
+
+// TestPanic mocks base method.
+func (m *MockpanicNoRecvoeryCaseInterface) TestPanic(ctx context.Context) {
+	m.ctrl.T.Helper()
+	m.ctrl.Call(m, "TestPanic", ctx)
+}
+
+// TestPanic indicates an expected call of TestPanic.
+func (mr *MockpanicNoRecvoeryCaseInterfaceMockRecorder) TestPanic(ctx any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "TestPanic", reflect.TypeOf((*MockpanicNoRecvoeryCaseInterface)(nil).TestPanic), ctx)
+}

@@ -11,7 +11,7 @@ require (
 	github.com/avast/retry-go/v4 v4.5.1
 	github.com/gin-gonic/gin v1.9.1
 	github.com/go-kod/kod v0.0.0-00010101000000-000000000000
-	github.com/go-kod/kod/interceptor v0.0.0-00010101000000-000000000000
+	github.com/go-kod/kod/interceptor v0.5.0
 	github.com/labstack/echo/v4 v4.11.4
 	github.com/samber/lo v1.39.0
 	github.com/stretchr/testify v1.9.0
@@ -60,7 +60,7 @@ require (
 	github.com/power-devops/perfstat v0.0.0-20210106213030-5aafc221ea8c // indirect
 	github.com/sagikazarmark/locafero v0.4.0 // indirect
 	github.com/sagikazarmark/slog-shim v0.1.0 // indirect
-	github.com/shirou/gopsutil/v3 v3.24.2 // indirect
+	github.com/shirou/gopsutil/v3 v3.24.3 // indirect
 	github.com/shoenig/go-m1cpu v0.1.6 // indirect
 	github.com/sony/gobreaker v0.5.0 // indirect
 	github.com/sourcegraph/conc v0.3.0 // indirect

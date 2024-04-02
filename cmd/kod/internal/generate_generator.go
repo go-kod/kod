@@ -676,9 +676,9 @@ func (g *generator) generateRegisteredComponents(p printFn) {
 
 		g.interceptor()
 		localStubFn := fmt.Sprintf(`func(ctx context.Context, info *kod.LocalStubFnInfo) any {
-			var interceptors []kod.Interceptor
-			if h, ok := info.Impl.(interface{ Interceptors() []kod.Interceptor }); ok {
-				interceptors = h.Interceptors()
+			interceptors := info.Interceptors
+			if h, ok := info.Impl.(interface{ Interceptors() []interceptor.Interceptor }); ok {
+				interceptors = append(interceptors, h.Interceptors()...)
 			}
 
 			%s
@@ -751,7 +751,7 @@ func (g *generator) generateLocalStubs(p printFn) {
 		p(`type %s struct{`, stub)
 		p(`	impl %s`, g.componentRef(comp))
 		p(`	name   string`)
-		p(`	interceptor kod.Interceptor`)
+		p(`	interceptor interceptor.Interceptor`)
 		p(`}`)
 
 		p(``)
@@ -788,14 +788,14 @@ func (g *generator) generateLocalStubs(p printFn) {
 				}
 			`, g.returnsList(mt), m.Name(), g.argList(comp, mt))
 
-			p(`call := func(ctx context.Context, info kod.CallInfo, req, res []any) (err error) {`)
+			p(`call := func(ctx context.Context, info interceptor.CallInfo, req, res []any) (err error) {`)
 
 			p(`	%s s.impl.%s(%s)
 					%sreturn
 				}
 			`, g.returnsList(mt), m.Name(), g.argList(comp, mt), g.setReturnsList(mt))
 
-			p(`info := kod.CallInfo {
+			p(`info := interceptor.CallInfo {
 					Impl: s.impl,
 					Component:  s.name,
 					FullMethod: "%s.%s",

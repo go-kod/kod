@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/go-kod/kod"
+	"github.com/go-kod/kod/interceptor"
 	"github.com/go-kod/kod/interceptor/kaccesslog"
 	"github.com/go-kod/kod/interceptor/kcircuitbreaker"
 	"github.com/go-kod/kod/interceptor/kmetric"
@@ -66,8 +67,8 @@ func (t *test1Component) Init(ctx context.Context) error {
 	return nil
 }
 
-func (t *test1Component) Interceptors() []kod.Interceptor {
-	return []kod.Interceptor{
+func (t *test1Component) Interceptors() []interceptor.Interceptor {
+	return []interceptor.Interceptor{
 		ktrace.Interceptor(),
 		kmetric.Interceptor(),
 		krecovery.Interceptor(),

@@ -12,6 +12,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/go-kod/kod/interceptor"
 	"github.com/go-kod/kod/internal/hooks"
 	"github.com/go-kod/kod/internal/kslog"
 	"github.com/go-kod/kod/internal/paths"
@@ -175,6 +176,13 @@ func WithRegistrations(regs ...*Registration) func(*options) {
 	}
 }
 
+// WithInterceptors is an option setter for specifying interceptors.
+func WithInterceptors(interceptors ...interceptor.Interceptor) func(*options) {
+	return func(opts *options) {
+		opts.interceptors = interceptors
+	}
+}
+
 // Run initializes and runs the application with the provided main component and options.
 func Run[T any, _ PointerToMain[T]](ctx context.Context, run func(context.Context, *T) error, opts ...func(*options)) error {
 	opt := &options{}
@@ -269,6 +277,7 @@ type options struct {
 	fakes          map[reflect.Type]any
 	logWrapper     func(slog.Handler) slog.Handler
 	registrations  []*Registration
+	interceptors   []interceptor.Interceptor
 }
 
 // newKod creates a new instance of Kod with the provided registrations and options.

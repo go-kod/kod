@@ -163,8 +163,8 @@ func (f *foo) Stop(context.Context) error {
 Kod has built-in common interceptors, and components can implement the following methods to inject these interceptors into component methods:
 
 ```go
-func (f *foo) Interceptors() []kod.Interceptor {
-    return []kod.Interceptor{
+func (f *foo) Interceptors() []interceptor.Interceptor {
+    return []interceptor.Interceptor{
         kmetric.New(),
         ktrace.New(),
     }

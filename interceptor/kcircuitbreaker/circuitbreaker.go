@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"sync"
 
-	"github.com/go-kod/kod"
+	"github.com/go-kod/kod/interceptor"
 	"github.com/go-kod/kod/interceptor/internal/circuitbreaker"
 	"github.com/go-kod/kod/internal/singleton"
 )
@@ -16,12 +16,12 @@ var (
 )
 
 // Interceptor returns an interceptor do circuit breaker.
-func Interceptor() kod.Interceptor {
+func Interceptor() interceptor.Interceptor {
 	once.Do(func() {
 		pool = singleton.NewSingleton[circuitbreaker.CircuitBreaker]()
 	})
 
-	return func(ctx context.Context, info kod.CallInfo, req, reply []any, invoker kod.HandleFunc) error {
+	return func(ctx context.Context, info interceptor.CallInfo, req, reply []any, invoker interceptor.HandleFunc) error {
 		breaker := pool.Get(info.FullMethod, func() *circuitbreaker.CircuitBreaker {
 			return circuitbreaker.NewCircuitBreaker(ctx, info.FullMethod)
 		})

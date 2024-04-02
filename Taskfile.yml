@@ -99,3 +99,11 @@ tasks:
       - cd examples && go mod tidy
       - cd ext && go mod tidy
       - cd interceptor && go mod tidy
+
+  release:
+    vars:
+      VERSION: v0.6.0
+    cmds:
+      - git tag {{.VERSION}}
+      - git tag interceptor/{{.VERSION}}
+      - git tag ext/{{.VERSION}}
