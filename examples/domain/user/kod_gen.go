@@ -18,9 +18,11 @@ func init() {
 		Refs: `⟦8792a680:KoDeDgE:github.com/go-kod/kod/examples/domain/user/Component→github.com/go-kod/kod/examples/domain/snowflake/Component⟧,
 ⟦8bb50e61:KoDeDgE:github.com/go-kod/kod/examples/domain/user/Component→github.com/go-kod/kod/examples/infra/redis/Component⟧`,
 		LocalStubFn: func(ctx context.Context, info *kod.LocalStubFnInfo) any {
-			var interceptors []kod.Interceptor
-			if h, ok := info.Impl.(interface{ Interceptors() []kod.Interceptor }); ok {
-				interceptors = h.Interceptors()
+			interceptors := info.Interceptors
+			if h, ok := info.Impl.(interface {
+				Interceptors() []interceptor.Interceptor
+			}); ok {
+				interceptors = append(interceptors, h.Interceptors()...)
 			}
 
 			return component_local_stub{
@@ -40,7 +42,7 @@ var _ kod.InstanceOf[Component] = (*impl)(nil)
 type component_local_stub struct {
 	impl        Component
 	name        string
-	interceptor kod.Interceptor
+	interceptor interceptor.Interceptor
 }
 
 // Check that component_local_stub implements the Component interface.
@@ -53,13 +55,13 @@ func (s component_local_stub) Auth(ctx context.Context, a1 *AuthRequest) (r0 *Au
 		return
 	}
 
-	call := func(ctx context.Context, info kod.CallInfo, req, res []any) (err error) {
+	call := func(ctx context.Context, info interceptor.CallInfo, req, res []any) (err error) {
 		r0, err = s.impl.Auth(ctx, a1)
 		res[0] = r0
 		return
 	}
 
-	info := kod.CallInfo{
+	info := interceptor.CallInfo{
 		Impl:       s.impl,
 		Component:  s.name,
 		FullMethod: "github.com/go-kod/kod/examples/domain/user/Component.Auth",
@@ -77,13 +79,13 @@ func (s component_local_stub) DeRegister(ctx context.Context, a1 *DeRegisterRequ
 		return
 	}
 
-	call := func(ctx context.Context, info kod.CallInfo, req, res []any) (err error) {
+	call := func(ctx context.Context, info interceptor.CallInfo, req, res []any) (err error) {
 		r0, err = s.impl.DeRegister(ctx, a1)
 		res[0] = r0
 		return
 	}
 
-	info := kod.CallInfo{
+	info := interceptor.CallInfo{
 		Impl:       s.impl,
 		Component:  s.name,
 		FullMethod: "github.com/go-kod/kod/examples/domain/user/Component.DeRegister",
@@ -101,13 +103,13 @@ func (s component_local_stub) Login(ctx context.Context, a1 *LoginRequest) (r0 *
 		return
 	}
 
-	call := func(ctx context.Context, info kod.CallInfo, req, res []any) (err error) {
+	call := func(ctx context.Context, info interceptor.CallInfo, req, res []any) (err error) {
 		r0, err = s.impl.Login(ctx, a1)
 		res[0] = r0
 		return
 	}
 
-	info := kod.CallInfo{
+	info := interceptor.CallInfo{
 		Impl:       s.impl,
 		Component:  s.name,
 		FullMethod: "github.com/go-kod/kod/examples/domain/user/Component.Login",
@@ -125,13 +127,13 @@ func (s component_local_stub) Register(ctx context.Context, a1 *RegisterRequest)
 		return
 	}
 
-	call := func(ctx context.Context, info kod.CallInfo, req, res []any) (err error) {
+	call := func(ctx context.Context, info interceptor.CallInfo, req, res []any) (err error) {
 		r0, err = s.impl.Register(ctx, a1)
 		res[0] = r0
 		return
 	}
 
-	info := kod.CallInfo{
+	info := interceptor.CallInfo{
 		Impl:       s.impl,
 		Component:  s.name,
 		FullMethod: "github.com/go-kod/kod/examples/domain/user/Component.Register",

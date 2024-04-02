@@ -4,7 +4,7 @@ import (
 	"context"
 	"time"
 
-	"github.com/go-kod/kod"
+	"github.com/go-kod/kod/interceptor"
 )
 
 type Options struct {
@@ -21,7 +21,7 @@ func WithTimeout(timeout time.Duration) func(*Options) {
 const defaultTimeout = time.Second * 5
 
 // Interceptor returns an interceptor that adds OpenTelemetry tracing to the context.
-func Interceptor(opts ...func(*Options)) kod.Interceptor {
+func Interceptor(opts ...func(*Options)) interceptor.Interceptor {
 	options := Options{
 		Timeout: defaultTimeout,
 	}
@@ -30,7 +30,7 @@ func Interceptor(opts ...func(*Options)) kod.Interceptor {
 		o(&options)
 	}
 
-	return func(ctx context.Context, info kod.CallInfo, req, reply []any, invoker kod.HandleFunc) error {
+	return func(ctx context.Context, info interceptor.CallInfo, req, reply []any, invoker interceptor.HandleFunc) error {
 		ctx, cancel := context.WithTimeout(ctx, options.Timeout)
 		defer cancel()
 		return invoker(ctx, info, req, reply)

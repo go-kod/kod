@@ -30,8 +30,10 @@ func TestRun(t *testing.T) {
 				Impl:      reflect.TypeOf(App{}),
 				Refs:      `⟦73dc6a0b:KoDeDgE:github.com/go-kod/kod/Main→github.com/go-kod/kod/tests/case2/Test1Component⟧`,
 				LocalStubFn: func(ctx context.Context, info *kod.LocalStubFnInfo) any {
-					var interceptors []kod.Interceptor
-					if h, ok := info.Impl.(interface{ Interceptors() []kod.Interceptor }); ok {
+					var interceptors []interceptor.Interceptor
+					if h, ok := info.Impl.(interface {
+						Interceptors() []interceptor.Interceptor
+					}); ok {
 						interceptors = h.Interceptors()
 					}
 
@@ -48,8 +50,10 @@ func TestRun(t *testing.T) {
 				Impl:      reflect.TypeOf(test1Component{}),
 				Refs:      `⟦3dc9f060:KoDeDgE:github.com/go-kod/kod/tests/case2/Test1Component→github.com/go-kod/kod/tests/case2/Test2Component⟧`,
 				LocalStubFn: func(ctx context.Context, info *kod.LocalStubFnInfo) any {
-					var interceptors []kod.Interceptor
-					if h, ok := info.Impl.(interface{ Interceptors() []kod.Interceptor }); ok {
+					var interceptors []interceptor.Interceptor
+					if h, ok := info.Impl.(interface {
+						Interceptors() []interceptor.Interceptor
+					}); ok {
 						interceptors = h.Interceptors()
 					}
 
@@ -66,8 +70,10 @@ func TestRun(t *testing.T) {
 				Impl:      reflect.TypeOf(test2Component{}),
 				Refs:      `⟦1767cee9:KoDeDgE:github.com/go-kod/kod/tests/case2/Test2Component→github.com/go-kod/kod/tests/case2/Test1Component⟧`,
 				LocalStubFn: func(ctx context.Context, info *kod.LocalStubFnInfo) any {
-					var interceptors []kod.Interceptor
-					if h, ok := info.Impl.(interface{ Interceptors() []kod.Interceptor }); ok {
+					var interceptors []interceptor.Interceptor
+					if h, ok := info.Impl.(interface {
+						Interceptors() []interceptor.Interceptor
+					}); ok {
 						interceptors = h.Interceptors()
 					}
 

@@ -3,12 +3,15 @@ package registry
 import (
 	"context"
 	"reflect"
+
+	"github.com/go-kod/kod/interceptor"
 )
 
 // LocalStubFnInfo is the information passed to LocalStubFn.
 type LocalStubFnInfo struct {
-	Impl any
-	Name string
+	Impl         any
+	Name         string
+	Interceptors []interceptor.Interceptor
 }
 
 // Registration is the registration information for a component.

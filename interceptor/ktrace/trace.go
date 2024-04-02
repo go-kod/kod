@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/go-kod/kod"
+	"github.com/go-kod/kod/interceptor"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/codes"
@@ -11,8 +12,8 @@ import (
 )
 
 // Interceptor returns an interceptor that adds OpenTelemetry tracing to the context.
-func Interceptor() kod.Interceptor {
-	return func(ctx context.Context, info kod.CallInfo, req, reply []any, invoker kod.HandleFunc) error {
+func Interceptor() interceptor.Interceptor {
+	return func(ctx context.Context, info interceptor.CallInfo, req, reply []any, invoker interceptor.HandleFunc) error {
 		span := trace.SpanFromContext(ctx)
 		if span.SpanContext().IsValid() {
 			// Create a child span for this method.
@@ -26,7 +27,6 @@ func Interceptor() kod.Interceptor {
 		}
 
 		err := invoker(ctx, info, req, reply)
-
 		if err != nil {
 			span.RecordError(err)
 			span.SetStatus(codes.Error, err.Error())

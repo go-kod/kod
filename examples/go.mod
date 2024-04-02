@@ -11,7 +11,7 @@ replace github.com/go-kod/kod/ext => ../ext
 require (
 	github.com/go-kod/kod v0.0.0-00010101000000-000000000000
 	github.com/go-kod/kod/ext v0.0.0-00010101000000-000000000000
-	github.com/go-kod/kod/interceptor v0.0.0-00010101000000-000000000000
+	github.com/go-kod/kod/interceptor v0.5.0
 	github.com/golang-jwt/jwt/v5 v5.2.1
 	github.com/google/uuid v1.6.0
 	github.com/redis/go-redis/v9 v9.5.1

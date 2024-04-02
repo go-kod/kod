@@ -1,6 +1,6 @@
 module github.com/go-kod/kod/ext
 
-go 1.21.0
+go 1.21.7
 
 replace github.com/go-kod/kod => ../
 
@@ -49,6 +49,7 @@ require (
 	github.com/fsnotify/fsnotify v1.7.0 // indirect
 	github.com/gabriel-vasile/mimetype v1.4.3 // indirect
 	github.com/gin-contrib/sse v0.1.0 // indirect
+	github.com/go-kod/kod/interceptor v0.5.0 // indirect
 	github.com/go-logr/logr v1.4.1 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
 	github.com/go-ole/go-ole v1.2.6 // indirect

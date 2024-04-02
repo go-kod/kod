@@ -17,9 +17,11 @@ func init() {
 		Impl:      reflect.TypeOf(impl{}),
 		Refs:      `⟦046c4a6c:KoDeDgE:github.com/go-kod/kod/examples/domain/snowflake/Component→github.com/go-kod/kod/examples/infra/redis/Component⟧`,
 		LocalStubFn: func(ctx context.Context, info *kod.LocalStubFnInfo) any {
-			var interceptors []kod.Interceptor
-			if h, ok := info.Impl.(interface{ Interceptors() []kod.Interceptor }); ok {
-				interceptors = h.Interceptors()
+			interceptors := info.Interceptors
+			if h, ok := info.Impl.(interface {
+				Interceptors() []interceptor.Interceptor
+			}); ok {
+				interceptors = append(interceptors, h.Interceptors()...)
 			}
 
 			return component_local_stub{
@@ -39,7 +41,7 @@ var _ kod.InstanceOf[Component] = (*impl)(nil)
 type component_local_stub struct {
 	impl        Component
 	name        string
-	interceptor kod.Interceptor
+	interceptor interceptor.Interceptor
 }
 
 // Check that component_local_stub implements the Component interface.
@@ -52,13 +54,13 @@ func (s component_local_stub) NextID(ctx context.Context, a1 *NextIDRequest) (r0
 		return
 	}
 
-	call := func(ctx context.Context, info kod.CallInfo, req, res []any) (err error) {
+	call := func(ctx context.Context, info interceptor.CallInfo, req, res []any) (err error) {
 		r0, err = s.impl.NextID(ctx, a1)
 		res[0] = r0
 		return
 	}
 
-	info := kod.CallInfo{
+	info := interceptor.CallInfo{
 		Impl:       s.impl,
 		Component:  s.name,
 		FullMethod: "github.com/go-kod/kod/examples/domain/snowflake/Component.NextID",

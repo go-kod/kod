@@ -54,8 +54,9 @@ func (k *Kod) getIntf(ctx context.Context, t reflect.Type, caller string) (any, 
 	}
 
 	intf = reg.LocalStubFn(ctx, &LocalStubFnInfo{
-		Name: reg.Name,
-		Impl: comp,
+		Name:         reg.Name,
+		Impl:         comp,
+		Interceptors: k.opts.interceptors,
 	})
 
 	k.components[reg.Name] = intf

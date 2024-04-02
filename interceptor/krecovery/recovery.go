@@ -6,7 +6,7 @@ import (
 	"os"
 	"runtime"
 
-	"github.com/go-kod/kod"
+	"github.com/go-kod/kod/interceptor"
 )
 
 type panicError struct {
@@ -26,8 +26,8 @@ func recoverFrom(p any) error {
 }
 
 // Interceptor returns an interceptor that recovers from panics.
-func Interceptor() kod.Interceptor {
-	return func(ctx context.Context, info kod.CallInfo, req, reply []any, invoker kod.HandleFunc) (err error) {
+func Interceptor() interceptor.Interceptor {
+	return func(ctx context.Context, info interceptor.CallInfo, req, reply []any, invoker interceptor.HandleFunc) (err error) {
 		normalReturn := false
 		defer func() {
 			if !normalReturn {

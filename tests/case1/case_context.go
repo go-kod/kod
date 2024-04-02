@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/go-kod/kod"
+	"github.com/go-kod/kod/interceptor"
 	"github.com/go-kod/kod/interceptor/kaccesslog"
 	"github.com/go-kod/kod/interceptor/kcircuitbreaker"
 	"github.com/go-kod/kod/interceptor/kmetric"
@@ -26,8 +27,8 @@ func (t *ctxImpl) Foo(ctx context.Context) {
 	}
 }
 
-func (t *ctxImpl) Interceptors() []kod.Interceptor {
-	return []kod.Interceptor{
+func (t *ctxImpl) Interceptors() []interceptor.Interceptor {
+	return []interceptor.Interceptor{
 		krecovery.Interceptor(),
 		kaccesslog.Interceptor(),
 		ktimeout.Interceptor(ktimeout.WithTimeout(time.Second)),

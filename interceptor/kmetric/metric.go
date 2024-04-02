@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/go-kod/kod"
+	"github.com/go-kod/kod/interceptor"
 	"github.com/samber/lo"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/attribute"
@@ -27,8 +28,8 @@ var (
 )
 
 // Interceptor returns an interceptor that adds OpenTelemetry metrics to the context.
-func Interceptor() kod.Interceptor {
-	return func(ctx context.Context, info kod.CallInfo, req, reply []any, invoker kod.HandleFunc) (err error) {
+func Interceptor() interceptor.Interceptor {
+	return func(ctx context.Context, info interceptor.CallInfo, req, reply []any, invoker interceptor.HandleFunc) (err error) {
 		now := time.Now()
 
 		err = invoker(ctx, info, req, reply)

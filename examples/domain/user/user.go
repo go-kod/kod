@@ -10,6 +10,7 @@ import (
 	"github.com/go-kod/kod/examples/domain/snowflake"
 	redisC "github.com/go-kod/kod/examples/infra/redis"
 	"github.com/go-kod/kod/ext/client/kredis"
+	"github.com/go-kod/kod/interceptor"
 	"github.com/go-kod/kod/interceptor/kmetric"
 	"github.com/go-kod/kod/interceptor/krecovery"
 	"github.com/go-kod/kod/interceptor/ktrace"
@@ -48,8 +49,8 @@ func (ins *impl) Init(ctx context.Context) error {
 	return nil
 }
 
-func (ins *impl) Interceptors() []kod.Interceptor {
-	return []kod.Interceptor{
+func (ins *impl) Interceptors() []interceptor.Interceptor {
+	return []interceptor.Interceptor{
 		krecovery.Interceptor(),
 		ktrace.Interceptor(),
 		kmetric.Interceptor(),

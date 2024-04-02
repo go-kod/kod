@@ -2,20 +2,36 @@ package interceptor
 
 import (
 	"context"
-
-	"github.com/go-kod/kod"
 )
 
+// CallInfo contains information about the call.
+type CallInfo struct {
+	// The impl of the called component.
+	Impl any
+	// The component name of the called method.
+	Component string
+	// The full name of the called method, in the format of "package/service.method".
+	FullMethod string
+	// The name of the method.
+	Method string
+}
+
+// HandleFunc is the type of the function invoked by Components.
+type HandleFunc func(ctx context.Context, info CallInfo, req, reply []any) error
+
+// Interceptor is the type of the function used to intercept Components.
+type Interceptor func(ctx context.Context, info CallInfo, req, reply []any, invoker HandleFunc) error
+
 // Condition is the type of the function used to determine whether an interceptor should be used.
-type Condition func(ctx context.Context, info kod.CallInfo) bool
+type Condition func(ctx context.Context, info CallInfo) bool
 
 // Chain converts a slice of Interceptors into a single Interceptor.
-func Chain(interceptors []kod.Interceptor) kod.Interceptor {
+func Chain(interceptors []Interceptor) Interceptor {
 	if len(interceptors) == 0 {
 		return nil
 	}
 
-	return func(ctx context.Context, info kod.CallInfo, req, reply []any, invoker kod.HandleFunc) error {
+	return func(ctx context.Context, info CallInfo, req, reply []any, invoker HandleFunc) error {
 		// Build the interceptor chain.
 		chain := buildInterceptorChain(invoker, interceptors, 0)
 		return chain(ctx, info, req, reply)
@@ -23,19 +39,19 @@ func Chain(interceptors []kod.Interceptor) kod.Interceptor {
 }
 
 // buildInterceptorChain recursively constructs a chain of interceptors.
-func buildInterceptorChain(invoker kod.HandleFunc, interceptors []kod.Interceptor, current int) kod.HandleFunc {
+func buildInterceptorChain(invoker HandleFunc, interceptors []Interceptor, current int) HandleFunc {
 	if current == len(interceptors) {
 		return invoker
 	}
 
-	return func(ctx context.Context, info kod.CallInfo, req, reply []any) error {
+	return func(ctx context.Context, info CallInfo, req, reply []any) error {
 		return interceptors[current](ctx, info, req, reply, buildInterceptorChain(invoker, interceptors, current+1))
 	}
 }
 
 // If returns an Interceptor that only invokes the given interceptor if the given condition is true.
-func If(interceptor kod.Interceptor, condition Condition) kod.Interceptor {
-	return func(ctx context.Context, info kod.CallInfo, req, reply []any, invoker kod.HandleFunc) error {
+func If(interceptor Interceptor, condition Condition) Interceptor {
+	return func(ctx context.Context, info CallInfo, req, reply []any, invoker HandleFunc) error {
 		if condition(ctx, info) {
 			return interceptor(ctx, info, req, reply, invoker)
 		}
@@ -46,7 +62,7 @@ func If(interceptor kod.Interceptor, condition Condition) kod.Interceptor {
 
 // And groups conditions with the AND operator.
 func And(first, second Condition, conditions ...Condition) Condition {
-	return func(ctx context.Context, info kod.CallInfo) bool {
+	return func(ctx context.Context, info CallInfo) bool {
 		if !first(ctx, info) || !second(ctx, info) {
 			return false
 		}
@@ -62,7 +78,7 @@ func And(first, second Condition, conditions ...Condition) Condition {
 
 // Or groups conditions with the OR operator.
 func Or(first, second Condition, conditions ...Condition) Condition {
-	return func(ctx context.Context, info kod.CallInfo) bool {
+	return func(ctx context.Context, info CallInfo) bool {
 		if first(ctx, info) || second(ctx, info) {
 			return true
 		}
@@ -78,14 +94,14 @@ func Or(first, second Condition, conditions ...Condition) Condition {
 
 // Not negates the given condition.
 func Not(condition Condition) Condition {
-	return func(ctx context.Context, info kod.CallInfo) bool {
+	return func(ctx context.Context, info CallInfo) bool {
 		return !condition(ctx, info)
 	}
 }
 
 // IsMethod returns a condition that checks if the method name matches the given method.
 func IsMethod(method string) Condition {
-	return func(ctx context.Context, info kod.CallInfo) bool {
+	return func(ctx context.Context, info CallInfo) bool {
 		return info.Method == method
 	}
 }

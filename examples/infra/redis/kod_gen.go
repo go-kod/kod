@@ -18,9 +18,11 @@ func init() {
 		Impl:      reflect.TypeOf(impl{}),
 		Refs:      ``,
 		LocalStubFn: func(ctx context.Context, info *kod.LocalStubFnInfo) any {
-			var interceptors []kod.Interceptor
-			if h, ok := info.Impl.(interface{ Interceptors() []kod.Interceptor }); ok {
-				interceptors = h.Interceptors()
+			interceptors := info.Interceptors
+			if h, ok := info.Impl.(interface {
+				Interceptors() []interceptor.Interceptor
+			}); ok {
+				interceptors = append(interceptors, h.Interceptors()...)
 			}
 
 			return component_local_stub{
@@ -40,7 +42,7 @@ var _ kod.InstanceOf[Component] = (*impl)(nil)
 type component_local_stub struct {
 	impl        Component
 	name        string
-	interceptor kod.Interceptor
+	interceptor interceptor.Interceptor
 }
 
 // Check that component_local_stub implements the Component interface.

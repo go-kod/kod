@@ -17,9 +17,11 @@ func init() {
 		Impl:      reflect.TypeOf(helloWorld{}),
 		Refs:      ``,
 		LocalStubFn: func(ctx context.Context, info *kod.LocalStubFnInfo) any {
-			var interceptors []kod.Interceptor
-			if h, ok := info.Impl.(interface{ Interceptors() []kod.Interceptor }); ok {
-				interceptors = h.Interceptors()
+			interceptors := info.Interceptors
+			if h, ok := info.Impl.(interface {
+				Interceptors() []interceptor.Interceptor
+			}); ok {
+				interceptors = append(interceptors, h.Interceptors()...)
 			}
 
 			return helloWorld_local_stub{
@@ -35,9 +37,11 @@ func init() {
 		Impl:      reflect.TypeOf(app{}),
 		Refs:      `⟦562af859:KoDeDgE:github.com/go-kod/kod/Main→github.com/go-kod/kod/examples/app/helloworld/HelloWorld⟧`,
 		LocalStubFn: func(ctx context.Context, info *kod.LocalStubFnInfo) any {
-			var interceptors []kod.Interceptor
-			if h, ok := info.Impl.(interface{ Interceptors() []kod.Interceptor }); ok {
-				interceptors = h.Interceptors()
+			interceptors := info.Interceptors
+			if h, ok := info.Impl.(interface {
+				Interceptors() []interceptor.Interceptor
+			}); ok {
+				interceptors = append(interceptors, h.Interceptors()...)
 			}
 
 			return main_local_stub{
@@ -58,7 +62,7 @@ var _ kod.InstanceOf[kod.Main] = (*app)(nil)
 type helloWorld_local_stub struct {
 	impl        HelloWorld
 	name        string
-	interceptor kod.Interceptor
+	interceptor interceptor.Interceptor
 }
 
 // Check that helloWorld_local_stub implements the HelloWorld interface.
@@ -73,7 +77,7 @@ func (s helloWorld_local_stub) SayHello() (r0 string) {
 type main_local_stub struct {
 	impl        kod.Main
 	name        string
-	interceptor kod.Interceptor
+	interceptor interceptor.Interceptor
 }
 
 // Check that main_local_stub implements the kod.Main interface.

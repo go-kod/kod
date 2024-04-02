@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/go-kod/kod"
+	"github.com/go-kod/kod/interceptor"
 	"github.com/go-kod/kod/interceptor/krecovery"
 )
 
@@ -15,8 +16,16 @@ func (t *panicCase) TestPanic(ctx context.Context) {
 	panic("panic")
 }
 
-func (t *panicCase) Interceptors() []kod.Interceptor {
-	return []kod.Interceptor{
+func (t *panicCase) Interceptors() []interceptor.Interceptor {
+	return []interceptor.Interceptor{
 		krecovery.Interceptor(),
 	}
+}
+
+type panicNoRecvoeryCase struct {
+	kod.Implements[panicNoRecvoeryCaseInterface]
+}
+
+func (t *panicNoRecvoeryCase) TestPanic(ctx context.Context) {
+	panic("panic")
 }

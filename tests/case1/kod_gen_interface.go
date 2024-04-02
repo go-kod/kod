@@ -69,3 +69,8 @@ type ProtoValidateComponent interface {
 type panicCaseInterface interface {
 	TestPanic(ctx context.Context)
 }
+
+// panicNoRecvoeryCase is a component that implements panicNoRecvoeryCaseInterface.
+type panicNoRecvoeryCaseInterface interface {
+	TestPanic(ctx context.Context)
+}
