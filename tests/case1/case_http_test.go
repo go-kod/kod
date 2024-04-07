@@ -7,7 +7,7 @@ import (
 	"testing"
 
 	"github.com/go-kod/kod"
-	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestHttpHandler(t *testing.T) {
@@ -21,7 +21,7 @@ func TestHttpHandler(t *testing.T) {
 
 		k.Foo(record, r)
 
-		assert.Equal(t, http.StatusOK, record.Code)
-		assert.Equal(t, "Hello, World!", record.Body.String())
+		require.Equal(t, http.StatusOK, record.Code)
+		require.Equal(t, "Hello, World!", record.Body.String())
 	})
 }

@@ -2,14 +2,12 @@ package circuitbreaker
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"os"
 	"time"
 
+	"github.com/go-kod/kod/interceptor/internal/kerror"
 	"github.com/sony/gobreaker"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
 )
 
 type CircuitBreaker struct {
@@ -63,7 +61,7 @@ func (c *CircuitBreaker) Allow() (func(error), error) {
 	}
 
 	return func(err error) {
-		done(isSuccessful(err))
+		done(!kerror.IsCritical(err))
 	}, nil
 }
 
@@ -71,23 +69,4 @@ func (c *CircuitBreaker) Allow() (func(error), error) {
 func defaultReadyToTrip(counts gobreaker.Counts) bool {
 	failureRatio := float64(counts.TotalFailures) / float64(counts.Requests)
 	return counts.ConsecutiveFailures >= 3 && failureRatio >= 0.6
-}
-
-func isSuccessful(err error) bool {
-
-	if errors.Is(err, context.DeadlineExceeded) || errors.Is(err, context.Canceled) {
-		return false
-	}
-
-	switch status.Code(err) {
-	case codes.Canceled,
-		codes.DeadlineExceeded,
-		codes.ResourceExhausted,
-		codes.Aborted,
-		codes.Internal,
-		codes.Unavailable:
-		return false
-	}
-
-	return true
 }

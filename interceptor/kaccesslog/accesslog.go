@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/go-kod/kod/interceptor"
+	"github.com/go-kod/kod/interceptor/internal/kerror"
 )
 
 // Interceptor returns a server interceptor that logs requests and responses.
@@ -25,6 +26,10 @@ func Interceptor() interceptor.Interceptor {
 		level := slog.LevelInfo
 		if err != nil {
 			level = slog.LevelError
+			if kerror.IsBusiness(err) {
+				level = slog.LevelWarn
+			}
+
 			attrs = append(attrs, slog.String("error", err.Error()))
 		}
 
@@ -32,7 +37,7 @@ func Interceptor() interceptor.Interceptor {
 		if l, ok := info.Impl.(interface {
 			L(context.Context) *slog.Logger
 		}); ok {
-			l.L(ctx).LogAttrs(ctx, level, "accesslog", attrs...)
+			l.L(ctx).LogAttrs(ctx, level, "access log", attrs...)
 		}
 
 		return err

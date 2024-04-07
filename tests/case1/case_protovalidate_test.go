@@ -6,7 +6,7 @@ import (
 
 	"github.com/go-kod/kod"
 	"github.com/go-kod/kod/tests/proto/examplev1"
-	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestInterfacProtoValidate(t *testing.T) {
@@ -14,13 +14,13 @@ func TestInterfacProtoValidate(t *testing.T) {
 	kod.RunTest(t, func(ctx context.Context, k ProtoValidateComponent) {
 		var err error
 		err = k.Validate(ctx, &examplev1.Person{})
-		assert.Contains(t, err.Error(), "proto validate failed: validation error:\n - id: value must be greater than 999 [uint64.gt]")
+		require.Contains(t, err.Error(), "proto validate failed: validation error:\n - id: value must be greater than 999 [uint64.gt]")
 
 		err = k.Validate(ctx, &examplev1.Person{
 			Id:    1000,
 			Email: "hnlq.sysu@gmail.com",
 			Name:  "name",
 		})
-		assert.Nil(t, err)
+		require.Nil(t, err)
 	})
 }

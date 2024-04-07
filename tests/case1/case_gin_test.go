@@ -8,7 +8,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/go-kod/kod"
-	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func Test_testGinControllerImpl_Hello(t *testing.T) {
@@ -17,6 +17,6 @@ func Test_testGinControllerImpl_Hello(t *testing.T) {
 		c := gin.CreateTestContextOnly(rec, gin.New())
 		c.Request, _ = http.NewRequest(http.MethodGet, "/hello/gin", nil)
 		controller.Hello(c)
-		assert.Equal(t, http.StatusOK, rec.Code)
+		require.Equal(t, http.StatusOK, rec.Code)
 	})
 }

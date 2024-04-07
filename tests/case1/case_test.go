@@ -9,7 +9,7 @@ import (
 
 	"github.com/go-kod/kod"
 	"github.com/go-kod/kod/internal/mock"
-	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/trace"
 	"go.uber.org/goleak"
@@ -28,7 +28,7 @@ func TestRun(t *testing.T) {
 
 	t.Run("case1", func(t *testing.T) {
 		err := kod.Run(context.Background(), Run)
-		assert.Equal(t, "test1:B", err.Error())
+		require.Equal(t, "test1:B", err.Error())
 	})
 }
 
@@ -37,7 +37,7 @@ func TestImpl(t *testing.T) {
 	kod.RunTest(t, func(ctx context.Context, k *test1Component) {
 		_, err := k.Foo(ctx, &FooReq{})
 		fmt.Println(err)
-		assert.Equal(t, "test1:B", err.Error())
+		require.Equal(t, "test1:B", err.Error())
 	})
 }
 
@@ -55,9 +55,9 @@ func TestInterface(t *testing.T) {
 		_, err := k.Foo(ctx, &FooReq{Id: 1})
 		res, err := k.Foo(ctx, &FooReq{Id: 2})
 		fmt.Println(err)
-		assert.Equal(t, "test1:B", err.Error())
-		assert.True(t, span.SpanContext().IsValid())
-		assert.Equal(t, 2, res.Id)
+		require.Equal(t, "test1:B", err.Error())
+		require.True(t, span.SpanContext().IsValid())
+		require.Equal(t, 2, res.Id)
 	})
 }
 
@@ -67,7 +67,7 @@ func TestInterfacePanic(t *testing.T) {
 		_, err := k.Foo(ctx, &FooReq{
 			Panic: true,
 		})
-		assert.Contains(t, err.Error(), "panic caught: test panic")
+		require.Contains(t, err.Error(), "panic caught: test panic")
 	})
 }
 
@@ -77,7 +77,7 @@ func TestInterfacValidate(t *testing.T) {
 		_, err := k.Foo(ctx, &FooReq{
 			Id: 101,
 		})
-		assert.Contains(t, err.Error(), "validate failed: Key: 'FooReq.Id' Error:Field validation for 'Id' failed on the 'lt' tag")
+		require.Contains(t, err.Error(), "validate failed: Key: 'FooReq.Id' Error:Field validation for 'Id' failed on the 'lt' tag")
 	})
 }
 
@@ -87,7 +87,7 @@ func TestFake(t *testing.T) {
 	kod.RunTest(t, func(ctx context.Context, k Test1Component) {
 		_, err := k.Foo(ctx, &FooReq{})
 		fmt.Println(err)
-		assert.Equal(t, errors.New("A:B"), err)
+		require.Equal(t, errors.New("A:B"), err)
 	}, kod.WithFakes(kod.Fake[Test1Component](fakeTest1)))
 }
 
@@ -98,7 +98,7 @@ func TestFakeWithMock(t *testing.T) {
 	kod.RunTest(t, func(ctx context.Context, k Test1Component) {
 		_, err := k.Foo(ctx, &FooReq{})
 		fmt.Println(err)
-		assert.Equal(t, errors.New("A:B"), err)
+		require.Equal(t, errors.New("A:B"), err)
 	}, kod.WithFakes(kod.Fake[Test1Component](fakeTest1)))
 }
 
@@ -109,7 +109,7 @@ func TestConflictFake(t *testing.T) {
 		kod.RunTest(tt, func(ctx context.Context, k *test1Component) {
 			_, err := k.Foo(ctx, &FooReq{})
 			fmt.Println(err)
-			assert.Equal(t, errors.New("A:B"), err)
+			require.Equal(t, errors.New("A:B"), err)
 		}, kod.WithFakes(kod.Fake[Test1Component](fakeTest1)))
 	})
 }
@@ -119,8 +119,8 @@ func TestConfigFile1(t *testing.T) {
 	kod.RunTest(t, func(ctx context.Context, k *test1Component) {
 		_, err := k.Foo(ctx, &FooReq{})
 		fmt.Println(err)
-		assert.Equal(t, "B", k.Config().A)
-		assert.Equal(t, "test1:B", err.Error())
+		require.Equal(t, "B", k.Config().A)
+		require.Equal(t, "test1:B", err.Error())
 	}, kod.WithConfigFile("kod.toml"))
 }
 
@@ -129,7 +129,7 @@ func TestConfigFile2(t *testing.T) {
 	kod.RunTest(t, func(ctx context.Context, k *test1Component) {
 		_, err := k.Foo(ctx, &FooReq{})
 		fmt.Println(err)
-		assert.Equal(t, "test1:B2", err.Error())
+		require.Equal(t, "test1:B2", err.Error())
 	}, kod.WithConfigFile("kod2.toml"))
 }
 
@@ -138,7 +138,7 @@ func TestConfigNotFound(t *testing.T) {
 	kod.RunTest(t, func(ctx context.Context, k *test1Component) {
 		_, err := k.Foo(ctx, &FooReq{})
 		fmt.Println(err)
-		assert.Equal(t, "test1:", err.Error())
+		require.Equal(t, "test1:", err.Error())
 	}, kod.WithConfigFile("kod-notfound.toml"))
 }
 
@@ -146,15 +146,15 @@ func TestRunKill(t *testing.T) {
 	t.Run("case1", func(t *testing.T) {
 		err := kod.Run(context.Background(), Run)
 
-		assert.Nil(t, syscall.Kill(syscall.Getpid(), syscall.SIGINT))
+		require.Nil(t, syscall.Kill(syscall.Getpid(), syscall.SIGINT))
 
-		assert.Equal(t, "test1:B", err.Error())
+		require.Equal(t, "test1:B", err.Error())
 	})
 }
 
 func TestPanicKod(t *testing.T) {
 	kod.RunTest(t, func(ctx context.Context, k *test1Component) {
-		assert.Panics(t, func() {
+		require.Panics(t, func() {
 			kod := kod.FromContext(context.Background())
 			kod.Config()
 		})
@@ -166,8 +166,8 @@ func BenchmarkCase1(b *testing.B) {
 		kod.RunTest(b, func(ctx context.Context, k *test1Component) {
 			for i := 0; i < b.N; i++ {
 				_, err := k.Foo(ctx, &FooReq{})
-				assert.Equal(b, "B", k.Config().A)
-				assert.Equal(b, "test1:B", err.Error())
+				require.Equal(b, "B", k.Config().A)
+				require.Equal(b, "test1:B", err.Error())
 			}
 		})
 	})
