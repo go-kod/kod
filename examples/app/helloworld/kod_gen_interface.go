@@ -2,7 +2,11 @@
 
 package helloworld
 
+import (
+	"context"
+)
+
 // helloWorld is a component that implements HelloWorld.
 type HelloWorld interface {
-	SayHello() string
+	SayHello(ctx context.Context) string
 }

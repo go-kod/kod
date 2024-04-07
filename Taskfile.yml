@@ -22,7 +22,6 @@ tasks:
       - /ext
       - /tests
       - /examples
-      - /interceptor
     generates:
       - go.work
       - go.work.sum
@@ -46,7 +45,7 @@ tasks:
 
   generate:
     cmds:
-      - go run ./cmd/kod generate ./... ./tests/... ./examples/... ./ext/... ./interceptor/...
+      - go run ./cmd/kod generate ./... ./tests/... ./examples/... ./ext/...
     deps:
       - generate:struct2interface
 
@@ -63,8 +62,8 @@ tasks:
   test:
     cmd: |
       GOEXPERIMENT=nocoverageredesign go test -race -cover -coverprofile=coverage.out \
-        -covermode=atomic ./... ./tests/... ./examples/... ./interceptor/... \
-        -coverpkg .,./cmd/...,./interceptor/...,./internal/...
+        -covermode=atomic ./... ./tests/... ./examples/... \
+        -coverpkg .,./cmd/...,./internal/...
     sources:
       - "**/**.go"
     generates:
@@ -98,12 +97,10 @@ tasks:
       - cd tests && go mod tidy
       - cd examples && go mod tidy
       - cd ext && go mod tidy
-      - cd interceptor && go mod tidy
 
   release:
     vars:
       VERSION: v0.6.0
     cmds:
       - git tag {{.VERSION}}
-      - git tag interceptor/{{.VERSION}}
       - git tag ext/{{.VERSION}}

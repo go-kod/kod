@@ -6,8 +6,6 @@ import (
 
 	"dario.cat/mergo"
 	"github.com/go-kod/kod/ext/registry"
-	"github.com/grpc-ecosystem/go-grpc-middleware/v2/interceptors/retry"
-	"github.com/grpc-ecosystem/go-grpc-middleware/v2/interceptors/timeout"
 	"github.com/samber/lo"
 	"go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc"
 	"google.golang.org/grpc"
@@ -39,13 +37,6 @@ func (c Config) Build(opts ...grpc.DialOption) *ClientConn {
 		grpc.WithNoProxy(),
 		grpc.WithStatsHandler(otelgrpc.NewClientHandler()),
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
-		grpc.WithChainUnaryInterceptor(
-			retry.UnaryClientInterceptor(),
-			timeout.UnaryClientInterceptor(c.Timeout),
-		),
-		grpc.WithChainStreamInterceptor(
-			retry.StreamClientInterceptor(),
-		),
 	}
 
 	if c.registry != nil {

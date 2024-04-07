@@ -10,6 +10,7 @@
 package helloworld
 
 import (
+	context "context"
 	reflect "reflect"
 
 	gomock "go.uber.org/mock/gomock"
@@ -39,15 +40,15 @@ func (m *MockHelloWorld) EXPECT() *MockHelloWorldMockRecorder {
 }
 
 // SayHello mocks base method.
-func (m *MockHelloWorld) SayHello() string {
+func (m *MockHelloWorld) SayHello(ctx context.Context) string {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "SayHello")
+	ret := m.ctrl.Call(m, "SayHello", ctx)
 	ret0, _ := ret[0].(string)
 	return ret0
 }
 
 // SayHello indicates an expected call of SayHello.
-func (mr *MockHelloWorldMockRecorder) SayHello() *gomock.Call {
+func (mr *MockHelloWorldMockRecorder) SayHello(ctx any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SayHello", reflect.TypeOf((*MockHelloWorld)(nil).SayHello))
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SayHello", reflect.TypeOf((*MockHelloWorld)(nil).SayHello), ctx)
 }
