@@ -6,17 +6,12 @@ import (
 	"net"
 	"time"
 
-	"github.com/bufbuild/protovalidate-go"
 	"github.com/go-kod/kod/ext/internal/knet"
 	"github.com/go-kod/kod/ext/registry"
-	protovalidate_middleware "github.com/grpc-ecosystem/go-grpc-middleware/v2/interceptors/protovalidate"
-	"github.com/grpc-ecosystem/go-grpc-middleware/v2/interceptors/recovery"
 	"github.com/samber/lo"
 	"go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
-	"google.golang.org/protobuf/reflect/protoreflect"
-	"google.golang.org/protobuf/reflect/protoregistry"
 )
 
 var (
@@ -39,29 +34,8 @@ type Server struct {
 }
 
 func (c Config) Build(opts ...grpc.ServerOption) *Server {
-	mds := make([]protoreflect.MessageDescriptor, 0)
-	protoregistry.GlobalTypes.RangeMessages(func(mt protoreflect.MessageType) bool {
-		mds = append(mds, mt.Descriptor())
-		return true
-	})
-
-	validator, err := protovalidate.New(
-		protovalidate.WithDescriptors(mds...),
-	)
-	if err != nil {
-		panic(err)
-	}
-
 	defaultOpts := []grpc.ServerOption{
 		grpc.StatsHandler(otelgrpc.NewServerHandler()),
-		grpc.ChainUnaryInterceptor(
-			recovery.UnaryServerInterceptor(),
-			protovalidate_middleware.UnaryServerInterceptor(validator),
-		),
-		grpc.ChainStreamInterceptor(
-			recovery.StreamServerInterceptor(),
-			protovalidate_middleware.StreamServerInterceptor(validator),
-		),
 	}
 
 	defaultOpts = append(defaultOpts, opts...)
