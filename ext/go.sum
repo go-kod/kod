@@ -211,8 +211,8 @@ go.opentelemetry.io/contrib/instrumentation/runtime v0.50.0 h1:6dck47miguAOny5Me
 go.opentelemetry.io/contrib/instrumentation/runtime v0.50.0/go.mod h1:rdPhRwNd2sHiRmwJAGs8xcwitqmP/j8pvl9X5jloYjU=
 go.opentelemetry.io/contrib/propagators/b3 v1.25.0 h1:QU8UEKyPqgr/8vCC9LlDmkPnfFmiWAUF9GtJdcLz+BU=
 go.opentelemetry.io/contrib/propagators/b3 v1.25.0/go.mod h1:qonC7wyvtX1E6cEpAR+bJmhcGr6IVRGc/f6ZTpvi7jA=
-go.opentelemetry.io/contrib/samplers/probability/consistent v0.18.0 h1:C5n7Hvf0yOwohs14kXIC53WGWe+I7SoZ1kZIasNp92E=
-go.opentelemetry.io/contrib/samplers/probability/consistent v0.18.0/go.mod h1:jj7xq4dVucY8wRFLSwmP6l9W+7ymBrQIEHiolNkf5mo=
+go.opentelemetry.io/contrib/samplers/probability/consistent v0.19.0 h1:oraSFqdrAzfzfejzNCTnwFhQ+ThQ/pOzaCEkYoPMvnE=
+go.opentelemetry.io/contrib/samplers/probability/consistent v0.19.0/go.mod h1:eG954MoLOA/zVsd5thqNxCJ9/JUHglUrNkbMDxuARnc=
 go.opentelemetry.io/otel v1.25.0 h1:gldB5FfhRl7OJQbUHt/8s0a7cE8fbsPAtdpRaApKy4k=
 go.opentelemetry.io/otel v1.25.0/go.mod h1:Wa2ds5NOXEMkCmUou1WA7ZBfLTHWIsp034OVD7AO+Vg=
 go.opentelemetry.io/otel/exporters/otlp/otlpmetric/otlpmetricgrpc v1.25.0 h1:hDKnobznDpcdTlNzO0S/owRB8tyVr1OoeZZhDoqY+Cs=

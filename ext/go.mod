@@ -22,7 +22,7 @@ require (
 	go.opentelemetry.io/contrib/instrumentation/net/http/httptrace/otelhttptrace v0.50.0
 	go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp v0.50.0
 	go.opentelemetry.io/contrib/instrumentation/runtime v0.50.0
-	go.opentelemetry.io/contrib/samplers/probability/consistent v0.18.0
+	go.opentelemetry.io/contrib/samplers/probability/consistent v0.19.0
 	go.opentelemetry.io/otel v1.25.0
 	go.opentelemetry.io/otel/trace v1.25.0
 	google.golang.org/grpc v1.63.2
