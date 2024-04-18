@@ -3,7 +3,7 @@ module github.com/go-kod/kod
 go 1.21.7
 
 require (
-	github.com/avast/retry-go/v4 v4.5.1
+	github.com/avast/retry-go/v4 v4.6.0
 	github.com/bufbuild/protovalidate-go v0.6.1
 	github.com/dominikbraun/graph v0.23.0
 	github.com/fsnotify/fsnotify v1.7.0
