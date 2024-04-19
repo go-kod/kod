@@ -6,7 +6,7 @@ replace github.com/go-kod/kod => ../
 
 require (
 	buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go v1.33.0-20240401165935-b983156c5e99.1
-	github.com/avast/retry-go/v4 v4.5.1
+	github.com/avast/retry-go/v4 v4.6.0
 	github.com/gin-gonic/gin v1.9.1
 	github.com/go-kod/kod v0.0.0-00010101000000-000000000000
 	github.com/labstack/echo/v4 v4.12.0
