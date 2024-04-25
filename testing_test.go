@@ -16,7 +16,6 @@ type testComponent struct {
 type testInterface interface{}
 
 func Test_testRunner_sub(t *testing.T) {
-
 	t.Run("failure", func(t *testing.T) {
 		mock.ExpectFailure(t, func(tt testing.TB) {
 			r := &runner{}
@@ -29,51 +28,46 @@ func Test_testRunner_sub(t *testing.T) {
 }
 
 func Test_checkRunFunc(t *testing.T) {
-
 	t.Run("not a func", func(t *testing.T) {
-		_, _, err := checkRunFunc(context.Background(), t, 0)
+		_, _, err := checkRunFunc(context.Background(), 0)
 		assert.EqualError(t, err, "not a func")
 	})
 
 	t.Run("must not be variadic", func(t *testing.T) {
-		_, _, err := checkRunFunc(context.Background(), t, func(t *testing.T, a ...int) {
-
+		_, _, err := checkRunFunc(context.Background(), func(t *testing.T, a ...int) {
 		})
 		assert.EqualError(t, err, "must not be variadic")
 	})
 
 	// must have no return outputs
 	t.Run("must have no return outputs", func(t *testing.T) {
-		_, _, err := checkRunFunc(context.Background(), t, func(t *testing.T, a int) int {
+		_, _, err := checkRunFunc(context.Background(), func(t *testing.T, a int) int {
 			return 0
 		})
 		assert.EqualError(t, err, "must have no return outputs")
 	})
 
 	t.Run("must have at least two args", func(t *testing.T) {
-		_, _, err := checkRunFunc(context.Background(), t, func() {
-
+		_, _, err := checkRunFunc(context.Background(), func() {
 		})
 		assert.EqualError(t, err, "must have at least two args")
 	})
 
 	// function first argument type *testing.T does not match first kod.Run argument context.Context
 	t.Run("function first argument type *testing.T does not match first kod.Run argument context.Context", func(t *testing.T) {
-		_, _, err := checkRunFunc(context.Background(), t, func(t *testing.T, a *testing.T, b *testing.T) {
-
+		_, _, err := checkRunFunc(context.Background(), func(t *testing.T, a *testing.T, b *testing.T) {
 		})
 		assert.EqualError(t, err, "function first argument type *testing.T does not match first kod.Run argument context.Context")
 	})
 
 	t.Run("function argument %d type %v must be a component interface or pointer to component implementation", func(t *testing.T) {
-		_, _, err := checkRunFunc(context.Background(), t, func(ctx context.Context, t int) {
+		_, _, err := checkRunFunc(context.Background(), func(ctx context.Context, t int) {
 		})
 		assert.EqualError(t, err, "function argument 1 type int must be a component interface or pointer to component implementation")
 	})
 
 	t.Run("ok", func(t *testing.T) {
-		_, _, err := checkRunFunc(context.Background(), t, func(ctx context.Context, a *testComponent) {
-
+		_, _, err := checkRunFunc(context.Background(), func(ctx context.Context, a *testComponent) {
 		})
 		assert.Nil(t, err)
 	})
@@ -81,7 +75,6 @@ func Test_checkRunFunc(t *testing.T) {
 
 // extractComponentInterfaceType
 func Test_extractComponentInterfaceType(t *testing.T) {
-
 	t.Run("not a pointer", func(t *testing.T) {
 		_, err := extractComponentInterfaceType(reflect.TypeOf(0))
 		assert.EqualError(t, err, "type int is not a struct")
@@ -105,8 +98,7 @@ func Test_extractComponentInterfaceType(t *testing.T) {
 	})
 
 	t.Run("type struct {} does not embed kod.Implements", func(t *testing.T) {
-		_, err := extractComponentInterfaceType(reflect.TypeOf(struct {
-		}{}))
+		_, err := extractComponentInterfaceType(reflect.TypeOf(struct{}{}))
 		assert.EqualError(t, err, "type struct {} does not embed kod.Implements")
 	})
 

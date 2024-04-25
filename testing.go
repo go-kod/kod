@@ -32,15 +32,30 @@ type runner struct {
 	options options
 }
 
+// RunTest runs a test function with one component.
 func RunTest[T any](t testing.TB, body func(context.Context, T), opts ...func(*options)) {
+	runTest(t, body, opts...)
+}
+
+// RunTest2 runs a test function with two components.
+func RunTest2[T1, T2 any](t testing.TB, body func(context.Context, T1, T2), opts ...func(*options)) {
+	runTest(t, body, opts...)
+}
+
+// RunTest3 runs a test function with three components.
+func RunTest3[T1, T2, T3 any](t testing.TB, body func(context.Context, T1, T2, T3), opts ...func(*options)) {
+	runTest(t, body, opts...)
+}
+
+func runTest(t testing.TB, testBody any, opts ...func(*options)) {
 	options := &options{}
 	for _, o := range opts {
 		o(options)
 	}
 
-	err := runner{options: *options}.sub(t, body)
+	err := runner{options: *options}.sub(t, testBody)
 	if err != nil {
-		t.Logf("RunTest failed: %v", err)
+		t.Logf("runTest failed: %v", err)
 		t.FailNow()
 	}
 }
@@ -61,7 +76,7 @@ func (r runner) sub(t testing.TB, testBody any) error {
 	ctx = newContext(ctx, runner)
 
 	t.Helper()
-	body, intfs, err := checkRunFunc(ctx, t, testBody)
+	body, intfs, err := checkRunFunc(ctx, testBody)
 	if err != nil {
 		return fmt.Errorf("kod.Run argument: %v", err)
 	}
@@ -85,7 +100,7 @@ func (r runner) sub(t testing.TB, testBody any) error {
 	return nil
 }
 
-func checkRunFunc(ctx context.Context, t testing.TB, fn any) (func(context.Context, *Kod) error, []reflect.Type, error) {
+func checkRunFunc(ctx context.Context, fn any) (func(context.Context, *Kod) error, []reflect.Type, error) {
 	fnType := reflect.TypeOf(fn)
 	if fnType == nil || fnType.Kind() != reflect.Func {
 		return nil, nil, fmt.Errorf("not a func")
@@ -126,7 +141,7 @@ func checkRunFunc(ctx context.Context, t testing.TB, fn any) (func(context.Conte
 			argType := fnType.In(i)
 			switch argType.Kind() {
 			case reflect.Interface:
-				comp, err := runner.getIntf(ctx, argType, "kodtest")
+				comp, err := runner.getIntf(ctx, argType)
 				if err != nil {
 					return err
 				}

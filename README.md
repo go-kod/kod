@@ -15,6 +15,8 @@
 
 Kod  stands for **Killer Of Dependency**, a generics based dependency injection framework for Go.
 
+![kod](/assets/kod.excalidraw.png)
+
 ## Feature
 
 - **Component Based**: Kod is a component-based framework. Components are the building blocks of a Kod application.
@@ -34,6 +36,7 @@ go install github.com/go-kod/kod/cmd/kod@latest
 ```
 
 If the installation was successful, you should be able to run `kod -h`:
+
 ```bash
 A powerful tool for writing kod applications.
 
@@ -61,6 +64,7 @@ Use "kod [command] --help" for more information about a command.
 In this section, we show you how to write Kod applications. To install Kod and follow along, refer to the Installation section. The full source code presented in this tutorial can be found here.
 
 ### Components
+
 Kod's core abstraction is the component. A component is like an actor, and a Kod application is implemented as a set of components. Concretely, a component is represented with a regular Go interface, and components interact with each other by calling the methods defined by these interfaces.
 
 In this section, we'll define a simple hello component that just prints a string and returns. First, run `go mod init hello` to create a go module.
@@ -160,6 +164,7 @@ func (f *foo) Stop(context.Context) error {
 ```
 
 #### Interceptors
+
 Kod has built-in common interceptors, and components can implement the following methods to inject these interceptors into component methods:
 
 ```go
@@ -359,7 +364,6 @@ func TestClock(t *testing.T) {
 
 #### Config
 
-
 You can also provide the contents of a config file to a runner by setting the Runner.Config field:
 
 ```go
@@ -395,7 +399,7 @@ func (a *adder) Add(ctx context.Context, x, y int) (int, error) {
 }
 ```
 
-### Opentelemetry
+### OpenTelemetry
 
 Kod relies on OpenTelemetry to collect trace and metrics from your application.
 
