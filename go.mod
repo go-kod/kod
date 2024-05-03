@@ -7,7 +7,7 @@ require (
 	github.com/bufbuild/protovalidate-go v0.6.2
 	github.com/dominikbraun/graph v0.23.0
 	github.com/fsnotify/fsnotify v1.7.0
-	github.com/go-playground/validator/v10 v10.19.0
+	github.com/go-playground/validator/v10 v10.20.0
 	github.com/samber/lo v1.39.0
 	github.com/shirou/gopsutil/v3 v3.24.3
 	github.com/sony/gobreaker v1.0.0
