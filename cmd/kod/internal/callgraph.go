@@ -37,7 +37,7 @@ var callgraphCmd = &cobra.Command{
 
 			enc := json.NewEncoder(os.Stdout)
 			enc.SetIndent("", "  ")
-			enc.Encode(data)
+			lo.Must0(enc.Encode(data))
 		case "dot":
 			file := lo.Must(os.Create(o))
 			lo.Must0(draw.DOT(g, file))
