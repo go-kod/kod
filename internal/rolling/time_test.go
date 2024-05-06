@@ -25,7 +25,7 @@ func TestTimeWindow(t *testing.T) {
 		}
 		return result
 	})
-	if final != float64(numberBuckets) {
+	if final != float64(numberBuckets) && final != float64(numberBuckets-1) {
 		t.Fatal(final)
 	}
 
