@@ -1,9 +1,9 @@
 package internal
 
 import (
+	"encoding/json"
 	"fmt"
 	"os"
-	"time"
 
 	"github.com/dominikbraun/graph/draw"
 	"github.com/go-kod/kod/internal/callgraph"
@@ -18,8 +18,6 @@ var callgraphCmd = &cobra.Command{
 	// has an action associated with it:
 	// Run: func(cmd *cobra.Command, args []string) { },
 	Run: func(cmd *cobra.Command, args []string) {
-		startTime := time.Now()
-
 		if len(args) == 0 {
 			cmd.PrintErr("please input the binary filepath")
 			return
@@ -27,17 +25,31 @@ var callgraphCmd = &cobra.Command{
 
 		g := lo.Must(callgraph.ReadComponentGraph(args[0]))
 		o := lo.Must(cmd.Flags().GetString("o"))
+		t := lo.Must(cmd.Flags().GetString("t"))
 
-		file := lo.Must(os.Create(o))
-		lo.Must0(draw.DOT(g, file))
+		switch t {
+		case "json":
+			data, err := g.AdjacencyMap()
+			if err != nil {
+				fmt.Println(err)
+				return
+			}
 
-		fmt.Printf("[callgraph] %s \n", time.Since(startTime).String())
+			enc := json.NewEncoder(os.Stdout)
+			enc.SetIndent("", "  ")
+			enc.Encode(data)
+		case "dot":
+			file := lo.Must(os.Create(o))
+			lo.Must0(draw.DOT(g, file))
+		default:
+			fmt.Println("output type not supported")
+		}
 	},
 }
 
 func init() {
-
 	callgraphCmd.PersistentFlags().String("o", "my-graph.dot", "output file name")
+	callgraphCmd.PersistentFlags().String("t", "dot", "output type, support json/dot")
 
 	rootCmd.AddCommand(callgraphCmd)
 }
