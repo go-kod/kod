@@ -5,7 +5,7 @@ go 1.21.7
 replace github.com/go-kod/kod => ../
 
 require (
-	buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go v1.34.1-20240401165935-b983156c5e99.1
+	buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go v1.34.1-20240508200655-46a4cf4ba109.1
 	github.com/avast/retry-go/v4 v4.6.0
 	github.com/gin-gonic/gin v1.10.0
 	github.com/go-kod/kod v0.0.0-00010101000000-000000000000
