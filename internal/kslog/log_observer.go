@@ -90,7 +90,6 @@ func (h *observer) Handle(ctx context.Context, r slog.Record) error {
 
 // WithAttrs returns a new slog.handler with the provided attributes.
 func (h *observer) WithAttrs(attrs []slog.Attr) slog.Handler {
-
 	h.next.WithAttrs(attrs)
 	return h
 }
@@ -104,5 +103,5 @@ func (h *observer) WithGroup(name string) slog.Handler {
 
 // Enabled returns true if the provided level is enabled.
 func (h *observer) Enabled(ctx context.Context, level slog.Level) bool {
-	return h.next.Enabled(ctx, level)
+	return true
 }
