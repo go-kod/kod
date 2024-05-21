@@ -18,8 +18,7 @@ type Config struct {
 	Fraction float64
 }
 
-type Client struct {
-}
+type Client struct{}
 
 func (c Config) Build(ctx context.Context) (*Client, error) {
 	err := mergo.Merge(&c, Config{
