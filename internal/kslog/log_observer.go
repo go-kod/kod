@@ -22,6 +22,13 @@ func (l *ObservedLogs) Len() int {
 	return len(l.records)
 }
 
+// ErrorCount returns the number of observed logs with level error.
+func (l *ObservedLogs) ErrorCount() int {
+	return l.Filter(func(r slog.Record) bool {
+		return r.Level == slog.LevelError
+	}).Len()
+}
+
 // Filter returns a new observed logs with the provided filter applied.
 func (l *ObservedLogs) Filter(filter func(slog.Record) bool) *ObservedLogs {
 	l.mu.Lock()

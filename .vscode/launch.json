@@ -22,5 +22,14 @@
             "program": "./cmd/kod",
             "args": "struct2interface tests"
         },
+        {
+            "name": "Launch log",
+            "type": "go",
+            "request": "launch",
+            "mode": "auto",
+            "cwd": "${workspaceFolder}",
+            "program": "./examples/log",
+            "args": ""
+        },
     ]
 }

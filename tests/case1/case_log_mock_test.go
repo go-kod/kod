@@ -22,27 +22,10 @@ func TestMockLog(t *testing.T) {
 		require.Equal(t, 2, observer.Filter(func(r slog.Record) bool {
 			return r.Level == slog.LevelError
 		}).Len())
+		require.Equal(t, 2, observer.ErrorCount())
 		require.Equal(t, 0, observer.Clean().Len())
 		slog.Info("test")
 		require.Equal(t, 0, observer.Len())
-	}, kod.WithLogWrapper(log))
-}
-
-func TestLogLevelVar(t *testing.T) {
-	t.Parallel()
-	log, observer := kod.NewLogObserver()
-
-	kod.RunTest(t, func(ctx context.Context, k Test1Component) {
-		kod.FromContext(ctx).LevelVar().Set(slog.LevelError)
-
-		_, err := k.Foo(ctx, &FooReq{Id: 1})
-		require.Equal(t, "test1:B", err.Error())
-		require.Equal(t, 6, observer.Len(), observer.All())
-		require.Equal(t, 2, observer.Filter(func(r slog.Record) bool {
-			return r.Level == slog.LevelError
-		}).Len())
-		require.Equal(t, 0, observer.Clean().Len())
-		slog.Info("test")
-		require.Equal(t, 0, observer.Len())
+		require.Equal(t, 0, observer.ErrorCount())
 	}, kod.WithLogWrapper(log))
 }

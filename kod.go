@@ -13,7 +13,6 @@ import (
 
 	"github.com/go-kod/kod/interceptor"
 	"github.com/go-kod/kod/internal/hooks"
-	"github.com/go-kod/kod/internal/kslog"
 	"github.com/go-kod/kod/internal/reflects"
 	"github.com/go-kod/kod/internal/registry"
 	"github.com/go-kod/kod/internal/signals"
@@ -36,7 +35,7 @@ type Implements[T any] struct {
 
 // L returns the associated logger.
 func (i *Implements[T]) L(ctx context.Context) *slog.Logger {
-	return kslog.LogWithContext(ctx, i.log)
+	return i.log
 }
 
 // setLogger sets the logger for the component.
@@ -254,9 +253,8 @@ type Kod struct {
 
 	config kodConfig
 
-	viper       *viper.Viper
-	log         *slog.Logger
-	logLevelVar *slog.LevelVar
+	viper *viper.Viper
+	log   *slog.Logger
 
 	hooker *hooks.Hooker
 
@@ -323,12 +321,7 @@ func (k *Kod) Config() kodConfig {
 
 // L() returns the logger of the Kod instance.
 func (k *Kod) L(ctx context.Context) *slog.Logger {
-	return kslog.LogWithContext(ctx, k.log)
-}
-
-// LevelVar returns the log level variable of the Kod instance.
-func (k *Kod) LevelVar() *slog.LevelVar {
-	return k.logLevelVar
+	return k.log
 }
 
 // register adds the given implementations to the Kod instance.
@@ -377,14 +370,17 @@ func (k *Kod) parseConfig(filename string) error {
 }
 
 func (k *Kod) initLog() {
-	k.logLevelVar = new(slog.LevelVar)
-	lo.Must0(k.logLevelVar.UnmarshalText([]byte(k.config.Log.Level)))
-
 	var handler slog.Handler
 	if k.opts.logWrapper != nil {
-		handler = k.opts.logWrapper(otelslog.NewHandler())
+		handler = k.opts.logWrapper(otelslog.NewHandler(k.config.Name,
+			otelslog.WithSchemaURL(PkgPath),
+			otelslog.WithVersion(k.config.Version),
+		))
 	} else {
-		handler = otelslog.NewHandler()
+		handler = otelslog.NewHandler(k.config.Name,
+			otelslog.WithSchemaURL(PkgPath),
+			otelslog.WithVersion(k.config.Version),
+		)
 	}
 
 	k.log = slog.New(handler)
