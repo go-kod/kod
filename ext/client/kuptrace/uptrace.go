@@ -62,5 +62,5 @@ func (c Config) Build(ctx context.Context) (*Client, error) {
 }
 
 func (c *Client) Stop(ctx context.Context) error {
-	return uptrace.ForceFlush(ctx)
+	return uptrace.Shutdown(ctx)
 }

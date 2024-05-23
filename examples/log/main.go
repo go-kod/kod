@@ -5,9 +5,7 @@ import (
 	"log/slog"
 
 	"github.com/go-kod/kod"
-	"go.opentelemetry.io/otel/exporters/stdout/stdoutlog"
-	"go.opentelemetry.io/otel/log/global"
-	"go.opentelemetry.io/otel/sdk/log"
+	"github.com/go-kod/kod/ext/client/kuptrace"
 )
 
 type app struct {
@@ -15,24 +13,12 @@ type app struct {
 }
 
 func main() {
-	exp, err := stdoutlog.New()
-	if err != nil {
-		panic(err)
-	}
-
-	processor := log.NewSimpleProcessor(exp)
-	provider := log.NewLoggerProvider(log.WithProcessor(processor))
-	defer func() {
-		if err := provider.Shutdown(context.Background()); err != nil {
-			panic(err)
-		}
-	}()
-
-	global.SetLoggerProvider(provider)
-
 	kod.Run(context.Background(), func(ctx context.Context, app *app) error {
+		s, _ := kuptrace.Config{DSN: "http://project2_secret_token@localhost:14318?grpc=14317", Debug: true}.Build(ctx)
+		defer s.Stop(ctx)
+
 		// default log level is info
-		app.L(ctx).Info("hello world info")
+		app.L(ctx).InfoContext(ctx, "hello world info")
 
 		// wont print
 		app.L(ctx).Debug("hello world info1")
