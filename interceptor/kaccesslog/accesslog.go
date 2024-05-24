@@ -37,7 +37,7 @@ func Interceptor() interceptor.Interceptor {
 		if l, ok := info.Impl.(interface {
 			L(context.Context) *slog.Logger
 		}); ok {
-			l.L(ctx).LogAttrs(ctx, level, "access log", attrs...)
+			l.L(ctx).LogAttrs(ctx, level, "access_log", attrs...)
 		}
 
 		return err

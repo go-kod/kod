@@ -163,10 +163,10 @@ func (h otelHandler) slogAttrToOtelAttr(attr slog.Attr, groupKeys ...string) att
 func LogWithContext(ctx context.Context, logger *slog.Logger) *slog.Logger {
 	s := trace.SpanContextFromContext(ctx)
 	if s.HasTraceID() {
-		logger = logger.With("traceid", s.TraceID().String())
+		logger = logger.With("trace_id", s.TraceID().String())
 	}
 	if s.HasSpanID() {
-		logger = logger.With("spanid", s.SpanID().String())
+		logger = logger.With("span_id", s.SpanID().String())
 	}
 
 	return logger
