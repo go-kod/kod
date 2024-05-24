@@ -13,6 +13,7 @@ import (
 
 	"github.com/go-kod/kod/interceptor"
 	"github.com/go-kod/kod/internal/hooks"
+	"github.com/go-kod/kod/internal/kslog"
 	"github.com/go-kod/kod/internal/reflects"
 	"github.com/go-kod/kod/internal/registry"
 	"github.com/go-kod/kod/internal/signals"
@@ -35,7 +36,7 @@ type Implements[T any] struct {
 
 // L returns the associated logger.
 func (i *Implements[T]) L(ctx context.Context) *slog.Logger {
-	return i.log
+	return kslog.LogWithContext(ctx, i.log)
 }
 
 // setLogger sets the logger for the component.
@@ -321,7 +322,7 @@ func (k *Kod) Config() kodConfig {
 
 // L() returns the logger of the Kod instance.
 func (k *Kod) L(ctx context.Context) *slog.Logger {
-	return k.log
+	return kslog.LogWithContext(ctx, k.log)
 }
 
 // register adds the given implementations to the Kod instance.
