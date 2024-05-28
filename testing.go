@@ -67,7 +67,7 @@ func (r runner) sub(t testing.TB, testBody any) error {
 		cancelFn()
 	}()
 
-	runner, err := newKod(r.options)
+	runner, err := newKod(ctx, r.options)
 	if err != nil {
 		return fmt.Errorf("newKod: %v", err)
 	}

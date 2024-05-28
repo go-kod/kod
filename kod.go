@@ -20,6 +20,17 @@ import (
 	"github.com/samber/lo"
 	"github.com/spf13/viper"
 	"go.opentelemetry.io/contrib/bridges/otelslog"
+	"go.opentelemetry.io/contrib/exporters/autoexport"
+	"go.opentelemetry.io/otel"
+	"go.opentelemetry.io/otel/exporters/otlp/otlplog/otlploggrpc"
+	"go.opentelemetry.io/otel/exporters/otlp/otlplog/otlploghttp"
+	"go.opentelemetry.io/otel/exporters/stdout/stdoutlog"
+	"go.opentelemetry.io/otel/log/global"
+	"go.opentelemetry.io/otel/sdk/log"
+	"go.opentelemetry.io/otel/sdk/metric"
+	"go.opentelemetry.io/otel/sdk/resource"
+	"go.opentelemetry.io/otel/sdk/trace"
+	semconv "go.opentelemetry.io/otel/semconv/v1.4.0"
 )
 
 const (
@@ -189,7 +200,7 @@ func Run[T any, _ PointerToMain[T]](ctx context.Context, run func(context.Contex
 	}
 
 	// Create a new Kod instance.
-	kod, err := newKod(*opt)
+	kod, err := newKod(ctx, *opt)
 	if err != nil {
 		return err
 	}
@@ -232,19 +243,12 @@ func Run[T any, _ PointerToMain[T]](ctx context.Context, run func(context.Contex
 	return err
 }
 
-// logConfig defines the configuration for logging.
-type logConfig struct {
-	Level string
-	File  string
-}
-
 // kodConfig defines the overall configuration for the Kod application.
 type kodConfig struct {
 	Name    string
 	Env     string
 	Version string
 
-	Log             logConfig
 	ShutdownTimeout time.Duration
 }
 
@@ -278,13 +282,12 @@ type options struct {
 }
 
 // newKod creates a new instance of Kod with the provided registrations and options.
-func newKod(opts options) (*Kod, error) {
+func newKod(ctx context.Context, opts options) (*Kod, error) {
 	kod := &Kod{
 		mu: &sync.Mutex{},
 		config: kodConfig{
 			Name:            filepath.Base(lo.Must(os.Executable())),
 			Env:             "local",
-			Log:             logConfig{Level: "info"},
 			ShutdownTimeout: 5 * time.Second,
 		},
 		hooker:              hooks.New(),
@@ -310,7 +313,9 @@ func newKod(opts options) (*Kod, error) {
 		return nil, err
 	}
 
-	kod.initLog()
+	if err := kod.initOpenTelemetry(ctx); err != nil {
+		return nil, err
+	}
 
 	return kod, nil
 }
@@ -370,7 +375,52 @@ func (k *Kod) parseConfig(filename string) error {
 	return vip.UnmarshalKey("kod", &k.config)
 }
 
-func (k *Kod) initLog() {
+func (k *Kod) initOpenTelemetry(ctx context.Context) error {
+	res := lo.Must(resource.New(ctx,
+		resource.WithFromEnv(),
+		resource.WithTelemetrySDK(),
+		resource.WithHost(),
+		resource.WithAttributes(
+			semconv.ServiceNameKey.String(k.config.Name),
+			semconv.ServiceVersionKey.String(k.config.Version),
+			semconv.DeploymentEnvironmentKey.String(k.config.Env),
+		)),
+	)
+
+	metricReader := lo.Must(autoexport.NewMetricReader(ctx))
+
+	otel.SetMeterProvider(metric.NewMeterProvider(
+		metric.WithReader(metricReader),
+		metric.WithResource(res),
+	))
+
+	spanExporter := lo.Must(autoexport.NewSpanExporter(ctx))
+
+	otel.SetTracerProvider(trace.NewTracerProvider(
+		trace.WithBatcher(spanExporter),
+		trace.WithResource(res),
+	))
+
+	logExporter := lo.Must(getLogAutoExporter(ctx))
+
+	global.SetLoggerProvider(log.NewLoggerProvider(
+		log.WithProcessor(
+			log.NewBatchProcessor(logExporter),
+		),
+		log.WithResource(res),
+	))
+
+	k.hooker.Add(hooks.HookFunc{
+		Name: "OpenTelemetry",
+		Fn: func(ctx context.Context) error {
+			_ = metricReader.Shutdown(ctx)
+			_ = spanExporter.Shutdown(ctx)
+			_ = logExporter.Shutdown(ctx)
+
+			return nil
+		},
+	})
+
 	var handler slog.Handler
 	if k.opts.logWrapper != nil {
 		handler = k.opts.logWrapper(otelslog.NewHandler(k.config.Name,
@@ -385,4 +435,45 @@ func (k *Kod) initLog() {
 	}
 
 	k.log = slog.New(handler)
+
+	return nil
+}
+
+func getLogAutoExporter(ctx context.Context) (log.Exporter, error) {
+	var (
+		err      error
+		exporter log.Exporter
+	)
+
+	logsExporter := os.Getenv("OTEL_LOGS_EXPORTER")
+	if logsExporter == "" {
+		logsExporter = "otlp"
+	}
+
+	switch logsExporter {
+	case "otlp":
+
+		proto := os.Getenv("OTEL_EXPORTER_OTLP_PROTOCOL")
+		if proto == "" {
+			proto = "http/protobuf"
+		}
+
+		switch proto {
+		case "grpc":
+			exporter, err = otlploggrpc.New(ctx)
+		case "http/protobuf":
+			opts := []otlploghttp.Option{}
+			if os.Getenv("OTEL_EXPORTER_OTLP_INSECURE") == "true" {
+				opts = append(opts, otlploghttp.WithInsecure())
+			}
+
+			exporter, err = otlploghttp.New(ctx, opts...)
+		default:
+			return nil, fmt.Errorf("unsupported OTLP exporter protocol: %s", proto)
+		}
+	case "console":
+		exporter, err = stdoutlog.New()
+	}
+
+	return exporter, err
 }
