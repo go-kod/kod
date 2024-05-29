@@ -202,8 +202,8 @@ github.com/ugorji/go/codec v1.2.12 h1:9LC83zGrHhuUA9l16C9AHXAqEV/2wBQ4nkvumAE65E
 github.com/ugorji/go/codec v1.2.12/go.mod h1:UNopzCgEMSXjBc6AOMqYvWC1ktqTAfzJZUZgYf6w6lg=
 github.com/uptrace/opentelemetry-go-extra/otelsql v0.2.4 h1:x3omFAG2XkvWFg1hvXRinY2ExAL1Aacl7W9ZlYjo6gc=
 github.com/uptrace/opentelemetry-go-extra/otelsql v0.2.4/go.mod h1:qMKJr5fTnY0p7hqCQMNrAk62bCARWR5rAbTrGUFRuh4=
-github.com/uptrace/uptrace-go v1.27.0 h1:vvaiOSSwH2rYwJNcEhS9bIxX6tP6Z2IsfxQgo6qyTwM=
-github.com/uptrace/uptrace-go v1.27.0/go.mod h1:/9tKtcIaxb3GAwPOCqkZ8bhXRR/ZYCsXb9Zs5kh14Eo=
+github.com/uptrace/uptrace-go v1.27.1 h1:CIcBWKucTkw1ussNToZA1HNO7+HXOju9zDcFC+MOpOA=
+github.com/uptrace/uptrace-go v1.27.1/go.mod h1:/9tKtcIaxb3GAwPOCqkZ8bhXRR/ZYCsXb9Zs5kh14Eo=
 github.com/yuin/goldmark v1.1.27/go.mod h1:3hX8gzYuyVAZsxl0MRgGTJEmQBFcNTphYh9decYSb74=
 github.com/yuin/goldmark v1.2.1/go.mod h1:3hX8gzYuyVAZsxl0MRgGTJEmQBFcNTphYh9decYSb74=
 github.com/yuin/goldmark v1.3.5/go.mod h1:mwnBkeHKe2W/ZEtQ+71ViKU8L12m81fl3OWwC1Zlc8k=
