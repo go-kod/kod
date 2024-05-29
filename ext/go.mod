@@ -14,7 +14,7 @@ require (
 	github.com/redis/go-redis/v9 v9.5.1
 	github.com/samber/lo v1.39.0
 	github.com/uptrace/opentelemetry-go-extra/otelsql v0.2.4
-	github.com/uptrace/uptrace-go v1.27.0
+	github.com/uptrace/uptrace-go v1.27.1
 	go.etcd.io/etcd/client/v3 v3.5.13
 	go.opentelemetry.io/contrib/instrumentation/github.com/gin-gonic/gin/otelgin v0.52.0
 	go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc v0.52.0
