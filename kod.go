@@ -313,9 +313,7 @@ func newKod(ctx context.Context, opts options) (*Kod, error) {
 		return nil, err
 	}
 
-	if err := kod.initOpenTelemetry(ctx); err != nil {
-		return nil, err
-	}
+	kod.initOpenTelemetry(ctx)
 
 	return kod, nil
 }
@@ -375,7 +373,12 @@ func (k *Kod) parseConfig(filename string) error {
 	return vip.UnmarshalKey("kod", &k.config)
 }
 
-func (k *Kod) initOpenTelemetry(ctx context.Context) error {
+func (k *Kod) initOpenTelemetry(ctx context.Context) {
+	if os.Getenv("OTEL_SDK_DISABLED") == "true" {
+		k.log = slog.Default()
+		return
+	}
+
 	res := lo.Must(resource.New(ctx,
 		resource.WithFromEnv(),
 		resource.WithTelemetrySDK(),
@@ -435,8 +438,6 @@ func (k *Kod) initOpenTelemetry(ctx context.Context) error {
 	}
 
 	k.log = slog.New(handler)
-
-	return nil
 }
 
 func getLogAutoExporter(ctx context.Context) (log.Exporter, error) {

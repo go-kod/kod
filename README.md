@@ -403,6 +403,15 @@ func (a *adder) Add(ctx context.Context, x, y int) (int, error) {
 
 Kod relies on OpenTelemetry to collect trace and metrics from your application.
 
+Supported Environment Variables:
+
+- `OTEL_SDK_DISABLED`: If set to true, disables the OpenTelemetry SDK. Default is false.
+- `OTEL_LOGS_EXPORTER`: The logs exporter to use. Supported values are "console" and "otlp", Default is "otlp".
+- `OTEL_EXPORTER_OTLP_PROTOCOL`: The protocol to use for the OTLP exporter. Supported values are "grpc" and "http/protobuf", Default is "http/protobuf".
+- `OTEL_EXPORTER_OTLP_INSECURE`: If set to true, disables the security features of the OTLP exporter. Default is false.
+
+More information can be found at [OpenTelemetry Website](https://opentelemetry.io/docs/specs/otel/configuration/sdk-environment-variables/).
+
 ### Acknowledge
 
 This project was heavily inspired by [ServiceWeaver](https://github.com/ServiceWeaver/weaver).

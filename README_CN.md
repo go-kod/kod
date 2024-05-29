@@ -404,6 +404,15 @@ func (a *adder) Add(ctx context.Context, x, y int) (int, error) {
 
 Kod 依赖于 OpenTelemetry 来从您的应用程序收集跟踪和指标信息。
 
+支持的环境变量：
+
+- `OTEL_SDK_DISABLED`: 如果设置为 true，则禁用 OpenTelemetry SDK。默认为 false。
+- `OTEL_LOGS_EXPORTER`: 要使用的日志导出器。支持的值为 "console" 和 "otlp"，默认为 "otlp"。
+- `OTEL_EXPORTER_OTLP_PROTOCOL`: 用于 OTLP 导出器的协议。支持的值为 "grpc" 和 "http/protobuf"，默认为 "http/protobuf"。
+- `OTEL_EXPORTER_OTLP_INSECURE`: 如果设置为 true，则禁用 OTLP 导出器的安全功能。默认为 false。
+
+更多信息可以在 [OpenTelemetry官网](https://opentelemetry.io/docs/specs/otel/configuration/sdk-environment-variables/) 找到。
+
 ### Acknowledge
 
 这个项目在很大程度上受到了[ServiceWeaver](https://github.com/ServiceWeaver/weaver)的启发。
