@@ -398,14 +398,12 @@ func (k *Kod) initOpenTelemetry(ctx context.Context) {
 		)),
 	)
 
-	metricReader := lo.Must(autoexport.NewMetricReader(ctx))
-	metricProvider := metric.NewMeterProvider(
-		metric.WithReader(metricReader),
-		metric.WithResource(res),
-	)
+	k.configureTrace(ctx, res)
+	k.configureMetric(ctx, res)
+	k.configureLog(ctx, res)
+}
 
-	otel.SetMeterProvider(metricProvider)
-
+func (k *Kod) configureTrace(ctx context.Context, res *resource.Resource) {
 	spanExporter := lo.Must(autoexport.NewSpanExporter(ctx))
 	spanProvider := trace.NewTracerProvider(
 		trace.WithBatcher(spanExporter),
@@ -414,6 +412,32 @@ func (k *Kod) initOpenTelemetry(ctx context.Context) {
 
 	otel.SetTracerProvider(spanProvider)
 
+	k.hooker.Add(hooks.HookFunc{
+		Name: "OpenTelemetry-Trace",
+		Fn: func(ctx context.Context) error {
+			return spanProvider.Shutdown(ctx)
+		},
+	})
+}
+
+func (k *Kod) configureMetric(ctx context.Context, res *resource.Resource) {
+	metricReader := lo.Must(autoexport.NewMetricReader(ctx))
+	metricProvider := metric.NewMeterProvider(
+		metric.WithReader(metricReader),
+		metric.WithResource(res),
+	)
+
+	otel.SetMeterProvider(metricProvider)
+
+	k.hooker.Add(hooks.HookFunc{
+		Name: "OpenTelemetry-Metric",
+		Fn: func(ctx context.Context) error {
+			return metricProvider.Shutdown(ctx)
+		},
+	})
+}
+
+func (k *Kod) configureLog(ctx context.Context, res *resource.Resource) {
 	logExporter := lo.Must(getLogAutoExporter(ctx))
 	loggerProvider := log.NewLoggerProvider(
 		log.WithProcessor(
@@ -425,13 +449,9 @@ func (k *Kod) initOpenTelemetry(ctx context.Context) {
 	global.SetLoggerProvider(loggerProvider)
 
 	k.hooker.Add(hooks.HookFunc{
-		Name: "OpenTelemetry",
+		Name: "OpenTelemetry-Log",
 		Fn: func(ctx context.Context) error {
-			_ = metricProvider.Shutdown(ctx)
-			_ = spanProvider.Shutdown(ctx)
-			_ = loggerProvider.Shutdown(ctx)
-
-			return nil
+			return loggerProvider.Shutdown(ctx)
 		},
 	})
 
