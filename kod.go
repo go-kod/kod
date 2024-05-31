@@ -304,8 +304,6 @@ func newKod(ctx context.Context, opts options) (*Kod, error) {
 		opts:                opts,
 	}
 
-	kod.initOpenTelemetry(ctx)
-
 	kod.register(opts.registrations)
 
 	if err := kod.parseConfig(opts.configFilename); err != nil {
@@ -319,6 +317,8 @@ func newKod(ctx context.Context, opts options) (*Kod, error) {
 	if err := checkCircularDependency(kod.regs); err != nil {
 		return nil, err
 	}
+
+	kod.initOpenTelemetry(ctx)
 
 	return kod, nil
 }
