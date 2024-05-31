@@ -14,15 +14,11 @@ require (
 	github.com/redis/go-redis/v9 v9.5.1
 	github.com/samber/lo v1.39.0
 	github.com/uptrace/opentelemetry-go-extra/otelsql v0.2.4
-	github.com/uptrace/uptrace-go v1.27.1
 	go.etcd.io/etcd/client/v3 v3.5.14
 	go.opentelemetry.io/contrib/instrumentation/github.com/gin-gonic/gin/otelgin v0.52.0
 	go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc v0.52.0
-	go.opentelemetry.io/contrib/instrumentation/host v0.52.0
 	go.opentelemetry.io/contrib/instrumentation/net/http/httptrace/otelhttptrace v0.52.0
 	go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp v0.52.0
-	go.opentelemetry.io/contrib/instrumentation/runtime v0.52.0
-	go.opentelemetry.io/contrib/samplers/probability/consistent v0.21.0
 	go.opentelemetry.io/otel v1.27.0
 	go.opentelemetry.io/otel/trace v1.27.0
 	google.golang.org/grpc v1.64.0
@@ -99,6 +95,8 @@ require (
 	go.opentelemetry.io/contrib/bridges/otelslog v0.2.0 // indirect
 	go.opentelemetry.io/contrib/bridges/prometheus v0.52.0 // indirect
 	go.opentelemetry.io/contrib/exporters/autoexport v0.52.0 // indirect
+	go.opentelemetry.io/contrib/instrumentation/host v0.52.0 // indirect
+	go.opentelemetry.io/contrib/instrumentation/runtime v0.52.0 // indirect
 	go.opentelemetry.io/otel/exporters/otlp/otlplog/otlploggrpc v0.0.0-20240524160931-7c5e64cccc16 // indirect
 	go.opentelemetry.io/otel/exporters/otlp/otlplog/otlploghttp v0.3.0 // indirect
 	go.opentelemetry.io/otel/exporters/otlp/otlpmetric/otlpmetricgrpc v1.27.0 // indirect

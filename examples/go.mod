@@ -61,14 +61,12 @@ require (
 	github.com/subosito/gotenv v1.6.0 // indirect
 	github.com/tklauser/go-sysconf v0.3.14 // indirect
 	github.com/tklauser/numcpus v0.8.0 // indirect
-	github.com/uptrace/uptrace-go v1.27.0 // indirect
 	github.com/yusufpapurcu/wmi v1.2.4 // indirect
 	go.opentelemetry.io/contrib/bridges/otelslog v0.2.0 // indirect
 	go.opentelemetry.io/contrib/bridges/prometheus v0.52.0 // indirect
 	go.opentelemetry.io/contrib/exporters/autoexport v0.52.0 // indirect
 	go.opentelemetry.io/contrib/instrumentation/host v0.52.0 // indirect
 	go.opentelemetry.io/contrib/instrumentation/runtime v0.52.0 // indirect
-	go.opentelemetry.io/contrib/samplers/probability/consistent v0.21.0 // indirect
 	go.opentelemetry.io/otel v1.27.0 // indirect
 	go.opentelemetry.io/otel/exporters/otlp/otlplog/otlploggrpc v0.0.0-20240524160931-7c5e64cccc16 // indirect
 	go.opentelemetry.io/otel/exporters/otlp/otlplog/otlploghttp v0.3.0 // indirect

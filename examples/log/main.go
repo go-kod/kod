@@ -3,9 +3,9 @@ package main
 import (
 	"context"
 	"log/slog"
+	"os"
 
 	"github.com/go-kod/kod"
-	"github.com/go-kod/kod/ext/client/kuptrace"
 )
 
 type app struct {
@@ -13,11 +13,10 @@ type app struct {
 }
 
 func main() {
-	kod.Run(context.Background(), func(ctx context.Context, app *app) error {
-		s, _ := kuptrace.Config{DSN: "http://project2_secret_token@localhost:14318?grpc=14317", Debug: true}.Build(ctx)
-		defer s.Stop(ctx)
+	os.Setenv("OTEL_LOGS_EXPORTER", "console")
 
-		// default log level is info
+	kod.Run(context.Background(), func(ctx context.Context, app *app) error {
+		// default log level is debug
 		app.L(ctx).InfoContext(ctx, "hello world info")
 
 		// wont print

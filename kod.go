@@ -21,6 +21,8 @@ import (
 	"github.com/spf13/viper"
 	"go.opentelemetry.io/contrib/bridges/otelslog"
 	"go.opentelemetry.io/contrib/exporters/autoexport"
+	"go.opentelemetry.io/contrib/instrumentation/host"
+	"go.opentelemetry.io/contrib/instrumentation/runtime"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/exporters/otlp/otlplog/otlploggrpc"
 	"go.opentelemetry.io/otel/exporters/otlp/otlplog/otlploghttp"
@@ -205,6 +207,8 @@ func Run[T any, _ PointerToMain[T]](ctx context.Context, run func(context.Contex
 		return err
 	}
 
+	ctx, span := otel.Tracer(PkgPath).Start(ctx, "kod.Run")
+
 	// create a new context with kod
 	ctx = newContext(ctx, kod)
 	ctx, cancel := context.WithCancel(ctx)
@@ -219,7 +223,7 @@ func Run[T any, _ PointerToMain[T]](ctx context.Context, run func(context.Contex
 	// wait for shutdown signal
 	stop := make(chan struct{}, 2)
 	signals.Shutdown(ctx, func(grace bool) {
-		kod.log.Info("shutdown ...")
+		kod.log.InfoContext(ctx, "kod.Shutdown ...")
 		cancel()
 		stop <- struct{}{}
 	})
@@ -230,6 +234,7 @@ func Run[T any, _ PointerToMain[T]](ctx context.Context, run func(context.Contex
 		stop <- struct{}{}
 	}()
 
+	span.End()
 	// wait for stop signal
 	<-stop
 
@@ -299,6 +304,8 @@ func newKod(ctx context.Context, opts options) (*Kod, error) {
 		opts:                opts,
 	}
 
+	kod.initOpenTelemetry(ctx)
+
 	kod.register(opts.registrations)
 
 	if err := kod.parseConfig(opts.configFilename); err != nil {
@@ -312,8 +319,6 @@ func newKod(ctx context.Context, opts options) (*Kod, error) {
 	if err := checkCircularDependency(kod.regs); err != nil {
 		return nil, err
 	}
-
-	kod.initOpenTelemetry(ctx)
 
 	return kod, nil
 }
@@ -379,6 +384,9 @@ func (k *Kod) initOpenTelemetry(ctx context.Context) {
 		return
 	}
 
+	lo.Must0(host.Start())
+	lo.Must0(runtime.Start())
+
 	res := lo.Must(resource.New(ctx,
 		resource.WithFromEnv(),
 		resource.WithTelemetrySDK(),
@@ -391,34 +399,37 @@ func (k *Kod) initOpenTelemetry(ctx context.Context) {
 	)
 
 	metricReader := lo.Must(autoexport.NewMetricReader(ctx))
-
-	otel.SetMeterProvider(metric.NewMeterProvider(
+	metricProvider := metric.NewMeterProvider(
 		metric.WithReader(metricReader),
 		metric.WithResource(res),
-	))
+	)
+
+	otel.SetMeterProvider(metricProvider)
 
 	spanExporter := lo.Must(autoexport.NewSpanExporter(ctx))
-
-	otel.SetTracerProvider(trace.NewTracerProvider(
+	spanProvider := trace.NewTracerProvider(
 		trace.WithBatcher(spanExporter),
 		trace.WithResource(res),
-	))
+	)
+
+	otel.SetTracerProvider(spanProvider)
 
 	logExporter := lo.Must(getLogAutoExporter(ctx))
-
-	global.SetLoggerProvider(log.NewLoggerProvider(
+	loggerProvider := log.NewLoggerProvider(
 		log.WithProcessor(
 			log.NewBatchProcessor(logExporter),
 		),
 		log.WithResource(res),
-	))
+	)
+
+	global.SetLoggerProvider(loggerProvider)
 
 	k.hooker.Add(hooks.HookFunc{
 		Name: "OpenTelemetry",
 		Fn: func(ctx context.Context) error {
-			_ = metricReader.Shutdown(ctx)
-			_ = spanExporter.Shutdown(ctx)
-			_ = logExporter.Shutdown(ctx)
+			_ = metricProvider.Shutdown(ctx)
+			_ = spanProvider.Shutdown(ctx)
+			_ = loggerProvider.Shutdown(ctx)
 
 			return nil
 		},
