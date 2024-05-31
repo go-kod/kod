@@ -80,7 +80,7 @@ func (t *test1Component) Interceptors() []interceptor.Interceptor {
 	}
 }
 
-func (t *test1Component) Stop(ctx context.Context) error {
+func (t *test1Component) Shutdown(ctx context.Context) error {
 	return nil
 }
 

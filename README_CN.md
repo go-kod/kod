@@ -159,7 +159,7 @@ func (f *foo) Init(context.Context) error {
     // ...
 }
 
-func (f *foo) Stop(context.Context) error {
+func (f *foo) Shutdown(context.Context) error {
     // ...
 }
 ```

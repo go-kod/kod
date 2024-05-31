@@ -414,9 +414,7 @@ func (k *Kod) configureTrace(ctx context.Context, res *resource.Resource) {
 
 	k.hooker.Add(hooks.HookFunc{
 		Name: "OpenTelemetry-Trace",
-		Fn: func(ctx context.Context) error {
-			return spanProvider.Shutdown(ctx)
-		},
+		Fn:   spanProvider.Shutdown,
 	})
 }
 
@@ -431,9 +429,7 @@ func (k *Kod) configureMetric(ctx context.Context, res *resource.Resource) {
 
 	k.hooker.Add(hooks.HookFunc{
 		Name: "OpenTelemetry-Metric",
-		Fn: func(ctx context.Context) error {
-			return metricProvider.Shutdown(ctx)
-		},
+		Fn:   metricProvider.Shutdown,
 	})
 }
 
@@ -450,9 +446,7 @@ func (k *Kod) configureLog(ctx context.Context, res *resource.Resource) {
 
 	k.hooker.Add(hooks.HookFunc{
 		Name: "OpenTelemetry-Log",
-		Fn: func(ctx context.Context) error {
-			return loggerProvider.Shutdown(ctx)
-		},
+		Fn:   loggerProvider.Shutdown,
 	})
 
 	var handler slog.Handler

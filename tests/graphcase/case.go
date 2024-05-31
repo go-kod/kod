@@ -66,7 +66,7 @@ func (t *test1Component) Init(ctx context.Context) error {
 	return nil
 }
 
-func (t *test1Component) Stop(ctx context.Context) error {
+func (t *test1Component) Shutdown(ctx context.Context) error {
 	return nil
 }
 

@@ -154,7 +154,7 @@ func parseStruct(src []byte) (structInfo structInfo, err error) {
 				continue
 			}
 			// 退出方法
-			if fd.Name.Name == "Stop" {
+			if fd.Name.Name == "Shutdown" {
 				continue
 			}
 			// Hooks
