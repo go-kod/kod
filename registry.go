@@ -12,6 +12,7 @@ import (
 	"github.com/go-kod/kod/internal/hooks"
 	"github.com/go-kod/kod/internal/reflects"
 	"github.com/go-kod/kod/internal/registry"
+	"go.opentelemetry.io/otel"
 )
 
 // LocalStubFnInfo is the information passed to LocalStubFn.
@@ -104,14 +105,22 @@ func (k *Kod) get(ctx context.Context, reg *Registration) (any, error) {
 
 	// Call Init if available.
 	if i, ok := obj.(interface{ Init(context.Context) error }); ok {
+		ctx, span := otel.Tracer(PkgPath).Start(ctx, reg.Name+".Init")
+		defer span.End()
+
 		if err := i.Init(ctx); err != nil {
 			return nil, fmt.Errorf("component %q initialization failed: %w", reg.Name, err)
 		}
 	}
 
-	// Call Stop if available.
+	// Call Shutdown if available.
 	if i, ok := obj.(interface{ Shutdown(context.Context) error }); ok {
-		k.hooker.Add(hooks.HookFunc{Name: reg.Name, Fn: i.Shutdown})
+		k.hooker.Add(hooks.HookFunc{Name: reg.Name, Fn: func(ctx context.Context) error {
+			ctx, span := otel.Tracer(PkgPath).Start(ctx, reg.Name+".Shutdown")
+			defer span.End()
+
+			return i.Shutdown(ctx)
+		}})
 	}
 
 	// Cache the component.
