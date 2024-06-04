@@ -16,7 +16,6 @@ func TestHttpHandler(t *testing.T) {
 		record := httptest.NewRecorder()
 
 		r, _ := http.NewRequest(http.MethodGet, "/hello/gin", nil)
-		ctx = StartTrace(ctx)
 		r = r.WithContext(ctx)
 
 		k.Foo(record, r)

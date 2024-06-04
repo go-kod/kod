@@ -47,7 +47,7 @@ func TestImpl(t *testing.T) {
 func TestInterface(t *testing.T) {
 	t.Parallel()
 	kod.RunTest(t, func(ctx context.Context, k Test1Component) {
-		ctx = StartTrace(ctx)
+		// ctx = StartTrace(ctx)
 
 		ctx, span := otel.Tracer("").Start(ctx, "Run", trace.WithSpanKind(trace.SpanKindInternal))
 		defer func() {
@@ -61,7 +61,7 @@ func TestInterface(t *testing.T) {
 		require.Equal(t, "test1:B", err.Error())
 		require.True(t, span.SpanContext().IsValid())
 		require.Equal(t, 2, res.Id)
-	})
+	}, kod.WithOpenTelemetryEnabled())
 }
 
 func TestInterfacePanic(t *testing.T) {

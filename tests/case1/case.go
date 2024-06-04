@@ -19,10 +19,7 @@ import (
 	"github.com/go-kod/kod/interceptor/ktrace"
 	"github.com/go-kod/kod/interceptor/kvalidate"
 	"github.com/samber/lo"
-	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/baggage"
-	"go.opentelemetry.io/otel/exporters/stdout/stdouttrace"
-	sdktrace "go.opentelemetry.io/otel/sdk/trace"
 )
 
 type test1Config struct {
@@ -140,24 +137,24 @@ func Run(ctx context.Context, app *App) error {
 	return err
 }
 
-func StartTrace(ctx context.Context) context.Context {
-	var opts []sdktrace.TracerProviderOption
+// func StartTrace(ctx context.Context) context.Context {
+// 	var opts []sdktrace.TracerProviderOption
 
-	provider := sdktrace.NewTracerProvider(opts...)
-	otel.SetTracerProvider(provider)
+// 	provider := sdktrace.NewTracerProvider(opts...)
+// 	otel.SetTracerProvider(provider)
 
-	exporter, err := stdouttrace.New(stdouttrace.WithPrettyPrint())
-	if err != nil {
-		panic(err)
-	} else {
-		provider.RegisterSpanProcessor(sdktrace.NewSimpleSpanProcessor(exporter))
-	}
+// 	exporter, err := stdouttrace.New(stdouttrace.WithPrettyPrint())
+// 	if err != nil {
+// 		panic(err)
+// 	} else {
+// 		provider.RegisterSpanProcessor(sdktrace.NewSimpleSpanProcessor(exporter))
+// 	}
 
-	ctx, span := otel.Tracer("").Start(ctx, "Run")
-	defer func() {
-		span.End()
-		fmt.Println("!!!!!!")
-	}()
+// 	ctx, span := otel.Tracer("").Start(ctx, "Run")
+// 	defer func() {
+// 		span.End()
+// 		fmt.Println("!!!!!!")
+// 	}()
 
-	return ctx
-}
+// 	return ctx
+// }

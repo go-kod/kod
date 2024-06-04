@@ -194,6 +194,13 @@ func WithInterceptors(interceptors ...interceptor.Interceptor) func(*options) {
 	}
 }
 
+// WithOpenTelemetryEnabled is an option setter for enabling OpenTelemetry.
+func WithOpenTelemetryEnabled() func(*options) {
+	return func(opts *options) {
+		opts.enableOpenTelemetry = true
+	}
+}
+
 // Run initializes and runs the application with the provided main component and options.
 func Run[T any, _ PointerToMain[T]](ctx context.Context, run func(context.Context, *T) error, opts ...func(*options)) error {
 	opt := &options{}
@@ -278,11 +285,12 @@ type Kod struct {
 
 // options defines the configuration options for Kod.
 type options struct {
-	configFilename string
-	fakes          map[reflect.Type]any
-	logWrapper     func(slog.Handler) slog.Handler
-	registrations  []*Registration
-	interceptors   []interceptor.Interceptor
+	enableOpenTelemetry bool
+	configFilename      string
+	fakes               map[reflect.Type]any
+	logWrapper          func(slog.Handler) slog.Handler
+	registrations       []*Registration
+	interceptors        []interceptor.Interceptor
 }
 
 // newKod creates a new instance of Kod with the provided registrations and options.
@@ -317,7 +325,14 @@ func newKod(ctx context.Context, opts options) (*Kod, error) {
 		return nil, err
 	}
 
-	kod.initOpenTelemetry(ctx)
+	if opts.enableOpenTelemetry && os.Getenv("OTEL_SDK_DISABLED") != "true" {
+		kod.initOpenTelemetry(ctx)
+	} else {
+		kod.log = kod.newSlog(slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{
+			AddSource: true,
+			Level:     slog.LevelDebug,
+		}))
+	}
 
 	return kod, nil
 }
@@ -377,12 +392,8 @@ func (k *Kod) parseConfig(filename string) error {
 	return vip.UnmarshalKey("kod", &k.config)
 }
 
+// initOpenTelemetry initializes OpenTelemetry with the provided context.
 func (k *Kod) initOpenTelemetry(ctx context.Context) {
-	if os.Getenv("OTEL_SDK_DISABLED") == "true" {
-		k.log = slog.Default()
-		return
-	}
-
 	lo.Must0(host.Start())
 	lo.Must0(runtime.Start())
 
@@ -402,6 +413,7 @@ func (k *Kod) initOpenTelemetry(ctx context.Context) {
 	k.configureLog(ctx, res)
 }
 
+// configureTrace configures the trace provider with the provided context and resource.
 func (k *Kod) configureTrace(ctx context.Context, res *resource.Resource) {
 	spanExporter := lo.Must(autoexport.NewSpanExporter(ctx))
 	spanProvider := trace.NewTracerProvider(
@@ -417,6 +429,7 @@ func (k *Kod) configureTrace(ctx context.Context, res *resource.Resource) {
 	})
 }
 
+// configureMetric configures the metric provider with the provided context and resource.
 func (k *Kod) configureMetric(ctx context.Context, res *resource.Resource) {
 	metricReader := lo.Must(autoexport.NewMetricReader(ctx))
 	metricProvider := metric.NewMeterProvider(
@@ -432,6 +445,7 @@ func (k *Kod) configureMetric(ctx context.Context, res *resource.Resource) {
 	})
 }
 
+// configureLog configures the log provider with the provided context and resource.
 func (k *Kod) configureLog(ctx context.Context, res *resource.Resource) {
 	logExporter := lo.Must(getLogAutoExporter(ctx))
 	loggerProvider := log.NewLoggerProvider(
@@ -448,22 +462,24 @@ func (k *Kod) configureLog(ctx context.Context, res *resource.Resource) {
 		Fn:   loggerProvider.Shutdown,
 	})
 
-	var handler slog.Handler
-	if k.opts.logWrapper != nil {
-		handler = k.opts.logWrapper(otelslog.NewHandler(k.config.Name,
-			otelslog.WithSchemaURL(PkgPath),
-			otelslog.WithVersion(k.config.Version),
-		))
-	} else {
-		handler = otelslog.NewHandler(k.config.Name,
-			otelslog.WithSchemaURL(PkgPath),
-			otelslog.WithVersion(k.config.Version),
-		)
-	}
-
-	k.log = slog.New(handler)
+	k.log = k.newSlog(otelslog.NewHandler(k.config.Name,
+		otelslog.WithSchemaURL(PkgPath),
+		otelslog.WithVersion(k.config.Version),
+	))
 }
 
+// newSlog creates a new slog logger with the provided handler.
+func (k *Kod) newSlog(handler slog.Handler) *slog.Logger {
+	if k.opts.logWrapper != nil {
+		handler = k.opts.logWrapper(handler)
+	}
+
+	return slog.New(handler)
+}
+
+// getLogAutoExporter returns a log exporter based on the environment variables.
+// The default exporter is OTLP over HTTP/Protobuf.
+// NOTICE: It would be removed when the OpenTelemetry SDK supports the log auto exporter.
 func getLogAutoExporter(ctx context.Context) (log.Exporter, error) {
 	var (
 		err      error
