@@ -8,6 +8,7 @@ import (
 	"os"
 	"path/filepath"
 	"reflect"
+	"strings"
 	"sync"
 	"time"
 
@@ -32,7 +33,7 @@ import (
 	"go.opentelemetry.io/otel/sdk/metric"
 	"go.opentelemetry.io/otel/sdk/resource"
 	"go.opentelemetry.io/otel/sdk/trace"
-	semconv "go.opentelemetry.io/otel/semconv/v1.4.0"
+	semconv "go.opentelemetry.io/otel/semconv/v1.25.0"
 )
 
 const (
@@ -372,9 +373,11 @@ func (k *Kod) parseConfig(filename string) error {
 	}
 
 	vip := viper.New()
-
+	vip.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
+	vip.AutomaticEnv()
 	vip.SetConfigFile(filename)
 	vip.AddConfigPath(".")
+
 	err := vip.ReadInConfig()
 	if err != nil {
 		switch err.(type) {
@@ -389,7 +392,19 @@ func (k *Kod) parseConfig(filename string) error {
 
 	k.viper = vip
 
-	return vip.UnmarshalKey("kod", &k.config)
+	if vip.Get("kod.name") != nil {
+		k.config.Name = vip.GetString("kod.name")
+	}
+
+	if vip.Get("kod.version") != nil {
+		k.config.Version = vip.GetString("kod.version")
+	}
+
+	if vip.Get("kod.env") != nil {
+		k.config.Env = vip.GetString("kod.env")
+	}
+
+	return nil
 }
 
 // initOpenTelemetry initializes OpenTelemetry with the provided context.
