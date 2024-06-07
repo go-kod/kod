@@ -22,7 +22,7 @@ Kod stands for **Killer Of Dependency**, a generics based dependency injection f
 - **Component Based**: Kod is a component-based framework. Components are the building blocks of a Kod application.
 - **Configurable**: Kod can use TOML/YAML/JSON files to configure how applications are run.
 - **Testing**: Kod includes a Test function that you can use to test your Kod applications.
-- **Logging**: Kod provides a logging API, kod.L. Kod also integrates the logs into the environment where your application is deployed.
+- **Logging**: Kod provides a logging API, `kod.L`. Kod also integrates the logs into the environment where your application is deployed.
 - **OpenTelemetry**: Kod relies on OpenTelemetry to collect trace and metrics from your application.
 - **Hooks**: Kod provides a way to run code when a component start or stop.
 - **Interceptors**: Kod has built-in common interceptors, and components can implement the following methods to inject these interceptors into component methods.
@@ -107,7 +107,7 @@ func serve(context.Context, *app) error {
 }
 ```
 
-kod.Run(...) initializes and runs the Kod application. In particular, kod.Run finds the main component, creates it, and passes it to a supplied function. In this example,app is the main component since it contains a kod.Implements[kod.Main] field.
+`kod.Run(...)` initializes and runs the Kod application. In particular, `kod.Run` finds the main component, creates it, and passes it to a supplied function. In this example, `app` is the main component since it contains a `kod.Implements[kod.Main]` field.
 
 ```bash
 go mod tidy
@@ -120,7 +120,7 @@ Hello
 
 ### Components
 
-Components are Kod's core abstraction. Concretely, a component is represented as a Go interface and corresponding implementation of that interface. Consider the following Adder component for example:
+Components are Kod's core abstraction. Concretely, a component is represented as a Go interface and corresponding implementation of that interface. Consider the following `Adder` component for example:
 
 ```go
 type Adder interface {
@@ -136,7 +136,7 @@ func (*adder) Add(_ context.Context, x, y int) (int, error) {
 }
 ```
 
-Adder defines the component's interface, and adder defines the component's implementation. The two are linked with the embedded kod.Implements[Adder] field. You can call kod.Ref[Adder].Get() to get a caller to the Adder component.
+Adder defines the component's interface, and adder defines the component's implementation. The two are linked with the embedded `kod.Implements[Adder]` field. You can call `kod.Ref[Adder].Get()` to get a caller to the Adder component.
 
 #### Implementation
 
@@ -150,8 +150,8 @@ type foo struct{
 ```
 
 It must be a struct.
-It must embed a kod.Implements[T] field where T is the component interface it implements.
-If a component implementation implements an Init(context.Context) error method, it will be called when an instance of the component is created.
+It must embed a `kod.Implements[T]` field where T is the component interface it implements.
+If a component implementation implements an `Init(context.Context) error` method, it will be called when an instance of the component is created.
 
 ```go
 func (f *foo) Init(context.Context) error {
@@ -193,7 +193,7 @@ Kod uses config files, written in TOML, to configure how applications are run. A
 name = "hello"
 ```
 
-A config file may also contain component-specific configuration sections, which allow you configuring the components in your application. For example, consider the following Greeter component.
+A config file may also contain component-specific configuration sections, which allow you configuring the components in your application. For example, consider the following `Greeter` component.
 
 ```go
 type Greeter interface {
@@ -217,7 +217,7 @@ type greeterOptions struct {
 }
 ```
 
-Next, we associate the options struct with the greeter implementation by embedding the kod.WithConfig[T] struct.
+Next, we associate the `options` struct with the greeter implementation by embedding the `kod.WithConfig[T]` struct.
 
 ```go
 type greeter struct {
@@ -233,7 +233,7 @@ Now, we can add a Greeter section to the config file. The section is keyed by th
 Greeting = "Bonjour"
 ```
 
-When the Greeter component is created, Kod will automatically parse the Greeter section of the config file into a greeterOptions struct. You can access the populated struct via the Config method of the embedded WithConfig struct. For example:
+When the Greeter component is created, Kod will automatically parse the Greeter section of the config file into a `greeterOptions` struct. You can access the populated struct via the `Config` method of the embedded `WithConfig` struct. For example:
 
 ```go
 func (g *greeter) Greet(_ context.Context, name string) (string, error) {
@@ -245,7 +245,7 @@ func (g *greeter) Greet(_ context.Context, name string) (string, error) {
 }
 ```
 
-You can use toml struct tags to specify the name that should be used for a field in a config file. For example, we can change the greeterOptions struct to the following.
+You can use TOML struct tags to specify the name that should be used for a field in a config file. For example, we can change the `greeterOptions` struct to the following.
 
 ```go
 type greeterOptions struct {
@@ -257,7 +257,7 @@ type greeterOptions struct {
 
 #### Unit Test
 
-Kod includes a Test function that you can use to test your Kod applications. For example, create an adder_test.go file with the following contents.
+Kod includes a `Test` function that you can use to test your Kod applications. For example, create an `adder_test.go` file with the following contents.
 
 ```go
 package main
@@ -282,7 +282,7 @@ func TestAdd(t *testing.T) {
 }
 ```
 
-Run go test to run the test. kod.RunTest will create a sub-test and within it will create an Adder component and pass it to the supplied function. If you want to test the implementation of a component, rather than its interface, specify a pointer to the implementing struct as an argument. For example, if the adderImpl struct implemented the Adder interface, we could write the following:
+Run go test to run the test. `kod.RunTest` will create a sub-test and within it will create an Adder component and pass it to the supplied function. If you want to test the implementation of a component, rather than its interface, specify a pointer to the implementing struct as an argument. For example, if the `adderImpl` struct implemented the Adder interface, we could write the following:
 
 ```go
 kod.RunTest(t, func(ctx context.Context, adder *adderImpl) {
@@ -292,7 +292,7 @@ kod.RunTest(t, func(ctx context.Context, adder *adderImpl) {
 
 #### Benchmark
 
-You can also use kod.RunTest to benchmark your application. For example, create an adder_benchmark.go file with the following contents.
+You can also use `kod.RunTest` to benchmark your application. For example, create an adder_benchmark.go file with the following contents.
 
 ```go
 package main
@@ -319,7 +319,7 @@ func BenchmarkAdd(b *testing.B) {
 
 #### Fake
 
-You can replace a component implementation with a fake implementation in a test using kod.Fake. Here's an example where we replace the real implementation of a Clock component with a fake implementation that always returns a fixed time.
+You can replace a component implementation with a fake implementation in a test using `kod.Fake`. Here's an example where we replace the real implementation of a Clock component with a fake implementation that always returns a fixed time.
 
 ```go
 // fakeClock is a fake implementation of the Clock component.
@@ -364,7 +364,7 @@ func TestClock(t *testing.T) {
 
 #### Config
 
-You can also provide the contents of a config file to a runner by setting the Runner.Config field:
+You can also provide the contents of a config file to a runner by setting the `Runner.Config` field:
 
 ```go
 func TestArithmetic(t *testing.T) {
@@ -376,7 +376,7 @@ func TestArithmetic(t *testing.T) {
 
 ### Logging
 
-Kod provides a logging API, kod.L. Kod also integrates the logs into the environment where your application is deployed.
+Kod provides a logging API, `kod.L`. Kod also integrates the logs into the environment where your application is deployed.
 
 Use the Logger method of a component implementation to get a logger scoped to the component. For example:
 
