@@ -19,9 +19,9 @@ func main() {
 		// default log level is debug
 		app.L(ctx).InfoContext(ctx, "hello world info")
 
-		// wont print
+		// won't print
 		app.L(ctx).Debug("hello world info1")
-		// wont print
+		// won't print
 		app.L(ctx).Info("hello world info1")
 		// will print
 		app.L(ctx).Error("hello world error", slog.String("error", "error message"))

@@ -114,7 +114,7 @@ func Percentile(perc float64) func(w Window) float64 {
 func FastPercentile(perc float64) func(w Window) float64 {
 	perc = perc / 100.0
 	return func(w Window) float64 {
-		var initalObservations = make([]float64, 0, 5)
+		var initialObservations = make([]float64, 0, 5)
 		var q [5]float64
 		var n [5]int
 		var nPrime [5]float64
@@ -126,14 +126,14 @@ func FastPercentile(perc float64) func(w Window) float64 {
 				observations = observations + 1
 				// Record first five observations
 				if observations < 6 {
-					initalObservations = append(initalObservations, v)
+					initialObservations = append(initialObservations, v)
 					continue
 				}
 				// Before proceeding beyond the first five, process them.
 				if observations == 6 {
-					bubbleSort(initalObservations)
+					bubbleSort(initialObservations)
 					for offset := range q {
-						q[offset] = initalObservations[offset]
+						q[offset] = initialObservations[offset]
 						n[offset] = offset
 					}
 					nPrime[0] = 0
@@ -203,8 +203,8 @@ func FastPercentile(perc float64) func(w Window) float64 {
 		// If we have less than five values then degenerate into a max function.
 		// This is a reasonable value for data sets this small.
 		if observations < 5 {
-			bubbleSort(initalObservations)
-			return initalObservations[len(initalObservations)-1]
+			bubbleSort(initialObservations)
+			return initialObservations[len(initialObservations)-1]
 		}
 		return q[2]
 	}

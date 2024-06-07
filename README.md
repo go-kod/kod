@@ -13,7 +13,7 @@
 
 # Kod
 
-Kod  stands for **Killer Of Dependency**, a generics based dependency injection framework for Go.
+Kod stands for **Killer Of Dependency**, a generics based dependency injection framework for Go.
 
 ![kod](/assets/kod.excalidraw.png)
 
@@ -193,7 +193,7 @@ Kod uses config files, written in TOML, to configure how applications are run. A
 name = "hello"
 ```
 
-A config file may also contain component-specific configuration sections, which allow you to configure the components in your application. For example, consider the following Greeter component.
+A config file may also contain component-specific configuration sections, which allow you configuring the components in your application. For example, consider the following Greeter component.
 
 ```go
 type Greeter interface {
@@ -209,7 +209,7 @@ func (g *greeter) Greet(_ context.Context, name string) (string, error) {
 }
 ```
 
-Rather than hard-coding the greeting "Hello", we can provide a greeting in a config file. First, we define a options struct.
+Rather than hard-coding the greeting "Hello", we can provide a greeting in a config file. First, we define an `options` struct.
 
 ```go
 type greeterOptions struct {
