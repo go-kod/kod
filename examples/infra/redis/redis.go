@@ -5,14 +5,14 @@ import (
 
 	"github.com/go-kod/kod"
 	"github.com/go-kod/kod/ext/client/kredis"
-	"github.com/redis/go-redis/v9"
+	goredis "github.com/redis/go-redis/v9"
 )
 
 type impl struct {
 	kod.Implements[Component]
 	kod.WithConfig[config]
 
-	cc *redis.Client
+	cc *goredis.Client
 }
 
 type config struct {
@@ -24,6 +24,6 @@ func (ins *impl) Init(ctx context.Context) error {
 	return nil
 }
 
-func (ins *impl) Client() *redis.Client {
+func (ins *impl) Client() *goredis.Client {
 	return ins.cc
 }
