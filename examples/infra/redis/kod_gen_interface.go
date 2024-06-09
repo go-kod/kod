@@ -3,10 +3,10 @@
 package redis
 
 import (
-	"github.com/redis/go-redis/v9"
+	goredis "github.com/redis/go-redis/v9"
 )
 
 // impl is a component that implements Component.
 type Component interface {
-	Client() *redis.Client
+	Client() *goredis.Client
 }
