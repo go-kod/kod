@@ -29,7 +29,7 @@ func Fake[T any](impl any) fakeComponent {
 }
 
 type runner struct {
-	options options
+	options []func(*options)
 }
 
 // RunTest runs a test function with one component.
@@ -48,12 +48,7 @@ func RunTest3[T1, T2, T3 any](t testing.TB, body func(context.Context, T1, T2, T
 }
 
 func runTest(t testing.TB, testBody any, opts ...func(*options)) {
-	options := &options{}
-	for _, o := range opts {
-		o(options)
-	}
-
-	err := runner{options: *options}.sub(t, testBody)
+	err := runner{options: opts}.sub(t, testBody)
 	if err != nil {
 		t.Logf("runTest failed: %v", err)
 		t.FailNow()
@@ -67,7 +62,7 @@ func (r runner) sub(t testing.TB, testBody any) error {
 		cancelFn()
 	}()
 
-	runner, err := newKod(ctx, r.options)
+	runner, err := newKod(ctx, r.options...)
 	if err != nil {
 		return fmt.Errorf("newKod: %v", err)
 	}
@@ -88,7 +83,7 @@ func (r runner) sub(t testing.TB, testBody any) error {
 	//     runner.Fakes = append(runner.Fakes, kod.Fake[Foo](...))
 	//     runner.Test(t, func(t *testing.T, f *foo) {...})
 	for _, intf := range intfs {
-		if _, ok := r.options.fakes[intf]; ok {
+		if _, ok := runner.opts.fakes[intf]; ok {
 			return fmt.Errorf("Component %v has both fake and component implementation pointer", intf)
 		}
 	}

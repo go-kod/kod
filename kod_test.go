@@ -20,14 +20,14 @@ func TestMain(m *testing.M) {
 }
 
 func TestConfigNoSuffix(t *testing.T) {
-	k, err := newKod(context.Background(), options{})
+	k, err := newKod(context.Background())
 	assert.Nil(t, err)
 
 	assert.EqualError(t, k.parseConfig("nosuffix"), "read config file: Unsupported Config Type \"\"")
 }
 
 func TestConfigEnv(t *testing.T) {
-	k, err := newKod(context.Background(), options{})
+	k, err := newKod(context.Background())
 	assert.Nil(t, err)
 
 	assert.Equal(t, k.config.Name, "kod.test")
@@ -38,7 +38,7 @@ func TestConfigEnv(t *testing.T) {
 	os.Setenv("KOD_VERSION", "1.0.0")
 	os.Setenv("KOD_ENV", "dev")
 
-	k, err = newKod(context.Background(), options{})
+	k, err = newKod(context.Background())
 	assert.Nil(t, err)
 
 	assert.Equal(t, k.config.Name, "test")

@@ -59,9 +59,26 @@ func TestInterface(t *testing.T) {
 		res, err := k.Foo(ctx, &FooReq{Id: 2})
 		fmt.Println(err)
 		require.Equal(t, "test1:B", err.Error())
+		require.False(t, span.SpanContext().IsValid())
+		require.Equal(t, 2, res.Id)
+	}, kod.WithOpenTelemetryDisabled())
+
+	kod.RunTest(t, func(ctx context.Context, k Test1Component) {
+		// ctx = StartTrace(ctx)
+
+		ctx, span := otel.Tracer("").Start(ctx, "Run", trace.WithSpanKind(trace.SpanKindInternal))
+		defer func() {
+			span.End()
+			fmt.Println("!!!!!!")
+		}()
+
+		_, err := k.Foo(ctx, &FooReq{Id: 1})
+		res, err := k.Foo(ctx, &FooReq{Id: 2})
+		fmt.Println(err)
+		require.Equal(t, "test1:B", err.Error())
 		require.True(t, span.SpanContext().IsValid())
 		require.Equal(t, 2, res.Id)
-	}, kod.WithOpenTelemetryEnabled())
+	})
 }
 
 func TestInterfacePanic(t *testing.T) {

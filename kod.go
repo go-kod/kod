@@ -195,22 +195,17 @@ func WithInterceptors(interceptors ...interceptor.Interceptor) func(*options) {
 	}
 }
 
-// WithOpenTelemetryEnabled is an option setter for enabling OpenTelemetry.
-func WithOpenTelemetryEnabled() func(*options) {
+// WithOpenTelemetryDisabled is an option setter for enabling OpenTelemetry.
+func WithOpenTelemetryDisabled() func(*options) {
 	return func(opts *options) {
-		opts.enableOpenTelemetry = true
+		opts.enableOpenTelemetry = false
 	}
 }
 
 // Run initializes and runs the application with the provided main component and options.
 func Run[T any, _ PointerToMain[T]](ctx context.Context, run func(context.Context, *T) error, opts ...func(*options)) error {
-	opt := &options{}
-	for _, o := range opts {
-		o(opt)
-	}
-
 	// Create a new Kod instance.
-	kod, err := newKod(ctx, *opt)
+	kod, err := newKod(ctx, opts...)
 	if err != nil {
 		return err
 	}
@@ -281,7 +276,7 @@ type Kod struct {
 	registryByImpl      map[reflect.Type]*Registration
 
 	components map[string]any
-	opts       options
+	opts       *options
 }
 
 // options defines the configuration options for Kod.
@@ -295,7 +290,14 @@ type options struct {
 }
 
 // newKod creates a new instance of Kod with the provided registrations and options.
-func newKod(ctx context.Context, opts options) (*Kod, error) {
+func newKod(ctx context.Context, opts ...func(*options)) (*Kod, error) {
+	opt := &options{
+		enableOpenTelemetry: true,
+	}
+	for _, o := range opts {
+		o(opt)
+	}
+
 	kod := &Kod{
 		mu: &sync.Mutex{},
 		config: kodConfig{
@@ -309,12 +311,12 @@ func newKod(ctx context.Context, opts options) (*Kod, error) {
 		registryByInterface: make(map[reflect.Type]*Registration),
 		registryByImpl:      make(map[reflect.Type]*Registration),
 		components:          make(map[string]any),
-		opts:                opts,
+		opts:                opt,
 	}
 
-	kod.register(opts.registrations)
+	kod.register(opt.registrations)
 
-	if err := kod.parseConfig(opts.configFilename); err != nil {
+	if err := kod.parseConfig(opt.configFilename); err != nil {
 		return nil, err
 	}
 
@@ -326,7 +328,7 @@ func newKod(ctx context.Context, opts options) (*Kod, error) {
 		return nil, err
 	}
 
-	if opts.enableOpenTelemetry && os.Getenv("OTEL_SDK_DISABLED") != "true" {
+	if opt.enableOpenTelemetry && os.Getenv("OTEL_SDK_DISABLED") != "true" {
 		kod.initOpenTelemetry(ctx)
 	} else {
 		kod.log = kod.newSlog(slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{
