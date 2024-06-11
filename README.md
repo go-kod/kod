@@ -15,6 +15,8 @@
 
 Kod stands for **Killer Of Dependency**, a generics based dependency injection framework for Go.
 
+> Although it seems that most Go enthusiasts dislikes dependency injection, many companies that widely use Go for their development projects have open-sourced their own dependency injection frameworks. For example, Google has open-sourced Wire, Uber has open-sourced Fx, and Facebook has open-sourced Inject. This is truly a strange phenomenon.
+
 ![kod](/assets/kod.excalidraw.png)
 
 ## Feature
