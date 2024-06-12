@@ -45,7 +45,7 @@ func TestImpl(t *testing.T) {
 }
 
 func TestInterface(t *testing.T) {
-	t.Parallel()
+	// t.Parallel()
 	kod.RunTest(t, func(ctx context.Context, k Test1Component) {
 		// ctx = StartTrace(ctx)
 
