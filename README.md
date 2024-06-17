@@ -165,6 +165,20 @@ func (f *foo) Shutdown(context.Context) error {
 }
 ```
 
+#### Lazy Initialization
+
+Components can be lazily initialized by embedding a `kod.LazyInit` field in the component implementation, 
+which will be initialized when the component is first used, instead of when the application starts.
+
+Simple demo below:
+
+```go
+type foo struct {
+    kod.Implements[Foo]
+    kod.LazyInit
+}
+```
+
 #### Interceptors
 
 Kod has built-in common interceptors, and components can implement the following methods to inject these interceptors into component methods:

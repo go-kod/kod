@@ -164,6 +164,19 @@ func (f *foo) Shutdown(context.Context) error {
 }
 ```
 
+#### 懒初始化
+
+组件可以通过实现LazyInit接口来实现懒初始化。懒初始化组件的实例将在第一次调用组件方法时创建，而不是在应用程序启动时创建。
+
+简单示例如下：
+
+```go
+type foo struct {
+    kod.Implements[Foo]
+    kod.LazyInit
+}
+```
+
 #### 拦截器
 
 Kod 内置了常用的拦截器，组件可以实现以下拦截器方法，将这些拦截器注入到组件方法中：
