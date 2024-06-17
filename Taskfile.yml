@@ -1,4 +1,6 @@
 version: '3'
+env:
+  GOBIN: { sh: pwd }
 
 tasks:
   default:
@@ -81,8 +83,8 @@ tasks:
         sh: |
           cat go.mod|grep go.uber.org/mock |awk -F ' ' '{print $2}'
     status:
-      - (ls $GOPATH/bin/mockgen >> /dev/null 2>&1 && echo yes) || echo ""
-      - go version -m $GOPATH/bin/mockgen | grep go.uber.org/mock | grep {{.VERSION}}
+      - test -f mockgen
+      - go version -m $GOBIN/mockgen | grep go.uber.org/mock | grep {{.VERSION}}
     cmd: |
         go install go.uber.org/mock/mockgen@{{.VERSION}}
 
@@ -90,8 +92,8 @@ tasks:
     vars:
       VERSION: v1.56.2
     status:
-      - (ls $GOPATH/bin/golangci-lint >> /dev/null 2>&1 && echo yes) || echo ""
-      - go version -m $GOPATH/bin/golangci-lint | grep github.com/golangci/golangci-lint | grep {{.VERSION}}
+      - test -f golangci-lint
+      - go version -m $GOBIN/golangci-lint | grep github.com/golangci/golangci-lint | grep {{.VERSION}}
     cmd: |
         go install github.com/golangci/golangci-lint/cmd/golangci-lint@{{.VERSION}}
 
