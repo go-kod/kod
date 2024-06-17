@@ -36,6 +36,46 @@ func init() {
 		},
 	})
 	kod.Register(&kod.Registration{
+		Name:      "github.com/go-kod/kod/tests/case1/LazyInitComponent",
+		Interface: reflect.TypeOf((*LazyInitComponent)(nil)).Elem(),
+		Impl:      reflect.TypeOf(lazyInitComponent{}),
+		Refs:      ``,
+		LocalStubFn: func(ctx context.Context, info *kod.LocalStubFnInfo) any {
+			interceptors := info.Interceptors
+			if h, ok := info.Impl.(interface {
+				Interceptors() []interceptor.Interceptor
+			}); ok {
+				interceptors = append(interceptors, h.Interceptors()...)
+			}
+
+			return lazyInitComponent_local_stub{
+				impl:        info.Impl.(LazyInitComponent),
+				interceptor: interceptor.Chain(interceptors),
+				name:        info.Name,
+			}
+		},
+	})
+	kod.Register(&kod.Registration{
+		Name:      "github.com/go-kod/kod/tests/case1/LazyInitImpl",
+		Interface: reflect.TypeOf((*LazyInitImpl)(nil)).Elem(),
+		Impl:      reflect.TypeOf(lazyInitImpl{}),
+		Refs:      `⟦8e153348:KoDeDgE:github.com/go-kod/kod/tests/case1/LazyInitImpl→github.com/go-kod/kod/tests/case1/LazyInitComponent⟧`,
+		LocalStubFn: func(ctx context.Context, info *kod.LocalStubFnInfo) any {
+			interceptors := info.Interceptors
+			if h, ok := info.Impl.(interface {
+				Interceptors() []interceptor.Interceptor
+			}); ok {
+				interceptors = append(interceptors, h.Interceptors()...)
+			}
+
+			return lazyInitImpl_local_stub{
+				impl:        info.Impl.(LazyInitImpl),
+				interceptor: interceptor.Chain(interceptors),
+				name:        info.Name,
+			}
+		},
+	})
+	kod.Register(&kod.Registration{
 		Name:      "github.com/go-kod/kod/Main",
 		Interface: reflect.TypeOf((*kod.Main)(nil)).Elem(),
 		Impl:      reflect.TypeOf(App{}),
@@ -279,6 +319,8 @@ func init() {
 
 // kod.InstanceOf checks.
 var _ kod.InstanceOf[HTTPController] = (*httpControllerImpl)(nil)
+var _ kod.InstanceOf[LazyInitComponent] = (*lazyInitComponent)(nil)
+var _ kod.InstanceOf[LazyInitImpl] = (*lazyInitImpl)(nil)
 var _ kod.InstanceOf[kod.Main] = (*App)(nil)
 var _ kod.InstanceOf[ProtoValidateComponent] = (*protoValidateComponent)(nil)
 var _ kod.InstanceOf[Test1Component] = (*test1Component)(nil)
@@ -307,6 +349,46 @@ func (s hTTPController_local_stub) Foo(a0 http.ResponseWriter, a1 *http.Request)
 	// Because the first argument is not context.Context, so interceptors are not supported.
 	s.impl.Foo(a0, a1)
 	return
+}
+
+type lazyInitComponent_local_stub struct {
+	impl        LazyInitComponent
+	name        string
+	interceptor interceptor.Interceptor
+}
+
+// Check that lazyInitComponent_local_stub implements the LazyInitComponent interface.
+var _ LazyInitComponent = (*lazyInitComponent_local_stub)(nil)
+
+type lazyInitImpl_local_stub struct {
+	impl        LazyInitImpl
+	name        string
+	interceptor interceptor.Interceptor
+}
+
+// Check that lazyInitImpl_local_stub implements the LazyInitImpl interface.
+var _ LazyInitImpl = (*lazyInitImpl_local_stub)(nil)
+
+func (s lazyInitImpl_local_stub) Try(ctx context.Context) {
+
+	if s.interceptor == nil {
+		s.impl.Try(ctx)
+		return
+	}
+
+	call := func(ctx context.Context, info interceptor.CallInfo, req, res []any) (err error) {
+		s.impl.Try(ctx)
+		return
+	}
+
+	info := interceptor.CallInfo{
+		Impl:       s.impl,
+		Component:  s.name,
+		FullMethod: "github.com/go-kod/kod/tests/case1/LazyInitImpl.Try",
+		Method:     "Try",
+	}
+
+	_ = s.interceptor(ctx, info, []any{}, []any{}, call)
 }
 
 type main_local_stub struct {

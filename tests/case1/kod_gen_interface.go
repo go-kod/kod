@@ -60,6 +60,14 @@ type HTTPController interface {
 	Foo(w http.ResponseWriter, r *http.Request)
 }
 
+// lazyInitImpl is a component that implements LazyInitImpl.
+type LazyInitImpl interface {
+	Try(ctx context.Context)
+}
+
+type LazyInitComponent interface {
+}
+
 // protoValidateComponent is a component that implements ProtoValidateComponent.
 type ProtoValidateComponent interface {
 	Validate(ctx context.Context, req *examplev1.Person) error

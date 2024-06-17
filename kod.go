@@ -81,11 +81,19 @@ func (Implements[T]) implements(T) {}
 //		})
 //	}
 type Ref[T any] struct {
-	value T
+	value  T
+	once   sync.Once
+	getter func() (any, error)
 }
 
 // Get returns the held reference value.
-func (r Ref[T]) Get() T { return r.value }
+func (r *Ref[T]) Get() T {
+	r.once.Do(func() {
+		r.value = lo.Must(r.getter()).(T)
+	})
+
+	return r.value
+}
 
 // isRef is a marker method to identify a Ref type.
 // nolint
@@ -93,7 +101,21 @@ func (r Ref[T]) isRef() {}
 
 // setRef sets the reference value.
 // nolint
-func (r *Ref[T]) setRef(val any) { r.value = val.(T) }
+func (r *Ref[T]) setRef(lazyInit bool, getter func() (any, error)) {
+	r.getter = getter
+	if !lazyInit {
+		r.once.Do(func() {
+			r.value = lo.Must(r.getter()).(T)
+		})
+	}
+}
+
+// LazyInit is a marker type for lazy initialization of components.
+type LazyInit struct{}
+
+// isLazyInit is a marker method to identify a LazyInit type.
+// nolint
+func (r LazyInit) isLazyInit() {}
 
 // Main is the interface that should be implemented by an application's main component.
 // The main component is the entry point of the application,
@@ -275,8 +297,9 @@ type Kod struct {
 	registryByInterface map[reflect.Type]*Registration
 	registryByImpl      map[reflect.Type]*Registration
 
-	components map[string]any
-	opts       *options
+	components         map[string]any
+	lazyInitComponents map[reflect.Type]bool
+	opts               *options
 }
 
 // options defines the configuration options for Kod.
@@ -316,11 +339,13 @@ func newKod(ctx context.Context, opts ...func(*options)) (*Kod, error) {
 
 	kod.register(opt.registrations)
 
-	if err := kod.parseConfig(opt.configFilename); err != nil {
+	err := kod.parseConfig(opt.configFilename)
+	if err != nil {
 		return nil, err
 	}
 
-	if err := validateRegistrations(kod.regs); err != nil {
+	kod.lazyInitComponents, err = processRegistrations(kod.regs)
+	if err != nil {
 		return nil, err
 	}
 

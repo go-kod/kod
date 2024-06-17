@@ -348,6 +348,64 @@ func (mr *MockHTTPControllerMockRecorder) Foo(w, r any) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Foo", reflect.TypeOf((*MockHTTPController)(nil).Foo), w, r)
 }
 
+// MockLazyInitImpl is a mock of LazyInitImpl interface.
+type MockLazyInitImpl struct {
+	ctrl     *gomock.Controller
+	recorder *MockLazyInitImplMockRecorder
+}
+
+// MockLazyInitImplMockRecorder is the mock recorder for MockLazyInitImpl.
+type MockLazyInitImplMockRecorder struct {
+	mock *MockLazyInitImpl
+}
+
+// NewMockLazyInitImpl creates a new mock instance.
+func NewMockLazyInitImpl(ctrl *gomock.Controller) *MockLazyInitImpl {
+	mock := &MockLazyInitImpl{ctrl: ctrl}
+	mock.recorder = &MockLazyInitImplMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MockLazyInitImpl) EXPECT() *MockLazyInitImplMockRecorder {
+	return m.recorder
+}
+
+// Try mocks base method.
+func (m *MockLazyInitImpl) Try(ctx context.Context) {
+	m.ctrl.T.Helper()
+	m.ctrl.Call(m, "Try", ctx)
+}
+
+// Try indicates an expected call of Try.
+func (mr *MockLazyInitImplMockRecorder) Try(ctx any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Try", reflect.TypeOf((*MockLazyInitImpl)(nil).Try), ctx)
+}
+
+// MockLazyInitComponent is a mock of LazyInitComponent interface.
+type MockLazyInitComponent struct {
+	ctrl     *gomock.Controller
+	recorder *MockLazyInitComponentMockRecorder
+}
+
+// MockLazyInitComponentMockRecorder is the mock recorder for MockLazyInitComponent.
+type MockLazyInitComponentMockRecorder struct {
+	mock *MockLazyInitComponent
+}
+
+// NewMockLazyInitComponent creates a new mock instance.
+func NewMockLazyInitComponent(ctrl *gomock.Controller) *MockLazyInitComponent {
+	mock := &MockLazyInitComponent{ctrl: ctrl}
+	mock.recorder = &MockLazyInitComponentMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MockLazyInitComponent) EXPECT() *MockLazyInitComponentMockRecorder {
+	return m.recorder
+}
+
 // MockProtoValidateComponent is a mock of ProtoValidateComponent interface.
 type MockProtoValidateComponent struct {
 	ctrl     *gomock.Controller
