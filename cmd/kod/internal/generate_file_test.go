@@ -13,13 +13,13 @@ func TestWriter(t *testing.T) {
 	file := filepath.Join(t.TempDir(), "test")
 	w := NewWriter(file)
 
-	w.Write([]byte("hello"))
+	_, _ = w.Write([]byte("hello"))
 
 	data, err := os.ReadFile(w.tmpName)
 	require.Nil(t, err)
 	require.Equal(t, "hello", string(data))
 
-	w.Close()
+	require.Nil(t, w.Close())
 
 	data, err = os.ReadFile(file)
 	require.Nil(t, err)
@@ -30,7 +30,7 @@ func TestWriter1(t *testing.T) {
 	file := filepath.Join(t.TempDir(), "test")
 	w := NewWriter(file)
 
-	w.Write([]byte("hello"))
+	_, _ = w.Write([]byte("hello"))
 
 	data, err := os.ReadFile(w.tmpName)
 	require.Nil(t, err)
