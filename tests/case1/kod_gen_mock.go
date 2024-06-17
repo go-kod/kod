@@ -15,7 +15,6 @@ import (
 	reflect "reflect"
 
 	gin "github.com/gin-gonic/gin"
-	examplev1 "github.com/go-kod/kod/tests/proto/examplev1"
 	echo "github.com/labstack/echo/v4"
 	gomock "go.uber.org/mock/gomock"
 )
@@ -418,43 +417,6 @@ func (m *MockLazyInitComponent) Try(ctx context.Context) error {
 func (mr *MockLazyInitComponentMockRecorder) Try(ctx any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Try", reflect.TypeOf((*MockLazyInitComponent)(nil).Try), ctx)
-}
-
-// MockProtoValidateComponent is a mock of ProtoValidateComponent interface.
-type MockProtoValidateComponent struct {
-	ctrl     *gomock.Controller
-	recorder *MockProtoValidateComponentMockRecorder
-}
-
-// MockProtoValidateComponentMockRecorder is the mock recorder for MockProtoValidateComponent.
-type MockProtoValidateComponentMockRecorder struct {
-	mock *MockProtoValidateComponent
-}
-
-// NewMockProtoValidateComponent creates a new mock instance.
-func NewMockProtoValidateComponent(ctrl *gomock.Controller) *MockProtoValidateComponent {
-	mock := &MockProtoValidateComponent{ctrl: ctrl}
-	mock.recorder = &MockProtoValidateComponentMockRecorder{mock}
-	return mock
-}
-
-// EXPECT returns an object that allows the caller to indicate expected use.
-func (m *MockProtoValidateComponent) EXPECT() *MockProtoValidateComponentMockRecorder {
-	return m.recorder
-}
-
-// Validate mocks base method.
-func (m *MockProtoValidateComponent) Validate(ctx context.Context, req *examplev1.Person) error {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Validate", ctx, req)
-	ret0, _ := ret[0].(error)
-	return ret0
-}
-
-// Validate indicates an expected call of Validate.
-func (mr *MockProtoValidateComponentMockRecorder) Validate(ctx, req any) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Validate", reflect.TypeOf((*MockProtoValidateComponent)(nil).Validate), ctx, req)
 }
 
 // MockpanicCaseInterface is a mock of panicCaseInterface interface.
