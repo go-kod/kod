@@ -29,13 +29,8 @@ var callgraphCmd = &cobra.Command{
 
 		switch t {
 		case "json":
-			data, err := g.AdjacencyMap()
-			if err != nil {
-				fmt.Println(err)
-				return
-			}
-
-			enc := json.NewEncoder(os.Stdout)
+			data := lo.Must(g.AdjacencyMap())
+			enc := json.NewEncoder(cmd.OutOrStdout())
 			enc.SetIndent("", "  ")
 			lo.Must0(enc.Encode(data))
 		case "dot":

@@ -9,7 +9,6 @@ import (
 )
 
 func TestGraph(t *testing.T) {
-
 	t.Run("no filepath", func(t *testing.T) {
 		assert.Equal(t, "please input the binary filepath", execute("callgraph"))
 	})
@@ -42,4 +41,14 @@ func TestGraph(t *testing.T) {
 			os.Remove("graphcase")
 		})
 	}
+
+	t.Run("json format", func(t *testing.T) {
+		cmd := exec.Command("go", "build", "-o", "graphcase", "../../../tests/graphcase")
+		assert.Nil(t, cmd.Run())
+
+		data := execute("callgraph graphcase --t json")
+
+		assert.Contains(t, string(data), "github.com/go-kod/kod/Main")
+		os.Remove("graphcase")
+	})
 }
