@@ -41,7 +41,7 @@ tasks:
 
   generate:struct2interface:
     cmds:
-      - go run ./cmd/kod struct2interface .
+      - PATH=$PATH:$GOBIN go run ./cmd/kod struct2interface .
     deps:
       - install:mockgen
 
@@ -53,7 +53,7 @@ tasks:
 
   lint:golangci-lint:
     cmd: |
-        golangci-lint run ./...
+        $GOBIN/golangci-lint run ./...
     deps:
       - install:golangci-lint
 
