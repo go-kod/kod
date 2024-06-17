@@ -83,7 +83,7 @@ func (Implements[T]) implements(T) {}
 type Ref[T any] struct {
 	value  T
 	once   sync.Once
-	getter func() (any, error)
+	getter componentGetter
 }
 
 // Get returns the held reference value.
@@ -101,7 +101,7 @@ func (r Ref[T]) isRef() {}
 
 // setRef sets the reference value.
 // nolint
-func (r *Ref[T]) setRef(lazyInit bool, getter func() (any, error)) {
+func (r *Ref[T]) setRef(lazyInit bool, getter componentGetter) {
 	r.getter = getter
 	if !lazyInit {
 		r.once.Do(func() {
@@ -109,6 +109,9 @@ func (r *Ref[T]) setRef(lazyInit bool, getter func() (any, error)) {
 		})
 	}
 }
+
+// componentGetter is a function type for getting a reference value.
+type componentGetter func() (any, error)
 
 // LazyInit is a marker type for lazy initialization of components.
 type LazyInit struct{}

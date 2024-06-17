@@ -97,7 +97,7 @@ func (k *Kod) get(ctx context.Context, reg *Registration) (any, error) {
 	}
 
 	// Fill refs.
-	if err := fillRefs(obj, k.lazyInitComponents, func(t reflect.Type) func() (data any, err error) {
+	if err := fillRefs(obj, k.lazyInitComponents, func(t reflect.Type) componentGetter {
 		return func() (any, error) {
 			return k.getIntf(ctx, t)
 		}
@@ -141,7 +141,7 @@ func fillLog(obj any, log *slog.Logger) error {
 	return nil
 }
 
-func fillRefs(impl any, lazyInit map[reflect.Type]bool, get func(reflect.Type) func() (any, error)) error {
+func fillRefs(impl any, lazyInit map[reflect.Type]bool, get func(reflect.Type) componentGetter) error {
 	p := reflect.ValueOf(impl)
 	if p.Kind() != reflect.Pointer {
 		return fmt.Errorf("fillRefs: %T not a pointer", impl)
@@ -159,7 +159,7 @@ func fillRefs(impl any, lazyInit map[reflect.Type]bool, get func(reflect.Type) f
 		}
 		p := reflect.NewAt(f.Type(), f.Addr().UnsafePointer()).Interface()
 		x, ok := p.(interface {
-			setRef(bool, func() (any, error))
+			setRef(bool, componentGetter)
 		})
 		if !ok {
 			continue
