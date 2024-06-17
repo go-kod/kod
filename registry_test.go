@@ -17,12 +17,12 @@ func TestFill(t *testing.T) {
 	})
 
 	t.Run("case 2", func(t *testing.T) {
-		assert.NotNil(t, fillRefs(nil, nil))
+		assert.NotNil(t, fillRefs(nil, nil, nil))
 	})
 
 	t.Run("case 3", func(t *testing.T) {
 		i := 0
-		assert.NotNil(t, fillRefs(&i, nil))
+		assert.NotNil(t, fillRefs(&i, nil, nil))
 	})
 }
 
@@ -36,7 +36,7 @@ func TestValidateUnregisteredRef(t *testing.T) {
 			Impl:      reflects.TypeFor[fooImpl](),
 		},
 	}
-	err := validateRegistrations(regs)
+	_, err := processRegistrations(regs)
 	if err == nil {
 		t.Fatal("unexpected validateRegistrations success")
 	}
@@ -49,7 +49,7 @@ func TestValidateUnregisteredRef(t *testing.T) {
 // TestValidateNoRegistrations tests that validateRegistrations succeeds on an
 // empty set of registrations.
 func TestValidateNoRegistrations(t *testing.T) {
-	if err := validateRegistrations(nil); err != nil {
+	if _, err := processRegistrations(nil); err != nil {
 		t.Fatal(err)
 	}
 }

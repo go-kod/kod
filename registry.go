@@ -97,8 +97,10 @@ func (k *Kod) get(ctx context.Context, reg *Registration) (any, error) {
 	}
 
 	// Fill refs.
-	if err := fillRefs(obj, func(t reflect.Type) (any, error) {
-		return k.getIntf(ctx, t)
+	if err := fillRefs(obj, k.lazyInitComponents, func(t reflect.Type) func() (data any, err error) {
+		return func() (any, error) {
+			return k.getIntf(ctx, t)
+		}
 	}); err != nil {
 		return nil, err
 	}
@@ -139,7 +141,7 @@ func fillLog(obj any, log *slog.Logger) error {
 	return nil
 }
 
-func fillRefs(impl any, get func(reflect.Type) (any, error)) error {
+func fillRefs(impl any, lazyInit map[reflect.Type]bool, get func(reflect.Type) func() (any, error)) error {
 	p := reflect.ValueOf(impl)
 	if p.Kind() != reflect.Pointer {
 		return fmt.Errorf("fillRefs: %T not a pointer", impl)
@@ -156,18 +158,19 @@ func fillRefs(impl any, get func(reflect.Type) (any, error)) error {
 			continue
 		}
 		p := reflect.NewAt(f.Type(), f.Addr().UnsafePointer()).Interface()
-		x, ok := p.(interface{ setRef(any) })
+		x, ok := p.(interface {
+			setRef(bool, func() (any, error))
+		})
 		if !ok {
 			continue
 		}
 
 		// Set the component.
 		valueField := f.Field(0)
-		component, err := get(valueField.Type())
-		if err != nil {
-			return fmt.Errorf("fillRefs: setting field %v.%s: %w", s.Type(), s.Type().Field(i).Name, err)
-		}
-		x.setRef(component)
+		componentGetter := get(valueField.Type())
+		isLazyInit := lazyInit[valueField.Type()]
+
+		x.setRef(isLazyInit, componentGetter)
 	}
 	return nil
 }
@@ -201,14 +204,16 @@ func checkCircularDependency(reg []*Registration) error {
 	return errors.Join(errs...)
 }
 
-// validateRegistrations checks that all registered component interfaces are
+// processRegistrations checks that all registered component interfaces are
 // implemented by a registered component implementation struct.
-func validateRegistrations(regs []*Registration) error {
+func processRegistrations(regs []*Registration) (map[reflect.Type]bool, error) {
 	// Gather the set of registered interfaces.
 	intfs := map[reflect.Type]struct{}{}
 	for _, reg := range regs {
 		intfs[reg.Interface] = struct{}{}
 	}
+
+	lazyInitComponents := make(map[reflect.Type]bool)
 
 	// Check that for every kod.Ref[T] field in a component implementation
 	// struct, T is a registered interface.
@@ -220,6 +225,8 @@ func validateRegistrations(regs []*Registration) error {
 			case f.Type.Implements(reflects.TypeFor[interface{ isRef() }]()):
 				// f is a kod.Ref[T].
 				v := f.Type.Field(0) // a Ref[T]'s value field
+				// v是func 类型，取它的第一个返回值的类型
+
 				if _, ok := intfs[v.Type]; !ok {
 					// T is not a registered component interface.
 					err := fmt.Errorf(
@@ -228,8 +235,11 @@ func validateRegistrations(regs []*Registration) error {
 					)
 					errs = append(errs, err)
 				}
+			case f.Type.Implements(reflects.TypeFor[interface{ isLazyInit() }]()):
+				// f is a kod.LazyInit.
+				lazyInitComponents[reg.Interface] = true
 			}
 		}
 	}
-	return errors.Join(errs...)
+	return lazyInitComponents, errors.Join(errs...)
 }
