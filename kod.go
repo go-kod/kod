@@ -87,7 +87,7 @@ type Ref[T any] struct {
 }
 
 // Get returns the held reference value.
-func (r *Ref[T]) Get() T {
+func (r Ref[T]) Get() T {
 	r.once.Do(func() {
 		r.value = lo.Must(r.getter()).(T)
 	})
