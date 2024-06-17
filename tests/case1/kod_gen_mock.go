@@ -406,6 +406,20 @@ func (m *MockLazyInitComponent) EXPECT() *MockLazyInitComponentMockRecorder {
 	return m.recorder
 }
 
+// Try mocks base method.
+func (m *MockLazyInitComponent) Try(ctx context.Context) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Try", ctx)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Try indicates an expected call of Try.
+func (mr *MockLazyInitComponentMockRecorder) Try(ctx any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Try", reflect.TypeOf((*MockLazyInitComponent)(nil).Try), ctx)
+}
+
 // MockProtoValidateComponent is a mock of ProtoValidateComponent interface.
 type MockProtoValidateComponent struct {
 	ctrl     *gomock.Controller

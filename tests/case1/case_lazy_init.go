@@ -31,3 +31,9 @@ func (t *lazyInitComponent) Init(ctx context.Context) error {
 
 	return nil
 }
+
+func (t *lazyInitComponent) Try(ctx context.Context) error {
+	t.L(ctx).Info("Just do it!")
+
+	return nil
+}

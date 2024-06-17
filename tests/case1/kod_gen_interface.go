@@ -65,7 +65,9 @@ type LazyInitImpl interface {
 	Try(ctx context.Context)
 }
 
+// lazyInitComponent is a component that implements LazyInitComponent.
 type LazyInitComponent interface {
+	Try(ctx context.Context) error
 }
 
 // protoValidateComponent is a component that implements ProtoValidateComponent.

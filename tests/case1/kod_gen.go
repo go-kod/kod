@@ -360,6 +360,29 @@ type lazyInitComponent_local_stub struct {
 // Check that lazyInitComponent_local_stub implements the LazyInitComponent interface.
 var _ LazyInitComponent = (*lazyInitComponent_local_stub)(nil)
 
+func (s lazyInitComponent_local_stub) Try(ctx context.Context) (err error) {
+
+	if s.interceptor == nil {
+		err = s.impl.Try(ctx)
+		return
+	}
+
+	call := func(ctx context.Context, info interceptor.CallInfo, req, res []any) (err error) {
+		err = s.impl.Try(ctx)
+		return
+	}
+
+	info := interceptor.CallInfo{
+		Impl:       s.impl,
+		Component:  s.name,
+		FullMethod: "github.com/go-kod/kod/tests/case1/LazyInitComponent.Try",
+		Method:     "Try",
+	}
+
+	err = s.interceptor(ctx, info, []any{}, []any{}, call)
+	return
+}
+
 type lazyInitImpl_local_stub struct {
 	impl        LazyInitImpl
 	name        string

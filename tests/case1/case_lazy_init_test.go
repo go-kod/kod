@@ -13,13 +13,17 @@ func TestLazyInit(t *testing.T) {
 	log, observer := kod.NewLogObserver()
 
 	kod.RunTest(t, func(ctx context.Context, k *lazyInitImpl) {
+		require.Equal(t, 1, observer.Len(), observer.All())
+
 		k.Try(ctx)
 
 		require.Equal(t, 2, observer.Len(), observer.All())
 
 		k.test.Get()
-
 		require.Equal(t, 3, observer.Len(), observer.All())
+
+		require.Nil(t, k.test.Get().Try(ctx))
+		require.Equal(t, 4, observer.Len(), observer.All())
 	}, kod.WithLogWrapper(log))
 }
 
@@ -61,7 +65,9 @@ func TestLazyInitTest3(t *testing.T) {
 		require.Equal(t, 3, observer.Len(), observer.All())
 
 		require.Equal(t, comp, k.test.Get())
-
 		require.Equal(t, 3, observer.Len(), observer.All())
+
+		require.Nil(t, k.test.Get().Try(ctx))
+		require.Equal(t, 4, observer.Len(), observer.All())
 	}, kod.WithLogWrapper(log))
 }
