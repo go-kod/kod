@@ -12,8 +12,7 @@ var shutdownSignals = []os.Signal{syscall.SIGQUIT, os.Interrupt, syscall.SIGTERM
 // Shutdown support twice signal must exit
 // first signal: graceful shutdown
 // second signal: exit directly
-func Shutdown(ctx context.Context, stop func(grace bool)) {
-	sig := make(chan os.Signal, 2)
+func Shutdown(ctx context.Context, sig chan os.Signal, stop func(grace bool)) {
 	signal.Notify(
 		sig,
 		shutdownSignals...,

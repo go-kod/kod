@@ -250,7 +250,8 @@ func Run[T any, _ PointerToMain[T]](ctx context.Context, run func(context.Contex
 
 	// wait for shutdown signal
 	stop := make(chan struct{}, 2)
-	signals.Shutdown(ctx, func(grace bool) {
+	sig := make(chan os.Signal, 2)
+	signals.Shutdown(ctx, sig, func(grace bool) {
 		cancel()
 		stop <- struct{}{}
 	})
