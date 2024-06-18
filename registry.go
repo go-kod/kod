@@ -227,6 +227,16 @@ func processRegistrations(regs []*Registration) (map[reflect.Type]bool, error) {
 				v := f.Type.Field(0) // a Ref[T]'s value field
 				// v是func 类型，取它的第一个返回值的类型
 
+				// check if v is interface or not
+				if v.Type.Kind() != reflect.Interface {
+					err := fmt.Errorf(
+						"component implementation struct %v has field %v, but field type %v is not an interface",
+						reg.Impl, f.Type, v.Type,
+					)
+					errs = append(errs, err)
+					continue
+				}
+
 				if _, ok := intfs[v.Type]; !ok {
 					// T is not a registered component interface.
 					err := fmt.Errorf(
