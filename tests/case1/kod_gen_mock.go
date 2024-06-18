@@ -347,6 +347,57 @@ func (mr *MockHTTPControllerMockRecorder) Foo(w, r any) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Foo", reflect.TypeOf((*MockHTTPController)(nil).Foo), w, r)
 }
 
+// MockInterceptorRetry is a mock of InterceptorRetry interface.
+type MockInterceptorRetry struct {
+	ctrl     *gomock.Controller
+	recorder *MockInterceptorRetryMockRecorder
+}
+
+// MockInterceptorRetryMockRecorder is the mock recorder for MockInterceptorRetry.
+type MockInterceptorRetryMockRecorder struct {
+	mock *MockInterceptorRetry
+}
+
+// NewMockInterceptorRetry creates a new mock instance.
+func NewMockInterceptorRetry(ctrl *gomock.Controller) *MockInterceptorRetry {
+	mock := &MockInterceptorRetry{ctrl: ctrl}
+	mock.recorder = &MockInterceptorRetryMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MockInterceptorRetry) EXPECT() *MockInterceptorRetryMockRecorder {
+	return m.recorder
+}
+
+// TestError mocks base method.
+func (m *MockInterceptorRetry) TestError(ctx context.Context) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "TestError", ctx)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// TestError indicates an expected call of TestError.
+func (mr *MockInterceptorRetryMockRecorder) TestError(ctx any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "TestError", reflect.TypeOf((*MockInterceptorRetry)(nil).TestError), ctx)
+}
+
+// TestNormal mocks base method.
+func (m *MockInterceptorRetry) TestNormal(ctx context.Context) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "TestNormal", ctx)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// TestNormal indicates an expected call of TestNormal.
+func (mr *MockInterceptorRetryMockRecorder) TestNormal(ctx any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "TestNormal", reflect.TypeOf((*MockInterceptorRetry)(nil).TestNormal), ctx)
+}
+
 // MockLazyInitImpl is a mock of LazyInitImpl interface.
 type MockLazyInitImpl struct {
 	ctrl     *gomock.Controller

@@ -1,0 +1,21 @@
+package case1
+
+import (
+	"context"
+	"testing"
+
+	"github.com/go-kod/kod"
+	"github.com/stretchr/testify/require"
+)
+
+func TestInterceptorRetry(t *testing.T) {
+	kod.RunTest(t, func(ctx context.Context, k InterceptorRetry) {
+		require.ErrorContains(t, k.TestError(ctx), "retry fail")
+	}, kod.WithOpenTelemetryDisabled())
+}
+
+func TestInterceptorRetry1(t *testing.T) {
+	kod.RunTest(t, func(ctx context.Context, k InterceptorRetry) {
+		require.Nil(t, k.TestNormal(ctx))
+	}, kod.WithOpenTelemetryDisabled())
+}

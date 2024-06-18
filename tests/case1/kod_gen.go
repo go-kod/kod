@@ -35,6 +35,26 @@ func init() {
 		},
 	})
 	kod.Register(&kod.Registration{
+		Name:      "github.com/go-kod/kod/tests/case1/InterceptorRetry",
+		Interface: reflect.TypeOf((*InterceptorRetry)(nil)).Elem(),
+		Impl:      reflect.TypeOf(interceptorRetry{}),
+		Refs:      ``,
+		LocalStubFn: func(ctx context.Context, info *kod.LocalStubFnInfo) any {
+			interceptors := info.Interceptors
+			if h, ok := info.Impl.(interface {
+				Interceptors() []interceptor.Interceptor
+			}); ok {
+				interceptors = append(interceptors, h.Interceptors()...)
+			}
+
+			return interceptorRetry_local_stub{
+				impl:        info.Impl.(InterceptorRetry),
+				interceptor: interceptor.Chain(interceptors),
+				name:        info.Name,
+			}
+		},
+	})
+	kod.Register(&kod.Registration{
 		Name:      "github.com/go-kod/kod/tests/case1/LazyInitComponent",
 		Interface: reflect.TypeOf((*LazyInitComponent)(nil)).Elem(),
 		Impl:      reflect.TypeOf(lazyInitComponent{}),
@@ -298,6 +318,7 @@ func init() {
 
 // kod.InstanceOf checks.
 var _ kod.InstanceOf[HTTPController] = (*httpControllerImpl)(nil)
+var _ kod.InstanceOf[InterceptorRetry] = (*interceptorRetry)(nil)
 var _ kod.InstanceOf[LazyInitComponent] = (*lazyInitComponent)(nil)
 var _ kod.InstanceOf[LazyInitImpl] = (*lazyInitImpl)(nil)
 var _ kod.InstanceOf[kod.Main] = (*App)(nil)
@@ -326,6 +347,61 @@ var _ HTTPController = (*hTTPController_local_stub)(nil)
 func (s hTTPController_local_stub) Foo(a0 http.ResponseWriter, a1 *http.Request) {
 	// Because the first argument is not context.Context, so interceptors are not supported.
 	s.impl.Foo(a0, a1)
+	return
+}
+
+type interceptorRetry_local_stub struct {
+	impl        InterceptorRetry
+	name        string
+	interceptor interceptor.Interceptor
+}
+
+// Check that interceptorRetry_local_stub implements the InterceptorRetry interface.
+var _ InterceptorRetry = (*interceptorRetry_local_stub)(nil)
+
+func (s interceptorRetry_local_stub) TestError(ctx context.Context) (err error) {
+
+	if s.interceptor == nil {
+		err = s.impl.TestError(ctx)
+		return
+	}
+
+	call := func(ctx context.Context, info interceptor.CallInfo, req, res []any) (err error) {
+		err = s.impl.TestError(ctx)
+		return
+	}
+
+	info := interceptor.CallInfo{
+		Impl:       s.impl,
+		Component:  s.name,
+		FullMethod: "github.com/go-kod/kod/tests/case1/InterceptorRetry.TestError",
+		Method:     "TestError",
+	}
+
+	err = s.interceptor(ctx, info, []any{}, []any{}, call)
+	return
+}
+
+func (s interceptorRetry_local_stub) TestNormal(ctx context.Context) (err error) {
+
+	if s.interceptor == nil {
+		err = s.impl.TestNormal(ctx)
+		return
+	}
+
+	call := func(ctx context.Context, info interceptor.CallInfo, req, res []any) (err error) {
+		err = s.impl.TestNormal(ctx)
+		return
+	}
+
+	info := interceptor.CallInfo{
+		Impl:       s.impl,
+		Component:  s.name,
+		FullMethod: "github.com/go-kod/kod/tests/case1/InterceptorRetry.TestNormal",
+		Method:     "TestNormal",
+	}
+
+	err = s.interceptor(ctx, info, []any{}, []any{}, call)
 	return
 }
 

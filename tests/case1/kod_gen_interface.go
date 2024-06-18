@@ -59,6 +59,12 @@ type HTTPController interface {
 	Foo(w http.ResponseWriter, r *http.Request)
 }
 
+// interceptorRetry is a component that implements InterceptorRetry.
+type InterceptorRetry interface {
+	TestError(ctx context.Context) error
+	TestNormal(ctx context.Context) error
+}
+
 // lazyInitImpl is a component that implements LazyInitImpl.
 type LazyInitImpl interface {
 	Try(ctx context.Context)
