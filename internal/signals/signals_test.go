@@ -15,7 +15,6 @@ func TestShutdown(t *testing.T) {
 	})
 
 	Shutdown(context.Background(), sig, func(grace bool) {
-		return
 	})
 
 	time.Sleep(time.Second)
