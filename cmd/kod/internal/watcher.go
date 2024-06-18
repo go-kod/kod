@@ -40,7 +40,6 @@ func (w *watcher) Remove(name string) error {
 
 // Watch watches the directory and calls the callback function when a file is modified.
 func Watch(watcher Watcher, dir string, callback func(), verbose bool) {
-
 	lo.Must0(filepath.Walk(dir, func(path string, info os.FileInfo, _ error) error {
 		if info != nil && info.IsDir() {
 			return addWatch(watcher, path)
@@ -61,7 +60,7 @@ func Watch(watcher Watcher, dir string, callback func(), verbose bool) {
 				}
 
 				if verbose {
-					fmt.Println("event:", event)
+					fmt.Println("event1:", event)
 				}
 
 				if !validEvent(event) {
