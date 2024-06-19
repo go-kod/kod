@@ -203,7 +203,6 @@ func makeInterfaceHead(pkgName string, imports []string) []string {
 }
 
 func makeInterfaceBody(output []string, ifaceComment map[string]string, structName, intfName string, methods []string) []string {
-
 	comment := strings.TrimSuffix(strings.Replace(ifaceComment[structName], "\n", "\n//\t", -1), "\n//\t")
 	if len(strings.TrimSpace(comment)) > 0 {
 		output = append(output, fmt.Sprintf("// %s", comment))
@@ -245,8 +244,8 @@ func createFile(cmd *cobra.Command, objs map[string]*makeInterfaceFile) error {
 			fmt.Printf("[struct2interface] %s \n", "formatCode error")
 			return err
 		}
-		var fileName = filepath.Join(obj.DirPath, "kod_gen_interface.go")
-		if err = os.WriteFile(fileName, result, 0644); err != nil {
+		fileName := filepath.Join(obj.DirPath, "kod_gen_interface.go")
+		if err = os.WriteFile(fileName, result, 0o644); err != nil {
 			return fmt.Errorf("write file error: %s", err.Error())
 		}
 
@@ -313,7 +312,7 @@ func makeFile(file string) (*makeInterfaceFile, error) {
 }
 
 func Struct2Interface(cmd *cobra.Command, dir string) error {
-	var mapDirPath = make(map[string]*makeInterfaceFile)
+	mapDirPath := make(map[string]*makeInterfaceFile)
 	err := filepath.WalkDir(dir, func(path string, d fs.DirEntry, _ error) error {
 		if d == nil || d.IsDir() {
 			return nil
