@@ -10,8 +10,8 @@ tasks:
 
   github-action:
     cmds:
-      - task: lint:golangci-lint
       - task: test
+      - task: lint:golangci-lint
       - task: lint:files-changed
 
   build:gowork:
@@ -26,14 +26,6 @@ tasks:
     cmds:
       - go work init
       - go work use -r .
-
-  build:kod:
-    cmds:
-      - go build -o kod ./cmd/kod
-    sources:
-      - "**/**.go"
-    generates:
-      - kod
 
   generate:
     cmds:
