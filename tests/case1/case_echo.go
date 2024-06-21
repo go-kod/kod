@@ -25,7 +25,6 @@ func (t *testEchoControllerImpl) Hello(c echo.Context) error {
 // Error is a method of testEchoControllerImpl
 func (t *testEchoControllerImpl) Error(c echo.Context) error {
 	t.retry++
-
 	return errors.New("!!!")
 }
 

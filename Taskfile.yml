@@ -5,18 +5,14 @@ env:
 tasks:
   default:
     cmds:
-      - task: build:gowork
       - task: generate
-      - task: mod
       - task: lint:golangci-lint
 
   github-action:
     cmds:
-      - task: build:gowork
-      - task: generate
       - task: lint:golangci-lint
-      - task: lint:files-changed
       - task: test
+      - task: lint:files-changed
 
   build:gowork:
     run: once
@@ -39,17 +35,15 @@ tasks:
     generates:
       - kod
 
-  generate:struct2interface:
-    cmds:
-      - PATH=$PATH:$GOBIN go run ./cmd/kod struct2interface .
-    deps:
-      - install:mockgen
-
   generate:
     cmds:
-      - go run ./cmd/kod generate ./... ./tests/... ./examples/... ./ext/...
+      - PATH=$PATH:$GOBIN go run ./cmd/kod generate -s ./... ./tests/... ./examples/... ./ext/...
+    sources:
+      - "**/**.go"
     deps:
-      - generate:struct2interface
+      - task: build:gowork
+      - task: mod
+      - install:mockgen
 
   lint:golangci-lint:
     cmd: |
@@ -66,10 +60,13 @@ tasks:
       GOEXPERIMENT=nocoverageredesign go test -race -cover -coverprofile=coverage.out \
         -covermode=atomic ./... ./tests/... ./examples/... \
         -coverpkg .,./cmd/...,./internal/...,./interceptor/...
+      git checkout tests/case1/kod_gen_mock.go
     sources:
       - "**/**.go"
     generates:
       - coverage.out
+    deps:
+      - task: generate
 
   test:coverage:
     cmd: |
@@ -105,8 +102,6 @@ tasks:
       - cd ext && go mod tidy
 
   release:
-    vars:
-      VERSION: v0.6.0
     cmds:
-      - git tag {{.VERSION}}
-      - git tag ext/{{.VERSION}}
+      - git tag {{.CLI_ARGS}}
+      - git tag ext/{{.CLI_ARGS}}
