@@ -97,7 +97,7 @@ func (r *Ref[T]) Get() T {
 
 // isRef is a marker method to identify a Ref type.
 // nolint
-func (r Ref[T]) isRef() {}
+func (r *Ref[T]) isRef() {}
 
 // setRef sets the reference value.
 // nolint
@@ -220,7 +220,7 @@ func WithInterceptors(interceptors ...interceptor.Interceptor) func(*options) {
 	}
 }
 
-// WithOpenTelemetryDisabled is an option setter for enabling OpenTelemetry.
+// WithOpenTelemetryDisabled is an option setter for disabling OpenTelemetry.
 func WithOpenTelemetryDisabled() func(*options) {
 	return func(opts *options) {
 		opts.enableOpenTelemetry = false
