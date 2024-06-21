@@ -97,7 +97,7 @@ func (r *Ref[T]) Get() T {
 
 // isRef is a marker method to identify a Ref type.
 // nolint
-func (r *Ref[T]) isRef() {}
+func (r Ref[T]) isRef() {}
 
 // setRef sets the reference value.
 // nolint
