@@ -90,7 +90,7 @@ tasks:
 
   install:golangci-lint:
     vars:
-      VERSION: v1.56.2
+      VERSION: v1.59.1
     status:
       - test -f golangci-lint
       - go version -m $GOBIN/golangci-lint | grep github.com/golangci/golangci-lint | grep {{.VERSION}}
