@@ -12,7 +12,7 @@ require (
 	github.com/grafana/pyroscope-go v1.1.1
 	github.com/redis/go-redis/extra/redisotel/v9 v9.5.3
 	github.com/redis/go-redis/v9 v9.5.3
-	github.com/samber/lo v1.39.0
+	github.com/samber/lo v1.40.0
 	github.com/uptrace/opentelemetry-go-extra/otelsql v0.2.4
 	go.etcd.io/etcd/client/v3 v3.5.14
 	go.opentelemetry.io/contrib/instrumentation/github.com/gin-gonic/gin/otelgin v0.52.0
