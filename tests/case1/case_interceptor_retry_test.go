@@ -4,8 +4,9 @@ import (
 	"context"
 	"testing"
 
-	"github.com/go-kod/kod"
 	"github.com/stretchr/testify/require"
+
+	"github.com/go-kod/kod"
 )
 
 func TestInterceptorRetry(t *testing.T) {

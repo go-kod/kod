@@ -8,10 +8,11 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/go-kod/kod/ext/internal/knet"
-	"github.com/go-kod/kod/ext/registry"
 	"github.com/samber/lo"
 	"go.opentelemetry.io/contrib/instrumentation/github.com/gin-gonic/gin/otelgin"
+
+	"github.com/go-kod/kod/ext/internal/knet"
+	"github.com/go-kod/kod/ext/registry"
 )
 
 type Config struct {

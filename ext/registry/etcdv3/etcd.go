@@ -7,13 +7,14 @@ import (
 	"time"
 
 	"dario.cat/mergo"
-	"github.com/go-kod/kod"
-	"github.com/go-kod/kod/ext/registry"
 	clientv3 "go.etcd.io/etcd/client/v3"
 	"go.etcd.io/etcd/client/v3/concurrency"
 	"go.etcd.io/etcd/client/v3/naming/endpoints"
 	"google.golang.org/grpc"
 	gresolver "google.golang.org/grpc/resolver"
+
+	"github.com/go-kod/kod"
+	"github.com/go-kod/kod/ext/registry"
 )
 
 // nolint

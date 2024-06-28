@@ -4,8 +4,9 @@ import (
 	"context"
 	"testing"
 
-	"github.com/go-kod/kod"
 	"github.com/stretchr/testify/assert"
+
+	"github.com/go-kod/kod"
 )
 
 // TestApp tests the app component.

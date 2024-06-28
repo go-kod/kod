@@ -6,9 +6,10 @@ import (
 	"reflect"
 	"testing"
 
+	"github.com/samber/lo"
+
 	"github.com/go-kod/kod/internal/kslog"
 	"github.com/go-kod/kod/internal/reflects"
-	"github.com/samber/lo"
 )
 
 type ObservedLogs kslog.ObservedLogs

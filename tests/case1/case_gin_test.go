@@ -7,8 +7,9 @@ import (
 	"testing"
 
 	"github.com/gin-gonic/gin"
-	"github.com/go-kod/kod"
 	"github.com/stretchr/testify/require"
+
+	"github.com/go-kod/kod"
 )
 
 func Test_testGinControllerImpl_Hello(t *testing.T) {

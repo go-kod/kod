@@ -9,9 +9,10 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/go-kod/kod/internal/rolling"
 	"github.com/samber/lo"
 	"github.com/shirou/gopsutil/v3/process"
+
+	"github.com/go-kod/kod/internal/rolling"
 )
 
 var (

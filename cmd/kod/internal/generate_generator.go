@@ -18,10 +18,11 @@ import (
 	"strings"
 	"unicode"
 
-	"github.com/go-kod/kod/internal/callgraph"
 	"github.com/samber/lo"
 	"golang.org/x/tools/go/packages"
 	"golang.org/x/tools/go/types/typeutil"
+
+	"github.com/go-kod/kod/internal/callgraph"
 )
 
 const (

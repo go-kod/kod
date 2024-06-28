@@ -5,8 +5,9 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/go-kod/kod/internal/mock"
 	"github.com/stretchr/testify/assert"
+
+	"github.com/go-kod/kod/internal/mock"
 )
 
 type testComponent struct {

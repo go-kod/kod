@@ -5,6 +5,7 @@ import (
 	"errors"
 
 	"github.com/avast/retry-go/v4"
+
 	"github.com/go-kod/kod"
 	"github.com/go-kod/kod/interceptor"
 	"github.com/go-kod/kod/interceptor/kretry"

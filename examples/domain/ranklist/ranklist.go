@@ -3,11 +3,12 @@ package ranklist
 import (
 	"context"
 
+	"github.com/redis/go-redis/v9"
+
 	"github.com/go-kod/kod"
 	"github.com/go-kod/kod/ext/client/kredis"
 	"github.com/go-kod/kod/interceptor"
 	"github.com/go-kod/kod/interceptor/kvalidate"
-	"github.com/redis/go-redis/v9"
 )
 
 type config struct {
