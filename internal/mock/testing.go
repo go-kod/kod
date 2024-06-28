@@ -22,7 +22,9 @@ func (m *mockTestingT) FailNow() {
 	runtime.Goexit()
 }
 
-func ExpectFailure(tb testing.TB, fn func(tt testing.TB)) {
+func ExpectFailure(tb testing.TB, fn func(tb testing.TB)) {
+	tb.Helper()
+
 	var wg sync.WaitGroup
 
 	// create a mock structure for TestingT

@@ -10,12 +10,12 @@ import (
 
 func TestGraph(t *testing.T) {
 	t.Run("no filepath", func(t *testing.T) {
-		assert.Equal(t, "please input the binary filepath", execute("callgraph"))
+		assert.Equal(t, "please input the binary filepath", execute(t, "callgraph"))
 	})
 
 	t.Run("unknown format", func(t *testing.T) {
 		assert.Panics(t, func() {
-			execute("callgraph callgraph.go")
+			execute(t, "callgraph callgraph.go")
 		})
 	})
 
@@ -30,7 +30,7 @@ func TestGraph(t *testing.T) {
 			cmd.Env = append(os.Environ(), "GOOS="+test.os, "GOARCH="+test.arch)
 			assert.Nil(t, cmd.Run())
 
-			execute("callgraph graphcase")
+			execute(t, "callgraph graphcase")
 			assert.FileExists(t, "my-graph.dot")
 
 			data, err := os.ReadFile("my-graph.dot")
@@ -46,7 +46,7 @@ func TestGraph(t *testing.T) {
 		cmd := exec.Command("go", "build", "-o", "graphcase", "../../../tests/graphcase")
 		assert.Nil(t, cmd.Run())
 
-		data := execute("callgraph graphcase --t json")
+		data := execute(t, "callgraph graphcase --t json")
 
 		assert.Contains(t, string(data), "github.com/go-kod/kod/Main")
 		os.Remove("graphcase")
