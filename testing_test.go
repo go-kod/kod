@@ -18,11 +18,13 @@ type testInterface interface{}
 
 func Test_testRunner_sub(t *testing.T) {
 	t.Run("failure", func(t *testing.T) {
-		mock.ExpectFailure(t, func(tt testing.TB) {
+		mock.ExpectFailure(t, func(tb testing.TB) {
+			tb.Helper()
+
 			r := &runner{}
-			err := r.sub(tt, nil)
+			err := r.sub(tb, nil)
 			if err != nil {
-				tt.FailNow()
+				tb.FailNow()
 			}
 		})
 	})

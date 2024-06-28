@@ -18,15 +18,15 @@ var _ testing.TB = (*mockTestingT)(nil)
 func (m *mockTestingT) FailNow() {
 	// register the method is called
 	m.FailNowCalled = true
-	// exit, as normal behaviour
+	// exit, as normal behavior
 	runtime.Goexit()
 }
 
-func ExpectFailure(t testing.TB, fn func(tt testing.TB)) {
+func ExpectFailure(tb testing.TB, fn func(tt testing.TB)) {
 	var wg sync.WaitGroup
 
 	// create a mock structure for TestingT
-	mockT := &mockTestingT{TB: t}
+	mockT := &mockTestingT{TB: tb}
 	// setup the barrier
 	wg.Add(1)
 	// start a co-routine to execute the test function f
@@ -39,5 +39,5 @@ func ExpectFailure(t testing.TB, fn func(tt testing.TB)) {
 	// wait for the barrier.
 	wg.Wait()
 	// verify fail now is invoked
-	require.True(t, mockT.FailNowCalled)
+	require.True(tb, mockT.FailNowCalled)
 }

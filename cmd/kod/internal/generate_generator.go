@@ -328,7 +328,7 @@ func extractComponent(opt Options, pkg *packages.Package, file *ast.File, tset *
 		return nil, nil
 	}
 
-	// Check that that the component implementation implements the component
+	// Check that the component implementation implements the component
 	// interface.
 	if !types.Implements(types.NewPointer(impl), intf.Underlying().(*types.Interface)) {
 		return nil, errorf(pkg.Fset, spec.Pos(),
@@ -914,7 +914,7 @@ func (g *generator) args(sig *types.Signature) string {
 	return args.String()[1:]
 }
 
-// returns returns a textual representation of the returns of the provided
+// returns will return a textual representation of the returns of the provided
 // signature. The last return must be an error. The returned code names the
 // returns r0, r1, and so on. The returned error is called err.
 func (g *generator) returns(sig *types.Signature) string {
