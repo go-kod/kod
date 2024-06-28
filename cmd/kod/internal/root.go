@@ -17,7 +17,7 @@ var rootCmd = &cobra.Command{
 	Short: "A powerful tool for writing kod applications.",
 	// Uncomment the following line if your bare application
 	// has an action associated with it:
-	Run: func(cmd *cobra.Command, args []string) {
+	Run: func(cmd *cobra.Command, _ []string) {
 		if version, _ := cmd.Flags().GetBool("version"); version {
 			info, ok := debug.ReadBuildInfo()
 			if ok {

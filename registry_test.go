@@ -6,9 +6,10 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/stretchr/testify/assert"
+
 	"github.com/go-kod/kod/internal/reflects"
 	"github.com/go-kod/kod/internal/registry"
-	"github.com/stretchr/testify/assert"
 )
 
 func TestFill(t *testing.T) {

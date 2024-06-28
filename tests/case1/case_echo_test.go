@@ -6,9 +6,10 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/go-kod/kod"
 	"github.com/labstack/echo/v4"
 	"github.com/stretchr/testify/require"
+
+	"github.com/go-kod/kod"
 )
 
 func Test_testEchoControllerImpl_Hello(t *testing.T) {

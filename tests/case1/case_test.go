@@ -7,13 +7,14 @@ import (
 	"syscall"
 	"testing"
 
-	"github.com/go-kod/kod"
-	"github.com/go-kod/kod/internal/mock"
 	"github.com/stretchr/testify/require"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/trace"
 	"go.uber.org/goleak"
 	"go.uber.org/mock/gomock"
+
+	"github.com/go-kod/kod"
+	"github.com/go-kod/kod/internal/mock"
 )
 
 func TestMain(m *testing.M) {

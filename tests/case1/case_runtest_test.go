@@ -5,8 +5,9 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/go-kod/kod"
 	"github.com/stretchr/testify/require"
+
+	"github.com/go-kod/kod"
 )
 
 func TestTest(t *testing.T) {

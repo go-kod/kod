@@ -4,21 +4,23 @@ import (
 	"bytes"
 	"strings"
 	"testing"
-
-	"github.com/samber/lo"
 )
 
 func TestCmd(t *testing.T) {
-	execute("-v")
+	execute(t, "-v")
 }
 
-func execute(args string) string {
+func execute(t *testing.T, args string) string {
+	t.Helper()
 
 	actual := new(bytes.Buffer)
 	rootCmd.SetOut(actual)
 	rootCmd.SetErr(actual)
 	rootCmd.SetArgs(strings.Split(args, " "))
-	lo.Must0(rootCmd.Execute())
+	err := rootCmd.Execute()
+	if err != nil {
+		t.Fatal(err)
+	}
 
 	return actual.String()
 }

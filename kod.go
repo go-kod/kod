@@ -12,12 +12,6 @@ import (
 	"sync"
 	"time"
 
-	"github.com/go-kod/kod/interceptor"
-	"github.com/go-kod/kod/internal/hooks"
-	"github.com/go-kod/kod/internal/kslog"
-	"github.com/go-kod/kod/internal/reflects"
-	"github.com/go-kod/kod/internal/registry"
-	"github.com/go-kod/kod/internal/signals"
 	"github.com/samber/lo"
 	"github.com/spf13/viper"
 	"go.opentelemetry.io/contrib/bridges/otelslog"
@@ -34,6 +28,13 @@ import (
 	"go.opentelemetry.io/otel/sdk/resource"
 	"go.opentelemetry.io/otel/sdk/trace"
 	semconv "go.opentelemetry.io/otel/semconv/v1.25.0"
+
+	"github.com/go-kod/kod/interceptor"
+	"github.com/go-kod/kod/internal/hooks"
+	"github.com/go-kod/kod/internal/kslog"
+	"github.com/go-kod/kod/internal/reflects"
+	"github.com/go-kod/kod/internal/registry"
+	"github.com/go-kod/kod/internal/signals"
 )
 
 const (

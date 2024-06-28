@@ -3,12 +3,13 @@ package ktrace
 import (
 	"context"
 
-	"github.com/go-kod/kod"
-	"github.com/go-kod/kod/interceptor"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/codes"
 	"go.opentelemetry.io/otel/trace"
+
+	"github.com/go-kod/kod"
+	"github.com/go-kod/kod/interceptor"
 )
 
 // Interceptor returns an interceptor that adds OpenTelemetry tracing to the context.

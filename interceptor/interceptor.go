@@ -101,7 +101,7 @@ func Not(condition Condition) Condition {
 
 // IsMethod returns a condition that checks if the method name matches the given method.
 func IsMethod(method string) Condition {
-	return func(ctx context.Context, info CallInfo) bool {
+	return func(_ context.Context, info CallInfo) bool {
 		return info.Method == method
 	}
 }

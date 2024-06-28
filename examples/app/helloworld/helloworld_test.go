@@ -4,9 +4,10 @@ import (
 	"context"
 	"testing"
 
-	"github.com/go-kod/kod"
 	"github.com/stretchr/testify/assert"
 	"go.uber.org/mock/gomock"
+
+	"github.com/go-kod/kod"
 )
 
 // TestAppMockHelloWorld tests the app component with a mock helloWorld.

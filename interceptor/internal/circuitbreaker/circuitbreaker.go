@@ -6,8 +6,9 @@ import (
 	"os"
 	"time"
 
-	"github.com/go-kod/kod/interceptor/internal/kerror"
 	"github.com/sony/gobreaker"
+
+	"github.com/go-kod/kod/interceptor/internal/kerror"
 )
 
 type CircuitBreaker struct {

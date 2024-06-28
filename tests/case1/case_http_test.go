@@ -6,8 +6,9 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/go-kod/kod"
 	"github.com/stretchr/testify/require"
+
+	"github.com/go-kod/kod"
 )
 
 func TestHttpHandler(t *testing.T) {
