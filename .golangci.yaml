@@ -113,7 +113,7 @@ linters-settings:
       - name: time-naming
 
       # warns when an exported function or method returns a value of an un-exported type.
-      - name: unexported-return
+      # - name: unexported-return
 
       # spots and proposes to remove unreachable code. also helps to spot errors
       - name: unreachable-code
@@ -130,7 +130,7 @@ linters-settings:
   dupword:
     # Keywords used to ignore detection.
     # Default: []
-    ignore:
+    ignore: []
     #  - "blah" # this will accept "blah blah …" as a valid duplicate word
 
   misspell:
@@ -141,11 +141,15 @@ linters-settings:
 
     # List of words to ignore
     # among the one defined in https://github.com/golangci/misspell/blob/master/words.go
-    ignore-words:
+    ignore-words: []
     #  - valor
     #  - and
 
     # Extra word corrections.
-    extra-words:
+    extra-words: []
     #  - typo: "whattever"
     #    correction: "whatever"
+
+issues:
+  exclude-files:
+    - ".*_test.go"

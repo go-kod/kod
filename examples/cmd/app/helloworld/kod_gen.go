@@ -5,10 +5,9 @@ package main
 
 import (
 	"context"
-	"reflect"
-
 	"github.com/go-kod/kod"
 	"github.com/go-kod/kod/interceptor"
+	"reflect"
 )
 
 func init() {
@@ -47,3 +46,4 @@ type main_local_stub struct {
 
 // Check that main_local_stub implements the kod.Main interface.
 var _ kod.Main = (*main_local_stub)(nil)
+

@@ -70,7 +70,7 @@ func (i importPkg) qualify(member string) string {
 }
 
 // newTypeSet returns the container for types found in pkg.
-func newTypeSet(pkg *packages.Package, automarshals, automarshalCandidates *typeutil.Map) *typeSet {
+func newTypeSet(pkg *packages.Package) *typeSet {
 	return &typeSet{
 		pkg:            pkg,
 		imported:       []importPkg{},

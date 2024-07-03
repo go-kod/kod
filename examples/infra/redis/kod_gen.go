@@ -5,12 +5,10 @@ package redis
 
 import (
 	"context"
-	"reflect"
-
-	"github.com/redis/go-redis/v9"
-
 	"github.com/go-kod/kod"
 	"github.com/go-kod/kod/interceptor"
+	"github.com/redis/go-redis/v9"
+	"reflect"
 )
 
 func init() {

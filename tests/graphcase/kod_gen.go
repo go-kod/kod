@@ -5,13 +5,11 @@ package main
 
 import (
 	"context"
-	"net/http"
-	"reflect"
-
 	"github.com/gin-gonic/gin"
-
 	"github.com/go-kod/kod"
 	"github.com/go-kod/kod/interceptor"
+	"net/http"
+	"reflect"
 )
 
 func init() {

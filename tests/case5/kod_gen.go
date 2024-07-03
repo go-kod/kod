@@ -5,10 +5,9 @@ package case5
 
 import (
 	"context"
-	"reflect"
-
 	"github.com/go-kod/kod"
 	"github.com/go-kod/kod/interceptor"
+	"reflect"
 )
 
 func init() {
@@ -77,3 +76,4 @@ type testRefStruct1_local_stub struct {
 
 // Check that testRefStruct1_local_stub implements the TestRefStruct1 interface.
 var _ TestRefStruct1 = (*testRefStruct1_local_stub)(nil)
+

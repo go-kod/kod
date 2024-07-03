@@ -163,7 +163,7 @@ func checkRunFunc(ctx context.Context, fn any) (func(context.Context, *Kod) erro
 			}
 		}
 
-		reflect.ValueOf(fn).Call(lo.Map(args, func(item any, index int) reflect.Value { return reflect.ValueOf(item) }))
+		reflect.ValueOf(fn).Call(lo.Map(args, func(item any, _ int) reflect.Value { return reflect.ValueOf(item) }))
 		return nil
 	}, intfs, nil
 }

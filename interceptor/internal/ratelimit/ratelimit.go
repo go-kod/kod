@@ -15,11 +15,9 @@ import (
 	"github.com/go-kod/kod/internal/rolling"
 )
 
-var (
-	// ErrLimitExceed is returned when the rate limiter is
-	// triggered and the request is rejected due to limit exceeded.
-	ErrLimitExceed = errors.New("rate limit exceeded")
-)
+// ErrLimitExceed is returned when the rate limiter is
+// triggered and the request is rejected due to limit exceeded.
+var ErrLimitExceed = errors.New("rate limit exceeded")
 
 var (
 	gCPU  int64
@@ -103,7 +101,7 @@ type Ratelimit struct {
 }
 
 // NewLimiter returns a bbr limiter
-func NewLimiter(ctx context.Context, name string) *Ratelimit {
+func NewLimiter(_ context.Context, _ string) *Ratelimit {
 	opt := ratelimitOptions{
 		Window:       time.Second * 10,
 		Bucket:       100,
@@ -142,7 +140,7 @@ func (l *Ratelimit) maxPASS() int64 {
 		}
 	}
 	rawMaxPass := int64(l.passStat.Reduce(func(iterator rolling.Window) float64 {
-		var result = 1.0
+		result := 1.0
 		for i := 1; i <= len(iterator) && i < l.opts.Bucket; i++ {
 			bucket := iterator[i-1]
 			count := 0.0
@@ -180,7 +178,7 @@ func (l *Ratelimit) minRT() int64 {
 		}
 	}
 	rawMinRT := int64(math.Ceil(l.rtStat.Reduce(func(iterator rolling.Window) float64 {
-		var result = math.MaxFloat64
+		result := math.MaxFloat64
 		for i := 1; i <= len(iterator) && i < l.opts.Bucket; i++ {
 			bucket := iterator[i-1]
 			if len(bucket) == 0 {

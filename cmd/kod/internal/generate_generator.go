@@ -20,7 +20,6 @@ import (
 
 	"github.com/samber/lo"
 	"golang.org/x/tools/go/packages"
-	"golang.org/x/tools/go/types/typeutil"
 
 	"github.com/go-kod/kod/internal/callgraph"
 )
@@ -92,10 +91,9 @@ func Generate(dir string, pkgs []string, opt Options) error {
 		return fmt.Errorf("packages.Load: %w", err)
 	}
 
-	var automarshals typeutil.Map
 	var errs []error
 	for _, pkg := range pkgList {
-		g, err := newGenerator(opt, pkg, fset, &automarshals)
+		g, err := newGenerator(opt, pkg, fset)
 		if err != nil {
 			errs = append(errs, err)
 			continue
@@ -145,7 +143,7 @@ func errorf(fset *token.FileSet, pos token.Pos, format string, args ...interface
 	return fmt.Errorf("%s: %w", prefix, fmt.Errorf(format, args...))
 }
 
-func newGenerator(opt Options, pkg *packages.Package, fset *token.FileSet, automarshals *typeutil.Map) (*generator, error) {
+func newGenerator(opt Options, pkg *packages.Package, fset *token.FileSet) (*generator, error) {
 	// Abort if there were any errors loading the package.
 	var errs []error
 	for _, err := range pkg.Errors {
@@ -157,7 +155,7 @@ func newGenerator(opt Options, pkg *packages.Package, fset *token.FileSet, autom
 
 	// Search every file in the package for types that embed the
 	// kod.AutoMarshal struct.
-	tset := newTypeSet(pkg, automarshals, &typeutil.Map{})
+	tset := newTypeSet(pkg)
 
 	// Find and process all components.
 	components := map[string]*component{}
@@ -223,7 +221,7 @@ func findComponents(opt Options, pkg *packages.Package, f *ast.File, tset *typeS
 			if !ok {
 				continue
 			}
-			component, err := extractComponent(opt, pkg, f, tset, ts)
+			component, err := extractComponent(opt, pkg, tset, ts)
 			if err != nil {
 				errs = append(errs, err)
 				continue
@@ -238,7 +236,7 @@ func findComponents(opt Options, pkg *packages.Package, f *ast.File, tset *typeS
 
 // extractComponent attempts to extract a component from the provided TypeSpec.
 // It returns a nil component if the TypeSpec doesn't define a component.
-func extractComponent(opt Options, pkg *packages.Package, file *ast.File, tset *typeSet, spec *ast.TypeSpec) (*component, error) {
+func extractComponent(opt Options, pkg *packages.Package, tset *typeSet, spec *ast.TypeSpec) (*component, error) {
 	// Check that the type spec is of the form `type t struct {...}`.
 	s, ok := spec.Type.(*ast.StructType)
 	if !ok {
@@ -423,7 +421,7 @@ func (c *component) methods() []*types.Func {
 
 // validateMethods validates that the provided component's methods are all
 // valid component methods.
-func validateMethods(pkg *packages.Package, tset *typeSet, intf *types.Named) error {
+func validateMethods(pkg *packages.Package, _ *typeSet, intf *types.Named) error {
 	var errs []error
 	underlying := intf.Underlying().(*types.Interface)
 	for i := 0; i < underlying.NumMethods(); i++ {
@@ -515,7 +513,7 @@ func validateMethods(pkg *packages.Package, tset *typeSet, intf *types.Named) er
 
 // checkMistypedInit returns an error if the provided component implementation
 // has an Init method that does not have type "func(context.Context) error".
-func checkMistypedInit(pkg *packages.Package, tset *typeSet, impl *types.Named) error {
+func checkMistypedInit(pkg *packages.Package, _ *typeSet, impl *types.Named) error {
 	for i := 0; i < impl.NumMethods(); i++ {
 		m := impl.Method(i)
 		if m.Name() != "Init" {
@@ -806,7 +804,7 @@ func (g *generator) generateLocalStubs(p printFn) {
 
 			p(`%s = s.interceptor(ctx, info, []any{%s}, []any{%s}, call)`,
 				lo.If(haveError(mt), "err").Else("_"),
-				g.argsReflectList(comp, mt), g.returnsReflectList(mt))
+				g.argsReflectList(mt), g.returnsReflectList(mt))
 
 			// Call the local method.
 			b.Reset()
@@ -833,7 +831,7 @@ func (g *generator) setReturnsList(sig *types.Signature) string {
 	return returns.String()
 }
 
-func (g *generator) argList(comp *component, sig *types.Signature) string {
+func (g *generator) argList(_ *component, sig *types.Signature) string {
 	if sig.Params().Len() == 0 {
 		return ""
 	}
@@ -855,7 +853,7 @@ func (g *generator) argList(comp *component, sig *types.Signature) string {
 	return b.String()
 }
 
-func (g *generator) argsReflectList(comp *component, sig *types.Signature) string {
+func (g *generator) argsReflectList(sig *types.Signature) string {
 	if sig.Params().Len() == 0 {
 		return ""
 	}
