@@ -5,11 +5,12 @@ import (
 	"time"
 
 	"dario.cat/mergo"
-	"github.com/go-kod/kod/ext/registry"
 	"github.com/samber/lo"
 	"go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
+
+	"github.com/go-kod/kod/ext/registry"
 )
 
 type ClientConn = grpc.ClientConn

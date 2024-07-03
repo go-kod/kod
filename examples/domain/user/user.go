@@ -6,6 +6,9 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/golang-jwt/jwt/v5"
+	"github.com/redis/go-redis/v9"
+
 	"github.com/go-kod/kod"
 	"github.com/go-kod/kod/examples/domain/snowflake"
 	redisC "github.com/go-kod/kod/examples/infra/redis"
@@ -15,8 +18,6 @@ import (
 	"github.com/go-kod/kod/interceptor/krecovery"
 	"github.com/go-kod/kod/interceptor/ktrace"
 	"github.com/go-kod/kod/interceptor/kvalidate"
-	"github.com/golang-jwt/jwt/v5"
-	"github.com/redis/go-redis/v9"
 )
 
 type impl struct {

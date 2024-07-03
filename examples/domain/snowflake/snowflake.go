@@ -4,9 +4,10 @@ import (
 	"context"
 	"time"
 
+	"github.com/sony/sonyflake"
+
 	"github.com/go-kod/kod"
 	"github.com/go-kod/kod/examples/infra/redis"
-	"github.com/sony/sonyflake"
 )
 
 type impl struct {

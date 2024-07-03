@@ -6,8 +6,9 @@ import (
 	"os"
 	"time"
 
-	"github.com/go-kod/kod/interceptor/internal/kerror"
 	"github.com/sony/gobreaker"
+
+	"github.com/go-kod/kod/interceptor/internal/kerror"
 )
 
 type CircuitBreaker struct {
@@ -39,7 +40,7 @@ type CircuitBreaker struct {
 // Interval:    5 * time.Second
 // Timeout:     10 * time.Second
 // ReadyToTrip: DefaultReadyToTrip
-func NewCircuitBreaker(ctx context.Context, name string) *CircuitBreaker {
+func NewCircuitBreaker(_ context.Context, name string) *CircuitBreaker {
 	return &CircuitBreaker{
 		breaker: gobreaker.NewTwoStepCircuitBreaker(gobreaker.Settings{
 			Name:        name,

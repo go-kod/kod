@@ -6,9 +6,10 @@ import (
 	"reflect"
 	"testing"
 
+	"github.com/samber/lo"
+
 	"github.com/go-kod/kod/internal/kslog"
 	"github.com/go-kod/kod/internal/reflects"
-	"github.com/samber/lo"
 )
 
 type ObservedLogs kslog.ObservedLogs
@@ -33,29 +34,39 @@ type runner struct {
 }
 
 // RunTest runs a test function with one component.
-func RunTest[T any](t testing.TB, body func(context.Context, T), opts ...func(*options)) {
-	runTest(t, body, opts...)
+func RunTest[T any](tb testing.TB, body func(context.Context, T), opts ...func(*options)) {
+	tb.Helper()
+
+	runTest(tb, body, opts...)
 }
 
 // RunTest2 runs a test function with two components.
-func RunTest2[T1, T2 any](t testing.TB, body func(context.Context, T1, T2), opts ...func(*options)) {
-	runTest(t, body, opts...)
+func RunTest2[T1, T2 any](tb testing.TB, body func(context.Context, T1, T2), opts ...func(*options)) {
+	tb.Helper()
+
+	runTest(tb, body, opts...)
 }
 
 // RunTest3 runs a test function with three components.
-func RunTest3[T1, T2, T3 any](t testing.TB, body func(context.Context, T1, T2, T3), opts ...func(*options)) {
-	runTest(t, body, opts...)
+func RunTest3[T1, T2, T3 any](tb testing.TB, body func(context.Context, T1, T2, T3), opts ...func(*options)) {
+	tb.Helper()
+
+	runTest(tb, body, opts...)
 }
 
-func runTest(t testing.TB, testBody any, opts ...func(*options)) {
-	err := runner{options: opts}.sub(t, testBody)
+func runTest(tb testing.TB, testBody any, opts ...func(*options)) {
+	tb.Helper()
+
+	err := runner{options: opts}.sub(tb, testBody)
 	if err != nil {
-		t.Logf("runTest failed: %v", err)
-		t.FailNow()
+		tb.Logf("runTest failed: %v", err)
+		tb.FailNow()
 	}
 }
 
-func (r runner) sub(t testing.TB, testBody any) error {
+func (r runner) sub(tb testing.TB, testBody any) error {
+	tb.Helper()
+
 	ctx, cancelFn := context.WithCancel(context.Background())
 	defer func() {
 		// Cancel the context so background activity will stop.
@@ -70,7 +81,7 @@ func (r runner) sub(t testing.TB, testBody any) error {
 
 	ctx = newContext(ctx, runner)
 
-	t.Helper()
+	tb.Helper()
 	body, intfs, err := checkRunFunc(ctx, testBody)
 	if err != nil {
 		return fmt.Errorf("kod.Run argument: %v", err)
@@ -152,7 +163,7 @@ func checkRunFunc(ctx context.Context, fn any) (func(context.Context, *Kod) erro
 			}
 		}
 
-		reflect.ValueOf(fn).Call(lo.Map(args, func(item any, index int) reflect.Value { return reflect.ValueOf(item) }))
+		reflect.ValueOf(fn).Call(lo.Map(args, func(item any, _ int) reflect.Value { return reflect.ValueOf(item) }))
 		return nil
 	}, intfs, nil
 }

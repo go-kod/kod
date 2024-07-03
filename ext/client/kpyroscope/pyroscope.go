@@ -5,8 +5,9 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/go-kod/kod"
 	"github.com/grafana/pyroscope-go"
+
+	"github.com/go-kod/kod"
 )
 
 type Config struct {

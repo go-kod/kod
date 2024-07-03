@@ -6,12 +6,13 @@ import (
 	"net"
 	"time"
 
-	"github.com/go-kod/kod/ext/internal/knet"
-	"github.com/go-kod/kod/ext/registry"
 	"github.com/samber/lo"
 	"go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
+
+	"github.com/go-kod/kod/ext/internal/knet"
+	"github.com/go-kod/kod/ext/registry"
 )
 
 var (

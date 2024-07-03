@@ -36,7 +36,7 @@ func (l *ObservedLogs) Filter(filter func(slog.Record) bool) *ObservedLogs {
 
 	return &ObservedLogs{
 		mu: sync.Mutex{},
-		records: lo.Filter(l.records, func(r slog.Record, index int) bool {
+		records: lo.Filter(l.records, func(r slog.Record, _ int) bool {
 			return filter(r)
 		}),
 	}
@@ -109,6 +109,6 @@ func (h *observer) WithGroup(name string) slog.Handler {
 }
 
 // Enabled returns true if the provided level is enabled.
-func (h *observer) Enabled(ctx context.Context, level slog.Level) bool {
+func (h *observer) Enabled(_ context.Context, _ slog.Level) bool {
 	return true
 }

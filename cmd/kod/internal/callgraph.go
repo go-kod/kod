@@ -6,9 +6,10 @@ import (
 	"os"
 
 	"github.com/dominikbraun/graph/draw"
-	"github.com/go-kod/kod/internal/callgraph"
 	"github.com/samber/lo"
 	"github.com/spf13/cobra"
+
+	"github.com/go-kod/kod/internal/callgraph"
 )
 
 var callgraphCmd = &cobra.Command{

@@ -3,9 +3,10 @@ package redis
 import (
 	"context"
 
+	goredis "github.com/redis/go-redis/v9"
+
 	"github.com/go-kod/kod"
 	"github.com/go-kod/kod/ext/client/kredis"
-	goredis "github.com/redis/go-redis/v9"
 )
 
 type impl struct {

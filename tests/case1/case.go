@@ -8,6 +8,9 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/samber/lo"
+	"go.opentelemetry.io/otel/baggage"
+
 	"github.com/go-kod/kod"
 	"github.com/go-kod/kod/interceptor"
 	"github.com/go-kod/kod/interceptor/kaccesslog"
@@ -18,8 +21,6 @@ import (
 	"github.com/go-kod/kod/interceptor/ktimeout"
 	"github.com/go-kod/kod/interceptor/ktrace"
 	"github.com/go-kod/kod/interceptor/kvalidate"
-	"github.com/samber/lo"
-	"go.opentelemetry.io/otel/baggage"
 )
 
 type test1Config struct {

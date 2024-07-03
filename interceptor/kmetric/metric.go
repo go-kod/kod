@@ -4,12 +4,13 @@ import (
 	"context"
 	"time"
 
-	"github.com/go-kod/kod"
-	"github.com/go-kod/kod/interceptor"
 	"github.com/samber/lo"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/metric"
+
+	"github.com/go-kod/kod"
+	"github.com/go-kod/kod/interceptor"
 )
 
 var (

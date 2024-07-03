@@ -5,8 +5,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/go-kod/kod"
 	"github.com/stretchr/testify/assert"
+
+	"github.com/go-kod/kod"
 )
 
 func TestShortURL(t *testing.T) {

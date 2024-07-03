@@ -215,7 +215,7 @@ func makeInterfaceBody(output []string, ifaceComment map[string]string, structNa
 	return output
 }
 
-func createFile(cmd *cobra.Command, objs map[string]*makeInterfaceFile) error {
+func createFile(objs map[string]*makeInterfaceFile) error {
 	for _, obj := range objs {
 		if obj == nil {
 			continue
@@ -311,7 +311,7 @@ func makeFile(file string) (*makeInterfaceFile, error) {
 	}, nil
 }
 
-func Struct2Interface(cmd *cobra.Command, dir string) error {
+func Struct2Interface(dir string) error {
 	mapDirPath := make(map[string]*makeInterfaceFile)
 	err := filepath.WalkDir(dir, func(path string, d fs.DirEntry, _ error) error {
 		if d == nil || d.IsDir() {
@@ -358,7 +358,7 @@ func Struct2Interface(cmd *cobra.Command, dir string) error {
 		return err
 	}
 
-	return createFile(cmd, mapDirPath)
+	return createFile(mapDirPath)
 }
 
 var struct2interface = &cobra.Command{
@@ -367,7 +367,7 @@ var struct2interface = &cobra.Command{
 	// Uncomment the following line if your bare application
 	// has an action associated with it:
 	// Run: func(cmd *cobra.Command, args []string) { },
-	Run: func(cmd *cobra.Command, args []string) {
+	Run: func(_ *cobra.Command, args []string) {
 		if len(args) == 0 {
 			args = []string{"."}
 		}
@@ -375,7 +375,7 @@ var struct2interface = &cobra.Command{
 		startTime := time.Now()
 
 		for _, arg := range args {
-			lo.Must0(Struct2Interface(cmd, arg))
+			lo.Must0(Struct2Interface(arg))
 		}
 
 		fmt.Printf("[struct2interface] %s \n", time.Since(startTime).String())

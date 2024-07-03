@@ -7,9 +7,10 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/samber/lo"
+
 	"github.com/go-kod/kod/ext/internal/knet"
 	"github.com/go-kod/kod/ext/registry"
-	"github.com/samber/lo"
 )
 
 type Config struct {

@@ -12,12 +12,6 @@ import (
 	"sync"
 	"time"
 
-	"github.com/go-kod/kod/interceptor"
-	"github.com/go-kod/kod/internal/hooks"
-	"github.com/go-kod/kod/internal/kslog"
-	"github.com/go-kod/kod/internal/reflects"
-	"github.com/go-kod/kod/internal/registry"
-	"github.com/go-kod/kod/internal/signals"
 	"github.com/samber/lo"
 	"github.com/spf13/viper"
 	"go.opentelemetry.io/contrib/bridges/otelslog"
@@ -34,6 +28,13 @@ import (
 	"go.opentelemetry.io/otel/sdk/resource"
 	"go.opentelemetry.io/otel/sdk/trace"
 	semconv "go.opentelemetry.io/otel/semconv/v1.25.0"
+
+	"github.com/go-kod/kod/interceptor"
+	"github.com/go-kod/kod/internal/hooks"
+	"github.com/go-kod/kod/internal/kslog"
+	"github.com/go-kod/kod/internal/reflects"
+	"github.com/go-kod/kod/internal/registry"
+	"github.com/go-kod/kod/internal/signals"
 )
 
 const (
@@ -251,7 +252,7 @@ func Run[T any, _ PointerToMain[T]](ctx context.Context, run func(context.Contex
 	// wait for shutdown signal
 	stop := make(chan struct{}, 2)
 	sig := make(chan os.Signal, 2)
-	signals.Shutdown(ctx, sig, func(grace bool) {
+	signals.Shutdown(ctx, sig, func(_ bool) {
 		cancel()
 		stop <- struct{}{}
 	})

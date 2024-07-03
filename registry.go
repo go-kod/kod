@@ -8,11 +8,12 @@ import (
 	"reflect"
 
 	"github.com/dominikbraun/graph"
+	"go.opentelemetry.io/otel"
+
 	"github.com/go-kod/kod/internal/callgraph"
 	"github.com/go-kod/kod/internal/hooks"
 	"github.com/go-kod/kod/internal/reflects"
 	"github.com/go-kod/kod/internal/registry"
-	"go.opentelemetry.io/otel"
 )
 
 // LocalStubFnInfo is the information passed to LocalStubFn.

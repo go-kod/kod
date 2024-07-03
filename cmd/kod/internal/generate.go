@@ -33,11 +33,11 @@ var generate = &cobra.Command{
 	},
 }
 
-func doGenerate(cmd *cobra.Command, dir string, args []string) {
+func doGenerate(cmd *cobra.Command, _ string, args []string) {
 	startTime := time.Now()
 
 	if s2i, _ := cmd.Flags().GetBool("struct2interface"); s2i {
-		if err := Struct2Interface(cmd, "."); err != nil {
+		if err := Struct2Interface("."); err != nil {
 			fmt.Println(err)
 			return
 		}

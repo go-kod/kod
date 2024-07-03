@@ -4,8 +4,9 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/go-kod/kod/interceptor"
 	"github.com/go-playground/validator/v10"
+
+	"github.com/go-kod/kod/interceptor"
 )
 
 // Interceptor returns a interceptor that validates the call specified by info.
