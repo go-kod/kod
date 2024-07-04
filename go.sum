@@ -129,8 +129,8 @@ github.com/yusufpapurcu/wmi v1.2.4 h1:zFUKzehAFReQwLys1b/iSMl+JQGSCSjtVqQn9bBrPo
 github.com/yusufpapurcu/wmi v1.2.4/go.mod h1:SBZ9tNy3G9/m5Oi98Zks0QjeHVDvuK0qfxQmPyzfmi0=
 go.opentelemetry.io/collector/pdata v1.7.0 h1:/WNsBbE6KM3TTPUb9v/5B7IDqnDkgf8GyFhVJJqu7II=
 go.opentelemetry.io/collector/pdata v1.7.0/go.mod h1:ehCBBA5GoFrMZkwyZAKGY/lAVSgZf6rzUt3p9mddmPU=
-go.opentelemetry.io/contrib/bridges/otelslog v0.2.0 h1:8wisJ9dZUU1YZGJDsQgfCkexQ/zsZF1SZB6Z86j4WJA=
-go.opentelemetry.io/contrib/bridges/otelslog v0.2.0/go.mod h1:/fUobpnNkWPrkMb7HKL80Ewfkqzyko1KUUX0h7aNtxo=
+go.opentelemetry.io/contrib/bridges/otelslog v0.3.0 h1:Kf8NK4WW/pn3f9Gwx6XJAB2zlaW2M3VLQ4sQ3TKJhA8=
+go.opentelemetry.io/contrib/bridges/otelslog v0.3.0/go.mod h1:JV00+So1cv6GIYNUeO0xFfl/qE+DUtS3hpBlLIyOFUE=
 go.opentelemetry.io/contrib/bridges/prometheus v0.52.0 h1:NNkEjNcUXeNcxDTNLyyAmFHefByhj8YU1AojgcPqbfs=
 go.opentelemetry.io/contrib/bridges/prometheus v0.52.0/go.mod h1:Dv7d2yUvusfblvi9qMQby+youF09GiUVWRWkdogrDtE=
 go.opentelemetry.io/contrib/exporters/autoexport v0.52.0 h1:G/AGl5O78ZKHs63Rl65P1HyZfDnTyxjv8r7dbdZ9fB0=

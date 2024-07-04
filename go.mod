@@ -13,7 +13,7 @@ require (
 	github.com/spf13/cobra v1.8.1
 	github.com/spf13/viper v1.19.0
 	github.com/stretchr/testify v1.9.0
-	go.opentelemetry.io/contrib/bridges/otelslog v0.2.0
+	go.opentelemetry.io/contrib/bridges/otelslog v0.3.0
 	go.opentelemetry.io/contrib/exporters/autoexport v0.52.0
 	go.opentelemetry.io/contrib/instrumentation/host v0.52.0
 	go.opentelemetry.io/contrib/instrumentation/runtime v0.52.0
