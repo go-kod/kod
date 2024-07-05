@@ -19,7 +19,6 @@ import (
 	"go.opentelemetry.io/contrib/instrumentation/host"
 	"go.opentelemetry.io/contrib/instrumentation/runtime"
 	"go.opentelemetry.io/otel"
-	"go.opentelemetry.io/otel/exporters/otlp/otlplog/otlploggrpc"
 	"go.opentelemetry.io/otel/exporters/otlp/otlplog/otlploghttp"
 	"go.opentelemetry.io/otel/exporters/stdout/stdoutlog"
 	"go.opentelemetry.io/otel/log/global"
@@ -547,8 +546,6 @@ func getLogAutoExporter(ctx context.Context) (log.Exporter, error) {
 		}
 
 		switch proto {
-		case "grpc":
-			exporter, err = otlploggrpc.New(ctx)
 		case "http/protobuf":
 			opts := []otlploghttp.Option{}
 			if os.Getenv("OTEL_EXPORTER_OTLP_INSECURE") == "true" {
