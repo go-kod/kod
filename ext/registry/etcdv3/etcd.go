@@ -7,13 +7,13 @@ import (
 	"time"
 
 	"dario.cat/mergo"
+	"github.com/go-kod/kod"
 	clientv3 "go.etcd.io/etcd/client/v3"
 	"go.etcd.io/etcd/client/v3/concurrency"
 	"go.etcd.io/etcd/client/v3/naming/endpoints"
 	"google.golang.org/grpc"
-	gresolver "google.golang.org/grpc/resolver"
+	"google.golang.org/grpc/resolver"
 
-	"github.com/go-kod/kod"
 	"github.com/go-kod/kod/ext/registry"
 )
 
@@ -28,7 +28,6 @@ type Config struct {
 
 // nolint
 func (r Config) Build(ctx context.Context) (*client, error) {
-
 	err := mergo.Merge(&r, Config{
 		Timeout: 3 * time.Second,
 		TTL:     60,
@@ -115,6 +114,6 @@ func (r *client) registryKey(ctx context.Context, info registry.ServiceInfo) str
 }
 
 // nolint
-func (r *client) ResolveBuilder(ctx context.Context) (gresolver.Builder, error) {
+func (r *client) ResolveBuilder(ctx context.Context) (resolver.Builder, error) {
 	return builder{c: r.client}, nil
 }

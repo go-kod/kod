@@ -5,9 +5,8 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/grafana/pyroscope-go"
-
 	"github.com/go-kod/kod"
+	"github.com/grafana/pyroscope-go"
 )
 
 type Config struct {
@@ -15,7 +14,6 @@ type Config struct {
 }
 
 func (c Config) Build(ctx context.Context) (*pyroscope.Profiler, error) {
-
 	k := kod.FromContext(ctx)
 
 	p, err := pyroscope.Start(pyroscope.Config{

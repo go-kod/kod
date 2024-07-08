@@ -50,7 +50,7 @@ func (c Config) Build(opts ...grpc.DialOption) *ClientConn {
 
 	defaultOpts = append(defaultOpts, opts...)
 
-	cc, err := grpc.DialContext(ctx, c.Target, defaultOpts...)
+	cc, err := grpc.NewClient(c.Target, defaultOpts...)
 	if err != nil {
 		panic(err)
 	}

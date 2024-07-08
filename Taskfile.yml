@@ -39,7 +39,7 @@ tasks:
 
   lint:golangci-lint:
     cmd: |
-        $GOBIN/golangci-lint run ./...
+        $GOBIN/golangci-lint run ./... ./ext/...
     deps:
       - install:golangci-lint
 

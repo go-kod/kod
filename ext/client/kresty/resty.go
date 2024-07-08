@@ -18,7 +18,6 @@ type Config struct {
 }
 
 func (c Config) Build() *Client {
-
 	cc := resty.New()
 	cc.SetBaseURL(c.BaseURL)
 	cc.SetTimeout(c.Timeout)
@@ -35,7 +34,7 @@ func (c Config) Build() *Client {
 		}
 	})
 
-	cc.OnBeforeRequest(func(c *resty.Client, r *resty.Request) error {
+	cc.OnBeforeRequest(func(_ *resty.Client, r *resty.Request) error {
 		span := trace.SpanFromContext(r.Context())
 		if span.SpanContext().IsValid() {
 			ctx, _ := otel.Tracer("github.com/go-kod/kod").Start(r.Context(), r.URL, trace.WithSpanKind(trace.SpanKindClient))
@@ -45,8 +44,7 @@ func (c Config) Build() *Client {
 		return nil
 	})
 
-	cc.OnAfterResponse(func(c *resty.Client, r *resty.Response) error {
-
+	cc.OnAfterResponse(func(_ *resty.Client, r *resty.Response) error {
 		span := trace.SpanFromContext(r.Request.Context())
 		if span.SpanContext().IsValid() {
 			span.SetAttributes(semconv.HTTPClientAttributesFromHTTPRequest(r.Request.RawRequest)...)
