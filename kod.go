@@ -235,8 +235,6 @@ func Run[T any, _ PointerToMain[T]](ctx context.Context, run func(context.Contex
 		return err
 	}
 
-	ctx, span := otel.Tracer(PkgPath).Start(ctx, "kod.Run")
-
 	// create a new context with kod
 	ctx = newContext(ctx, kod)
 	ctx, cancel := context.WithCancel(ctx)
@@ -262,7 +260,6 @@ func Run[T any, _ PointerToMain[T]](ctx context.Context, run func(context.Contex
 		stop <- struct{}{}
 	}()
 
-	span.End()
 	// wait for stop signal
 	<-stop
 
