@@ -19,8 +19,6 @@ import (
 	"go.opentelemetry.io/contrib/instrumentation/host"
 	"go.opentelemetry.io/contrib/instrumentation/runtime"
 	"go.opentelemetry.io/otel"
-	"go.opentelemetry.io/otel/exporters/otlp/otlplog/otlploghttp"
-	"go.opentelemetry.io/otel/exporters/stdout/stdoutlog"
 	"go.opentelemetry.io/otel/log/global"
 	"go.opentelemetry.io/otel/propagation"
 	"go.opentelemetry.io/otel/sdk/log"
@@ -510,7 +508,7 @@ func (k *Kod) configureMetric(ctx context.Context, res *resource.Resource) {
 
 // configureLog configures the log provider with the provided context and resource.
 func (k *Kod) configureLog(ctx context.Context, res *resource.Resource) {
-	logExporter := lo.Must(getLogAutoExporter(ctx))
+	logExporter := lo.Must(autoexport.NewLogExporter(ctx))
 	loggerProvider := log.NewLoggerProvider(
 		log.WithProcessor(
 			log.NewBatchProcessor(logExporter),
@@ -538,44 +536,4 @@ func (k *Kod) newSlog(handler slog.Handler) *slog.Logger {
 	}
 
 	return slog.New(handler)
-}
-
-// getLogAutoExporter returns a log exporter based on the environment variables.
-// The default exporter is OTLP over HTTP/Protobuf.
-// NOTICE: It would be removed when the OpenTelemetry SDK supports the log auto exporter.
-func getLogAutoExporter(ctx context.Context) (log.Exporter, error) {
-	var (
-		err      error
-		exporter log.Exporter
-	)
-
-	logsExporter := os.Getenv("OTEL_LOGS_EXPORTER")
-	if logsExporter == "" {
-		logsExporter = "otlp"
-	}
-
-	switch logsExporter {
-	case "otlp":
-
-		proto := os.Getenv("OTEL_EXPORTER_OTLP_PROTOCOL")
-		if proto == "" {
-			proto = "http/protobuf"
-		}
-
-		switch proto {
-		case "http/protobuf":
-			opts := []otlploghttp.Option{}
-			if os.Getenv("OTEL_EXPORTER_OTLP_INSECURE") == "true" {
-				opts = append(opts, otlploghttp.WithInsecure())
-			}
-
-			exporter, err = otlploghttp.New(ctx, opts...)
-		default:
-			return nil, fmt.Errorf("unsupported OTLP exporter protocol: %s", proto)
-		}
-	case "console":
-		exporter, err = stdoutlog.New()
-	}
-
-	return exporter, err
 }
