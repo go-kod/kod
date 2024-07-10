@@ -1,2 +1,4 @@
+name = "globalConfig"
+
 ["github.com/go-kod/kod/Main"]
 name = "config"

@@ -6,14 +6,16 @@ import (
 	"log/slog"
 	"time"
 
+	// nolint
 	"dario.cat/mergo"
-	"github.com/go-kod/kod"
 	clientv3 "go.etcd.io/etcd/client/v3"
 	"go.etcd.io/etcd/client/v3/concurrency"
 	"go.etcd.io/etcd/client/v3/naming/endpoints"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/resolver"
 
+	// nolint
+	"github.com/go-kod/kod"
 	"github.com/go-kod/kod/ext/registry"
 )
 
@@ -23,8 +25,6 @@ type Config struct {
 	Timeout   time.Duration
 	TTL       int
 }
-
-// nolint
 
 // nolint
 func (r Config) Build(ctx context.Context) (*client, error) {

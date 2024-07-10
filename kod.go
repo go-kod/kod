@@ -186,6 +186,20 @@ func (wc *WithConfig[T]) getConfig() any {
 	return &wc.config
 }
 
+type WithGlobalConfig[T any] struct {
+	config T
+}
+
+// Config returns a pointer to the config.
+func (wc *WithGlobalConfig[T]) Config() *T {
+	return &wc.config
+}
+
+// getGlobalConfig returns the config.
+func (wc *WithGlobalConfig[T]) getGlobalConfig() any {
+	return &wc.config
+}
+
 // WithConfigFile is an option setter for specifying a configuration file.
 func WithConfigFile(filename string) func(*options) {
 	return func(opts *options) {

@@ -14,6 +14,6 @@ func TestApp(t *testing.T) {
 	t.Parallel()
 
 	kod.RunTest(t, func(ctx context.Context, comp *app) {
-		assert.Equal(t, "config", comp.Config().Name)
+		assert.Equal(t, "globalConfig", comp.Config().Name)
 	}, kod.WithConfigFile("./kod.toml"))
 }

@@ -81,6 +81,16 @@ func (k *Kod) get(ctx context.Context, reg *Registration) (any, error) {
 	v := reflect.New(reg.Impl)
 	obj := v.Interface()
 
+	// Fill global config.
+	if c, ok := obj.(interface{ getGlobalConfig() any }); ok {
+		if cfg := c.getGlobalConfig(); cfg != nil {
+			err := k.viper.Unmarshal(cfg)
+			if err != nil {
+				return nil, err
+			}
+		}
+	}
+
 	// Fill config.
 	if c, ok := obj.(interface{ getConfig() any }); ok {
 		if cfg := c.getConfig(); cfg != nil {

@@ -8,7 +8,7 @@ import (
 
 type app struct {
 	kod.Implements[kod.Main]
-	kod.WithConfig[config]
+	kod.WithGlobalConfig[config]
 }
 
 type config struct {
