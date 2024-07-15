@@ -7,7 +7,7 @@ require (
 	github.com/dominikbraun/graph v0.23.0
 	github.com/fsnotify/fsnotify v1.7.0
 	github.com/go-playground/validator/v10 v10.22.0
-	github.com/samber/lo v1.44.0
+	github.com/samber/lo v1.45.0
 	github.com/shirou/gopsutil/v3 v3.24.5
 	github.com/sony/gobreaker v1.0.0
 	github.com/spf13/cobra v1.8.1
