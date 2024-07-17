@@ -2,35 +2,12 @@ version: 2
 
 updates:
   - package-ecosystem: gomod
-    directory: /
-    labels:
-      - dependencies
-    schedule:
-      interval: daily
-
-  - package-ecosystem: gomod
-    directory: /tests
-    labels:
-      - dependencies
-    schedule:
-      interval: daily
-
-  - package-ecosystem: gomod
-    directory: /examples
-    labels:
-      - dependencies
-    schedule:
-      interval: daily
-
-  - package-ecosystem: gomod
-    directory: /ext
-    labels:
-      - dependencies
-    schedule:
-      interval: daily
-
-  - package-ecosystem: gomod
-    directory: /interceptor
+    directories:
+      - /
+      - /tests
+      - /examples
+      - /ext
+      - /interceptor
     labels:
       - dependencies
     schedule:
