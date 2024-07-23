@@ -7,7 +7,6 @@ updates:
       - /tests
       - /examples
       - /ext
-      - /interceptor
     labels:
       - dependencies
     schedule:
