@@ -10,7 +10,6 @@ import (
 )
 
 func TestLazyInit(t *testing.T) {
-	t.Parallel()
 	log, observer := kod.NewLogObserver()
 
 	kod.RunTest(t, func(ctx context.Context, k *lazyInitImpl) {
@@ -29,7 +28,6 @@ func TestLazyInit(t *testing.T) {
 }
 
 func TestLazyInitTest(t *testing.T) {
-	t.Parallel()
 	log, observer := kod.NewLogObserver()
 
 	kod.RunTest2(t, func(ctx context.Context, k *lazyInitImpl, comp *lazyInitComponent) {
@@ -44,7 +42,6 @@ func TestLazyInitTest(t *testing.T) {
 }
 
 func TestLazyInitTest2(t *testing.T) {
-	t.Parallel()
 	log, observer := kod.NewLogObserver()
 
 	kod.RunTest2(t, func(ctx context.Context, k LazyInitImpl, comp LazyInitComponent) {
@@ -57,7 +54,6 @@ func TestLazyInitTest2(t *testing.T) {
 }
 
 func TestLazyInitTest3(t *testing.T) {
-	t.Parallel()
 	log, observer := kod.NewLogObserver()
 
 	kod.RunTest2(t, func(ctx context.Context, k *lazyInitImpl, comp LazyInitComponent) {

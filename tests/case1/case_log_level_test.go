@@ -37,4 +37,6 @@ func TestLogLevel(t *testing.T) {
 			return r.Level == slog.LevelDebug
 		}).Len())
 	}, kod.WithLogWrapper(obs))
+
+	t.Setenv("KOD_LOG_LEVEL", "info")
 }

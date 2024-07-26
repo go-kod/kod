@@ -12,7 +12,6 @@ import (
 )
 
 func TestMockLog(t *testing.T) {
-	t.Parallel()
 	log, observer := kod.NewLogObserver()
 	os.Setenv("KOD_LOG_LEVEL", "error")
 
@@ -29,4 +28,6 @@ func TestMockLog(t *testing.T) {
 		require.Equal(t, 0, observer.Len())
 		require.Equal(t, 0, observer.ErrorCount())
 	}, kod.WithLogWrapper(log))
+
+	os.Setenv("KOD_LOG_LEVEL", "info")
 }
