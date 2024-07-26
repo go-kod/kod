@@ -288,9 +288,10 @@ func Run[T any, _ PointerToMain[T]](ctx context.Context, run func(context.Contex
 
 // kodConfig defines the overall configuration for the Kod application.
 type kodConfig struct {
-	Name    string
-	Env     string
-	Version string
+	Name     string
+	Env      string
+	Version  string
+	LogLevel slog.Level
 
 	ShutdownTimeout time.Duration
 }
@@ -340,6 +341,7 @@ func newKod(ctx context.Context, opts ...func(*options)) (*Kod, error) {
 		config: kodConfig{
 			Name:            filepath.Base(lo.Must(os.Executable())),
 			Env:             "local",
+			LogLevel:        slog.LevelInfo,
 			ShutdownTimeout: 5 * time.Second,
 		},
 		hooker:              hooks.New(),
@@ -372,7 +374,6 @@ func newKod(ctx context.Context, opts ...func(*options)) (*Kod, error) {
 	} else {
 		kod.log = kod.newSlog(slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{
 			AddSource: true,
-			Level:     slog.LevelDebug,
 		}))
 	}
 
@@ -443,6 +444,10 @@ func (k *Kod) parseConfig(filename string) error {
 
 	if vip.Get("kod.env") != nil {
 		k.config.Env = vip.GetString("kod.env")
+	}
+
+	if vip.Get("kod.log_level") != nil {
+		lo.Must0(k.config.LogLevel.UnmarshalText([]byte(vip.GetString("kod.log_level"))))
 	}
 
 	return nil
@@ -535,5 +540,14 @@ func (k *Kod) newSlog(handler slog.Handler) *slog.Logger {
 		handler = k.opts.logWrapper(handler)
 	}
 
-	return slog.New(handler)
+	return slog.New(&levelHandler{Handler: handler, level: k.config.LogLevel})
+}
+
+type levelHandler struct {
+	slog.Handler
+	level slog.Level
+}
+
+func (l *levelHandler) Enabled(_ context.Context, level slog.Level) bool {
+	return level >= l.level
 }
