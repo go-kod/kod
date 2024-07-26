@@ -540,14 +540,7 @@ func (k *Kod) newSlog(handler slog.Handler) *slog.Logger {
 		handler = k.opts.logWrapper(handler)
 	}
 
-	return slog.New(&levelHandler{Handler: handler, level: k.config.LogLevel})
-}
+	handler = kslog.NewLevelHandler(k.config.LogLevel)(handler)
 
-type levelHandler struct {
-	slog.Handler
-	level slog.Level
-}
-
-func (l *levelHandler) Enabled(_ context.Context, level slog.Level) bool {
-	return level >= l.level
+	return slog.New(handler)
 }
