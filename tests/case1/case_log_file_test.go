@@ -23,7 +23,7 @@ func TestLogFile(t *testing.T) {
 		}).Len())
 		require.Equal(t, 0, observer.Clean().Len())
 		slog.Info("test")
-		require.Equal(t, 0, observer.Len())
+		require.Equal(t, 1, observer.Len())
 		os.Remove("./testapp.json")
 	}, kod.WithLogWrapper(log), kod.WithConfigFile("./kod-logfile.toml"))
 }

@@ -542,5 +542,9 @@ func (k *Kod) newSlog(handler slog.Handler) *slog.Logger {
 
 	handler = kslog.NewLevelHandler(k.config.LogLevel)(handler)
 
-	return slog.New(handler)
+	logger := slog.New(handler)
+
+	slog.SetDefault(logger)
+
+	return logger
 }
