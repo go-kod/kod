@@ -202,6 +202,8 @@ Interface can be generated automatically by kod tool.
 
 ### Config
 
+#### WithConfig
+
 Kod uses config files, written in TOML, to configure how applications are run. A minimal config file, for example, simply lists the application name:
 
 ```toml
@@ -267,6 +269,23 @@ You can use TOML struct tags to specify the name that should be used for a field
 type greeterOptions struct {
     Greeting string `toml:"my_custom_name"`
 }
+```
+
+#### WithGlobalConfig
+
+Also, we can use the `kod.WithGlobalConfig` struct to read the whole config from the config file.
+
+```go
+type greeter struct {
+    kod.Implements[Greeter]
+    kod.WithGlobalConfig[greeterOptions]
+}
+```
+
+Now, we can add global configuration to the config file based on the `greeterOptions` struct.
+
+```toml
+greeting = "Bonjour"
 ```
 
 ### Testing

@@ -200,6 +200,8 @@ func (f *foo) Interceptors() []interceptor.Interceptor {
 
 ### 配置
 
+#### WithConfig
+
 Kod使用TOML格式的配置文件来配置应用程序的运行方式。例如，一个最小的配置文件只需列出应用程序名称：
 
 ```toml
@@ -265,6 +267,23 @@ func (g *greeter) Greet(_ context.Context, name string) (string, error) {
 type greeterOptions struct {
     Greeting string `toml:"my_custom_name"`
 }
+```
+
+#### WithGlobalConfig
+
+此外，我们可以使用 `kod.WithGlobalConfig` 结构从配置文件中读取整个配置。
+
+```go
+type greeter struct {
+    kod.Implements[Greeter]
+    kod.WithGlobalConfig[greeterOptions]
+}
+```
+
+现在，我们可以根据 `greeterOptions` 结构向配置文件添加全局配置。
+
+```toml
+greeting = "Bonjour"
 ```
 
 ### 测试
