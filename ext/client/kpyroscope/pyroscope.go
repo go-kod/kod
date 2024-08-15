@@ -6,7 +6,7 @@ import (
 	"os"
 
 	"github.com/go-kod/kod"
-	"github.com/grafana/pyroscope-go"
+	pyroscope "github.com/grafana/pyroscope-go"
 )
 
 type Config struct {
