@@ -9,8 +9,8 @@ require (
 	github.com/gin-gonic/gin v1.10.0
 	github.com/go-kod/kod v0.0.0-00010101000000-000000000000
 	github.com/go-resty/resty/v2 v2.14.0
-	github.com/grafana/pyroscope-go v1.1.1
-	github.com/redis/go-redis/extra/redisotel/v9 v9.5.3
+	github.com/grafana/pyroscope-go v1.1.2
+	github.com/redis/go-redis/extra/redisotel/v9 v9.0.5
 	github.com/redis/go-redis/v9 v9.6.1
 	github.com/samber/lo v1.46.0
 	github.com/uptrace/opentelemetry-go-extra/otelsql v0.2.4
@@ -54,13 +54,13 @@ require (
 	github.com/gogo/protobuf v1.3.2 // indirect
 	github.com/golang/protobuf v1.5.4 // indirect
 	github.com/google/uuid v1.6.0 // indirect
-	github.com/grafana/pyroscope-go/godeltaprof v0.1.6 // indirect
+	github.com/grafana/pyroscope-go/godeltaprof v0.1.8 // indirect
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.20.0 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
 	github.com/jinzhu/inflection v1.0.0 // indirect
 	github.com/jinzhu/now v1.1.5 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
-	github.com/klauspost/compress v1.17.3 // indirect
+	github.com/klauspost/compress v1.17.8 // indirect
 	github.com/klauspost/cpuid/v2 v2.2.8 // indirect
 	github.com/leodido/go-urn v1.4.0 // indirect
 	github.com/lufia/plan9stats v0.0.0-20240513124658-fba389f38bae // indirect
@@ -76,7 +76,7 @@ require (
 	github.com/prometheus/client_model v0.6.1 // indirect
 	github.com/prometheus/common v0.55.0 // indirect
 	github.com/prometheus/procfs v0.15.1 // indirect
-	github.com/redis/go-redis/extra/rediscmd/v9 v9.5.3 // indirect
+	github.com/redis/go-redis/extra/rediscmd/v9 v9.0.5 // indirect
 	github.com/sagikazarmark/locafero v0.6.0 // indirect
 	github.com/sagikazarmark/slog-shim v0.1.0 // indirect
 	github.com/shirou/gopsutil/v4 v4.24.6 // indirect

@@ -4,7 +4,9 @@ import (
 	"context"
 )
 
-var kodContextKey = struct{}{}
+type contextKey string
+
+const kodContextKey contextKey = "kodContext"
 
 // FromContext returns the Kod value stored in ctx, if any.
 func FromContext(ctx context.Context) *Kod {
