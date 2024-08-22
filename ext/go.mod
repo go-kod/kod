@@ -7,7 +7,7 @@ toolchain go1.23.0
 replace github.com/go-kod/kod => ../
 
 require (
-	dario.cat/mergo v1.0.0
+	dario.cat/mergo v1.0.1
 	github.com/gin-gonic/gin v1.10.0
 	github.com/go-kod/kod v0.0.0-00010101000000-000000000000
 	github.com/go-resty/resty/v2 v2.14.0
