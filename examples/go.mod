@@ -1,6 +1,8 @@
 module github.com/go-kod/kod/examples
 
-go 1.21.7
+go 1.22
+
+toolchain go1.23.0
 
 replace github.com/go-kod/kod => ../
 
