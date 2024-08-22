@@ -1,6 +1,8 @@
 module github.com/go-kod/kod/ext
 
-go 1.21.7
+go 1.22
+
+toolchain go1.23.0
 
 replace github.com/go-kod/kod => ../
 
@@ -13,7 +15,7 @@ require (
 	github.com/redis/go-redis/extra/redisotel/v9 v9.0.5
 	github.com/redis/go-redis/v9 v9.6.1
 	github.com/samber/lo v1.47.0
-	github.com/uptrace/opentelemetry-go-extra/otelsql v0.2.4
+	github.com/uptrace/opentelemetry-go-extra/otelsql v0.3.1
 	go.etcd.io/etcd/client/v3 v3.5.15
 	go.opentelemetry.io/contrib/instrumentation/github.com/gin-gonic/gin/otelgin v0.53.0
 	go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc v0.53.0
