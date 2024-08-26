@@ -11,6 +11,14 @@ updates:
       - dependencies
     schedule:
       interval: daily
+    groups:
+      gomod-normal-deps:
+        update-types:
+          - patch
+          - minor
+      gomod-breaking-deps:
+        update-types:
+          - major
 
   - package-ecosystem: "github-actions"
     directory: "/"
@@ -18,3 +26,7 @@ updates:
       - dependencies
     schedule:
       interval: "daily"
+    groups:
+      actions-deps:
+        patterns:
+          - "*"
