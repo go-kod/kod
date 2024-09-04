@@ -9,10 +9,18 @@ import (
 
 type App struct {
 	kod.Implements[kod.Main]
-	kod.WithGlobalConfig[Config]
+	kod.WithGlobalConfig[GlobalConfig]
 
 	HelloWorld kod.Ref[HelloWorld]
 	HelloBob   kod.Ref[HelloBob]
+}
+
+type GlobalConfig struct {
+	Name string
+}
+
+type Config struct {
+	Name string
 }
 
 type helloWorld struct {
