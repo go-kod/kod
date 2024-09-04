@@ -7,7 +7,9 @@
 [![Mentioned in Awesome Go](https://awesome.re/mentioned-badge.svg)](https://github.com/avelino/awesome-go)
 
 [**English**](./README.md) •
-[**简体中文**](./README_CN.md)
+[**简体中文**](./README_CN.md) |
+[**Examples**](./example_test.go) •
+[**Template**](https://github.com/go-kod/kod-mono)
 
 </div>
 

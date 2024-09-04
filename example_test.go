@@ -15,7 +15,7 @@ import (
 )
 
 func Example_helloWorld() {
-	kod.Run(context.Background(), func(ctx context.Context, t *helloworld.App) error {
+	kod.Run(context.Background(), func(ctx context.Context, app *helloworld.App) error {
 		fmt.Println("Hello, World!")
 		return nil
 	})
@@ -26,8 +26,8 @@ func Example_helloWorld() {
 }
 
 func Example_callComponent() {
-	kod.Run(context.Background(), func(ctx context.Context, t *helloworld.App) error {
-		t.HelloWorld.Get().SayHello(ctx)
+	kod.Run(context.Background(), func(ctx context.Context, app *helloworld.App) error {
+		app.HelloWorld.Get().SayHello(ctx)
 		return nil
 	})
 	// Output:
@@ -40,8 +40,8 @@ func Example_mockComponent() {
 	mock := helloworld.NewMockHelloWorld(gomock.NewController(nil))
 	mock.EXPECT().SayHello(gomock.Any()).Return()
 
-	kod.Run(context.Background(), func(ctx context.Context, t *helloworld.App) error {
-		t.HelloWorld.Get().SayHello(ctx)
+	kod.Run(context.Background(), func(ctx context.Context, app *helloworld.App) error {
+		app.HelloWorld.Get().SayHello(ctx)
 		fmt.Println("Nothing printed from mock")
 		return nil
 	}, kod.WithFakes(kod.Fake[helloworld.HelloWorld](mock)))
@@ -50,9 +50,9 @@ func Example_mockComponent() {
 }
 
 func Example_config() {
-	kod.Run(context.Background(), func(ctx context.Context, t *helloworld.App) error {
-		fmt.Println(t.Config().Name)
-		t.HelloWorld.Get().SayHello(ctx)
+	kod.Run(context.Background(), func(ctx context.Context, app *helloworld.App) error {
+		fmt.Println(app.Config().Name)
+		app.HelloWorld.Get().SayHello(ctx)
 		return nil
 	}, kod.WithConfigFile("./examples/helloworld/config.toml"))
 	// Output:
@@ -65,11 +65,11 @@ func Example_config() {
 func Example_log() {
 	wrapper, observer := kod.NewLogObserver()
 
-	kod.Run(context.Background(), func(ctx context.Context, t *helloworld.App) error {
-		t.L(ctx).Debug("Hello, World!")
-		t.L(ctx).Info("Hello, World!")
-		t.L(ctx).Warn("Hello, World!")
-		t.L(ctx).Error("Hello, World!")
+	kod.Run(context.Background(), func(ctx context.Context, app *helloworld.App) error {
+		app.L(ctx).Debug("Hello, World!")
+		app.L(ctx).Info("Hello, World!")
+		app.L(ctx).Warn("Hello, World!")
+		app.L(ctx).Error("Hello, World!")
 		return nil
 	}, kod.WithLogWrapper(wrapper))
 
@@ -95,8 +95,8 @@ func Example_interceptor() {
 		return err
 	})
 
-	kod.Run(context.Background(), func(ctx context.Context, t *helloworld.App) error {
-		t.HelloWorld.Get().SayHello(ctx)
+	kod.Run(context.Background(), func(ctx context.Context, app *helloworld.App) error {
+		app.HelloWorld.Get().SayHello(ctx)
 		return nil
 	}, kod.WithInterceptors(interceptor))
 	// Output:
@@ -108,8 +108,8 @@ func Example_interceptor() {
 }
 
 func Example_builtinInterceptor() {
-	kod.Run(context.Background(), func(ctx context.Context, t *helloworld.App) error {
-		t.HelloWorld.Get().SayHello(ctx)
+	kod.Run(context.Background(), func(ctx context.Context, app *helloworld.App) error {
+		app.HelloWorld.Get().SayHello(ctx)
 		return nil
 	}, kod.WithInterceptors(krecovery.Interceptor(), ktrace.Interceptor(), kmetric.Interceptor()))
 	// Output:
@@ -119,8 +119,8 @@ func Example_builtinInterceptor() {
 }
 
 func Example_test() {
-	kod.RunTest(&testing.T{}, func(ctx context.Context, t *helloworld.App) {
-		t.HelloWorld.Get().SayHello(ctx)
+	kod.RunTest(&testing.T{}, func(ctx context.Context, app *helloworld.App) {
+		app.HelloWorld.Get().SayHello(ctx)
 	})
 	// Output:
 	// helloWorld init
@@ -132,8 +132,8 @@ func Example_testWithMockComponent() {
 	mock := helloworld.NewMockHelloWorld(gomock.NewController(nil))
 	mock.EXPECT().SayHello(gomock.Any()).Return()
 
-	kod.RunTest(&testing.T{}, func(ctx context.Context, t *helloworld.App) {
-		t.HelloWorld.Get().SayHello(ctx)
+	kod.RunTest(&testing.T{}, func(ctx context.Context, app *helloworld.App) {
+		app.HelloWorld.Get().SayHello(ctx)
 		fmt.Println("Nothing printed from mock")
 	}, kod.WithFakes(kod.Fake[helloworld.HelloWorld](mock)))
 	// Output:
@@ -141,9 +141,9 @@ func Example_testWithMockComponent() {
 }
 
 func Example_lazyInit() {
-	kod.Run(context.Background(), func(ctx context.Context, t *helloworld.App) error {
-		t.HelloBob.Get().SayHello(ctx)
-		t.HelloWorld.Get().SayHello(ctx)
+	kod.Run(context.Background(), func(ctx context.Context, app *helloworld.App) error {
+		app.HelloBob.Get().SayHello(ctx)
+		app.HelloWorld.Get().SayHello(ctx)
 		return nil
 	})
 	// Output:
