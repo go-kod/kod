@@ -23,7 +23,7 @@ require (
 	go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp v0.54.0
 	go.opentelemetry.io/otel v1.29.0
 	go.opentelemetry.io/otel/trace v1.29.0
-	google.golang.org/grpc v1.65.0
+	google.golang.org/grpc v1.66.0
 	gorm.io/driver/mysql v1.5.7
 	gorm.io/gorm v1.25.11
 	gorm.io/plugin/opentelemetry v0.1.4
@@ -132,3 +132,7 @@ require (
 	gopkg.in/ini.v1 v1.67.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
+
+exclude github.com/redis/go-redis/extra/rediscmd/v9 v9.5.3
+
+exclude github.com/redis/go-redis/extra/redisotel/v9 v9.5.3
