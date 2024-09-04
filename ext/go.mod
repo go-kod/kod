@@ -26,7 +26,7 @@ require (
 	google.golang.org/grpc v1.66.0
 	gorm.io/driver/mysql v1.5.7
 	gorm.io/gorm v1.25.11
-	gorm.io/plugin/opentelemetry v0.1.4
+	gorm.io/plugin/opentelemetry v0.1.6
 )
 
 require (
