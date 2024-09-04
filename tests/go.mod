@@ -1,6 +1,6 @@
 module github.com/go-kod/kod/tests
 
-go 1.21.7
+go 1.22
 
 replace github.com/go-kod/kod => ../
 
