@@ -30,7 +30,6 @@ import (
 	"github.com/go-kod/kod/interceptor"
 	"github.com/go-kod/kod/internal/hooks"
 	"github.com/go-kod/kod/internal/kslog"
-	"github.com/go-kod/kod/internal/reflects"
 	"github.com/go-kod/kod/internal/registry"
 	"github.com/go-kod/kod/internal/signals"
 )
@@ -254,7 +253,7 @@ func Run[T any, _ PointerToMain[T]](ctx context.Context, run func(context.Contex
 	defer cancel()
 
 	// get the main component implementation
-	main, err := kod.getImpl(ctx, reflects.TypeFor[T]())
+	main, err := kod.getImpl(ctx, reflect.TypeFor[T]())
 	if err != nil {
 		return err
 	}

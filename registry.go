@@ -11,7 +11,6 @@ import (
 
 	"github.com/go-kod/kod/internal/callgraph"
 	"github.com/go-kod/kod/internal/hooks"
-	"github.com/go-kod/kod/internal/reflects"
 	"github.com/go-kod/kod/internal/registry"
 )
 
@@ -226,7 +225,7 @@ func processRegistrations(regs []*Registration) (map[reflect.Type]bool, error) {
 		for i := 0; i < reg.Impl.NumField(); i++ {
 			f := reg.Impl.Field(i)
 			switch {
-			case f.Type.Implements(reflects.TypeFor[interface{ isRef() }]()):
+			case f.Type.Implements(reflect.TypeFor[interface{ isRef() }]()):
 				// f is a kod.Ref[T].
 				v := f.Type.Field(0) // a Ref[T]'s value field
 				// v是func 类型，取它的第一个返回值的类型
@@ -249,7 +248,7 @@ func processRegistrations(regs []*Registration) (map[reflect.Type]bool, error) {
 					)
 					errs = append(errs, err)
 				}
-			case f.Type.Implements(reflects.TypeFor[interface{ isLazyInit() }]()):
+			case f.Type.Implements(reflect.TypeFor[interface{ isLazyInit() }]()):
 				// f is a kod.LazyInit.
 				lazyInitComponents[reg.Interface] = true
 			}
