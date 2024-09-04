@@ -19,7 +19,6 @@ tasks:
     sources:
       - /ext
       - /tests
-      - /examples
     generates:
       - go.work
       - go.work.sum
@@ -29,7 +28,7 @@ tasks:
 
   generate:
     cmds:
-      - PATH=$PATH:$GOBIN go run ./cmd/kod generate -s ./... ./tests/... ./examples/... ./ext/...
+      - PATH=$PATH:$GOBIN go run ./cmd/kod generate -s ./... ./tests/... ./ext/...
     sources:
       - "**/**.go"
     deps:
@@ -50,7 +49,7 @@ tasks:
   test:
     cmd: |
       GOEXPERIMENT=nocoverageredesign go test -race -cover -coverprofile=coverage.out \
-        -covermode=atomic ./... ./tests/... ./examples/... \
+        -covermode=atomic ./... ./tests/... \
         -coverpkg .,./cmd/...,./internal/...,./interceptor/...
       git checkout tests/case1/kod_gen_mock.go
     sources:
@@ -90,7 +89,6 @@ tasks:
     cmds:
       - go mod tidy
       - cd tests && go mod tidy
-      - cd examples && go mod tidy
       - cd ext && go mod tidy
 
   release:
