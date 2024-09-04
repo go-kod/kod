@@ -8,5 +8,5 @@ import (
 
 // helloWorld is a component that implements HelloWorld.
 type HelloWorld interface {
-	SayHello(ctx context.Context) string
+	SayHello(ctx context.Context)
 }
