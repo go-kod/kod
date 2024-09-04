@@ -8,7 +8,6 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/go-kod/kod/internal/reflects"
 	"github.com/go-kod/kod/internal/registry"
 )
 
@@ -33,8 +32,8 @@ func TestValidateUnregisteredRef(t *testing.T) {
 	regs := []*registry.Registration{
 		{
 			Name:      "foo",
-			Interface: reflects.TypeFor[foo](),
-			Impl:      reflects.TypeFor[fooImpl](),
+			Interface: reflect.TypeFor[foo](),
+			Impl:      reflect.TypeFor[fooImpl](),
 		},
 	}
 	_, err := processRegistrations(regs)

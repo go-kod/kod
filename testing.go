@@ -9,7 +9,6 @@ import (
 	"github.com/samber/lo"
 
 	"github.com/go-kod/kod/internal/kslog"
-	"github.com/go-kod/kod/internal/reflects"
 )
 
 type ObservedLogs kslog.ObservedLogs
@@ -22,7 +21,7 @@ type fakeComponent struct {
 }
 
 func Fake[T any](impl any) fakeComponent {
-	t := reflects.TypeFor[T]()
+	t := reflect.TypeFor[T]()
 	if _, ok := impl.(T); !ok {
 		panic(fmt.Sprintf("%T does not implement %v", impl, t))
 	}
