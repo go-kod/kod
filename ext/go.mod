@@ -134,3 +134,5 @@ require (
 )
 
 exclude github.com/redis/go-redis/extra/rediscmd/v9 v9.5.3
+
+exclude github.com/redis/go-redis/extra/redisotel/v9 v9.5.3
