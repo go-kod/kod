@@ -12,6 +12,26 @@ import (
 
 func init() {
 	kod.Register(&kod.Registration{
+		Name:      "github.com/go-kod/kod/examples/helloworld/HelloBob",
+		Interface: reflect.TypeOf((*HelloBob)(nil)).Elem(),
+		Impl:      reflect.TypeOf(lazyHelloBob{}),
+		Refs:      ``,
+		LocalStubFn: func(ctx context.Context, info *kod.LocalStubFnInfo) any {
+			interceptors := info.Interceptors
+			if h, ok := info.Impl.(interface {
+				Interceptors() []interceptor.Interceptor
+			}); ok {
+				interceptors = append(interceptors, h.Interceptors()...)
+			}
+
+			return helloBob_local_stub{
+				impl:        info.Impl.(HelloBob),
+				interceptor: interceptor.Chain(interceptors),
+				name:        info.Name,
+			}
+		},
+	})
+	kod.Register(&kod.Registration{
 		Name:      "github.com/go-kod/kod/examples/helloworld/HelloWorld",
 		Interface: reflect.TypeOf((*HelloWorld)(nil)).Elem(),
 		Impl:      reflect.TypeOf(helloWorld{}),
@@ -35,7 +55,8 @@ func init() {
 		Name:      "github.com/go-kod/kod/Main",
 		Interface: reflect.TypeOf((*kod.Main)(nil)).Elem(),
 		Impl:      reflect.TypeOf(App{}),
-		Refs:      `⟦bda493e9:KoDeDgE:github.com/go-kod/kod/Main→github.com/go-kod/kod/examples/helloworld/HelloWorld⟧`,
+		Refs: `⟦bda493e9:KoDeDgE:github.com/go-kod/kod/Main→github.com/go-kod/kod/examples/helloworld/HelloWorld⟧,
+⟦f99dfa07:KoDeDgE:github.com/go-kod/kod/Main→github.com/go-kod/kod/examples/helloworld/HelloBob⟧`,
 		LocalStubFn: func(ctx context.Context, info *kod.LocalStubFnInfo) any {
 			interceptors := info.Interceptors
 			if h, ok := info.Impl.(interface {
@@ -54,10 +75,42 @@ func init() {
 }
 
 // kod.InstanceOf checks.
+var _ kod.InstanceOf[HelloBob] = (*lazyHelloBob)(nil)
 var _ kod.InstanceOf[HelloWorld] = (*helloWorld)(nil)
 var _ kod.InstanceOf[kod.Main] = (*App)(nil)
 
 // Local stub implementations.
+
+type helloBob_local_stub struct {
+	impl        HelloBob
+	name        string
+	interceptor interceptor.Interceptor
+}
+
+// Check that helloBob_local_stub implements the HelloBob interface.
+var _ HelloBob = (*helloBob_local_stub)(nil)
+
+func (s helloBob_local_stub) SayHello(ctx context.Context) {
+
+	if s.interceptor == nil {
+		s.impl.SayHello(ctx)
+		return
+	}
+
+	call := func(ctx context.Context, info interceptor.CallInfo, req, res []any) (err error) {
+		s.impl.SayHello(ctx)
+		return
+	}
+
+	info := interceptor.CallInfo{
+		Impl:       s.impl,
+		Component:  s.name,
+		FullMethod: "github.com/go-kod/kod/examples/helloworld/HelloBob.SayHello",
+		Method:     "SayHello",
+	}
+
+	_ = s.interceptor(ctx, info, []any{}, []any{}, call)
+}
 
 type helloWorld_local_stub struct {
 	impl        HelloWorld

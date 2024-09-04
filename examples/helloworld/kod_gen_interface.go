@@ -10,3 +10,8 @@ import (
 type HelloWorld interface {
 	SayHello(ctx context.Context)
 }
+
+// lazyHelloBob is a component that implements HelloBob.
+type HelloBob interface {
+	SayHello(ctx context.Context)
+}

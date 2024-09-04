@@ -20,7 +20,9 @@ func Example_helloWorld() {
 		return nil
 	})
 	// Output:
+	// helloWorld init
 	// Hello, World!
+	// helloWorld shutdown
 }
 
 func Example_callComponent() {
@@ -29,7 +31,9 @@ func Example_callComponent() {
 		return nil
 	})
 	// Output:
+	// helloWorld init
 	// Hello, World!
+	// helloWorld shutdown
 }
 
 func Example_mockComponent() {
@@ -52,8 +56,10 @@ func Example_config() {
 		return nil
 	}, kod.WithConfigFile("./examples/helloworld/config.toml"))
 	// Output:
+	// helloWorld init
 	// globalConfig
 	// Hello, World!config
+	// helloWorld shutdown
 }
 
 func Example_log() {
@@ -73,6 +79,8 @@ func Example_log() {
 	}
 
 	// Output:
+	// helloWorld init
+	// helloWorld shutdown
 	// 3
 	// INFO Hello, World!
 	// WARN Hello, World!
@@ -92,9 +100,11 @@ func Example_interceptor() {
 		return nil
 	}, kod.WithInterceptors(interceptor))
 	// Output:
+	// helloWorld init
 	// Before call
 	// Hello, World!
 	// After call
+	// helloWorld shutdown
 }
 
 func Example_builtinInterceptor() {
@@ -103,7 +113,9 @@ func Example_builtinInterceptor() {
 		return nil
 	}, kod.WithInterceptors(krecovery.Interceptor(), ktrace.Interceptor(), kmetric.Interceptor()))
 	// Output:
+	// helloWorld init
 	// Hello, World!
+	// helloWorld shutdown
 }
 
 func Example_test() {
@@ -111,7 +123,9 @@ func Example_test() {
 		t.HelloWorld.Get().SayHello(ctx)
 	})
 	// Output:
+	// helloWorld init
 	// Hello, World!
+	// helloWorld shutdown
 }
 
 func Example_testWithMockComponent() {
@@ -124,4 +138,19 @@ func Example_testWithMockComponent() {
 	}, kod.WithFakes(kod.Fake[helloworld.HelloWorld](mock)))
 	// Output:
 	// Nothing printed from mock
+}
+
+func Example_lazyInit() {
+	kod.Run(context.Background(), func(ctx context.Context, t *helloworld.App) error {
+		t.HelloBob.Get().SayHello(ctx)
+		t.HelloWorld.Get().SayHello(ctx)
+		return nil
+	})
+	// Output:
+	// helloWorld init
+	// lazyHelloBob init
+	// Hello, Bob!
+	// Hello, World!
+	// lazyHelloBob shutdown
+	// helloWorld shutdown
 }
