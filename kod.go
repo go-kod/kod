@@ -137,7 +137,7 @@ func (r LazyInit) isLazyInit() {}
 type Main interface{}
 
 // PointerToMain is a type constraint that asserts *T is an instance of Main
-// (i.e. T is a struct that embeds weaver.Implements[weaver.Main]).
+// (i.e. T is a struct that embeds kod.Implements[kod.Main]).
 type PointerToMain[T any] interface {
 	*T
 	InstanceOf[Main]
@@ -183,6 +183,9 @@ func (wc *WithConfig[T]) getConfig() any {
 	return &wc.config
 }
 
+// WithGlobalConfig[T any] is a struct to hold global configuration of type T.
+// The struct is expected to be a field of a component struct.
+// The configuration is loaded from a file, and is accessible via the Config() method.
 type WithGlobalConfig[T any] struct {
 	config T
 }

@@ -13,6 +13,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/fatih/color"
 	"github.com/samber/lo"
 	"github.com/spf13/cobra"
 )
@@ -215,7 +216,7 @@ func makeInterfaceBody(output []string, ifaceComment map[string]string, structNa
 	return output
 }
 
-func createFile(objs map[string]*makeInterfaceFile) error {
+func createFile(c *cobra.Command, objs map[string]*makeInterfaceFile) error {
 	for _, obj := range objs {
 		if obj == nil {
 			continue
@@ -256,9 +257,12 @@ func createFile(objs map[string]*makeInterfaceFile) error {
 			if err = cmd.Run(); err != nil {
 				return fmt.Errorf("mockgen error: %s", err.Error())
 			}
+			if verbose, _ := c.Flags().GetBool("verbose"); verbose {
+				fmt.Println(cmd.String())
+			}
+		} else {
+			fmt.Println(color.YellowString("mockgen not found, please install it by running `go install go.uber.org/mock/mockgen@latest`"))
 		}
-
-		// fmt.Printf("[struct2interface] %s %s %s \n", "parsing", time.Since(startTime).String(), fileName)
 	}
 
 	return nil
@@ -311,10 +315,15 @@ func makeFile(file string) (*makeInterfaceFile, error) {
 	}, nil
 }
 
-func Struct2Interface(dir string) error {
+func Struct2Interface(c *cobra.Command, dir string) error {
 	mapDirPath := make(map[string]*makeInterfaceFile)
 	err := filepath.WalkDir(dir, func(path string, d fs.DirEntry, _ error) error {
 		if d == nil || d.IsDir() {
+			return nil
+		}
+
+		// if dir == "." means only generate interface for the current directory
+		if dir == "." && filepath.Dir(path) != dir {
 			return nil
 		}
 
@@ -358,7 +367,7 @@ func Struct2Interface(dir string) error {
 		return err
 	}
 
-	return createFile(mapDirPath)
+	return createFile(c, mapDirPath)
 }
 
 var struct2interface = &cobra.Command{
@@ -367,7 +376,7 @@ var struct2interface = &cobra.Command{
 	// Uncomment the following line if your bare application
 	// has an action associated with it:
 	// Run: func(cmd *cobra.Command, args []string) { },
-	Run: func(_ *cobra.Command, args []string) {
+	Run: func(c *cobra.Command, args []string) {
 		if len(args) == 0 {
 			args = []string{"."}
 		}
@@ -375,7 +384,7 @@ var struct2interface = &cobra.Command{
 		startTime := time.Now()
 
 		for _, arg := range args {
-			lo.Must0(Struct2Interface(arg))
+			lo.Must0(Struct2Interface(c, arg))
 		}
 
 		fmt.Printf("[struct2interface] %s \n", time.Since(startTime).String())
