@@ -371,8 +371,9 @@ func Struct2Interface(c *cobra.Command, dir string) error {
 }
 
 var struct2interface = &cobra.Command{
-	Use:   "struct2interface",
-	Short: "generate interface from struct for your kod application.",
+	Use:        "struct2interface",
+	Deprecated: "use `kod generate` instead",
+	Short:      "generate interface from struct for your kod application.",
 	// Uncomment the following line if your bare application
 	// has an action associated with it:
 	// Run: func(cmd *cobra.Command, args []string) { },

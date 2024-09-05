@@ -58,7 +58,7 @@ func doGenerate(cmd *cobra.Command, dir string, args []string) {
 }
 
 func init() {
-	generate.Flags().BoolP("struct2interface", "s", false, "generate interface from struct.")
+	generate.Flags().BoolP("struct2interface", "s", true, "generate interface from struct.")
 	generate.Flags().BoolP("verbose", "v", false, "verbose mode.")
 	generate.Flags().BoolP("watch", "w", false, "watch the changes of the files and regenerate the codes.")
 	rootCmd.AddCommand(generate)
