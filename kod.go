@@ -325,7 +325,6 @@ type options struct {
 	logger              *slog.Logger
 	configFilename      string
 	fakes               map[reflect.Type]any
-	logWrapper          func(slog.Handler) slog.Handler
 	registrations       []*Registration
 	interceptors        []interceptor.Interceptor
 }
@@ -372,17 +371,13 @@ func newKod(ctx context.Context, opts ...func(*options)) (*Kod, error) {
 		return nil, err
 	}
 
-	if opt.logger != nil {
-		kod.log = opt.logger
+	if opt.enableOpenTelemetry && os.Getenv("OTEL_SDK_DISABLED") != "true" {
+		kod.initOpenTelemetry(ctx)
 	} else {
-		if opt.enableOpenTelemetry && os.Getenv("OTEL_SDK_DISABLED") != "true" {
-			kod.initOpenTelemetry(ctx)
-		} else {
-			kod.log = kod.newSlog(slog.NewTextHandler(
-				os.Stdout,
-				&slog.HandlerOptions{},
-			))
-		}
+		kod.log = kod.newSlog(slog.NewTextHandler(
+			os.Stdout,
+			&slog.HandlerOptions{},
+		))
 	}
 
 	return kod, nil
@@ -544,8 +539,8 @@ func (k *Kod) configureLog(ctx context.Context, res *resource.Resource) {
 
 // newSlog creates a new slog logger with the provided handler.
 func (k *Kod) newSlog(handler slog.Handler) *slog.Logger {
-	if k.opts.logWrapper != nil {
-		handler = k.opts.logWrapper(handler)
+	if k.opts.logger != nil {
+		return k.opts.logger
 	}
 
 	handler = kslog.NewLevelHandler(k.config.LogLevel)(handler)
