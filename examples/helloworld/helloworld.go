@@ -12,7 +12,7 @@ type App struct {
 	kod.WithGlobalConfig[GlobalConfig]
 
 	HelloWorld kod.Ref[HelloWorld]
-	HelloBob   kod.Ref[HelloBob]
+	HelloLazy  kod.Ref[HelloLazy]
 }
 
 type GlobalConfig struct {
@@ -34,6 +34,8 @@ func (h *helloWorld) Init(ctx context.Context) error {
 }
 
 func (h *helloWorld) SayHello(ctx context.Context) {
+	h.L(ctx).Info("Hello, World!")
+
 	fmt.Println("Hello, World!" + h.Config().Name)
 }
 
@@ -43,7 +45,7 @@ func (h *helloWorld) Shutdown(ctx context.Context) error {
 }
 
 type lazyHelloBob struct {
-	kod.Implements[HelloBob]
+	kod.Implements[HelloLazy]
 	kod.LazyInit
 }
 

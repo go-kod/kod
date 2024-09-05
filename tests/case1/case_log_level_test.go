@@ -10,33 +10,31 @@ import (
 )
 
 func TestLogLevel(t *testing.T) {
-	obs, log := kod.NewLogObserver()
+	log, observer := kod.NewTestObserver()
 
 	kod.RunTest(t, func(ctx context.Context, k *test1Component) {
-		log.Clean()
+		observer.Clean()
 
 		k.L(ctx).Debug("debug")
 		k.L(ctx).WithGroup("group").Info("info")
 
-		assert.Equal(t, 1, log.Len())
-		assert.Equal(t, 0, log.Filter(func(r slog.Record) bool {
-			return r.Level == slog.LevelDebug
+		assert.Equal(t, 1, observer.Len())
+		assert.Equal(t, 0, observer.Filter(func(r map[string]any) bool {
+			return r["level"] == slog.LevelDebug.String()
 		}).Len())
-	}, kod.WithLogWrapper(obs))
+	}, kod.WithLogger(log))
 
 	t.Setenv("KOD_LOG_LEVEL", "debug")
 
 	kod.RunTest(t, func(ctx context.Context, k *test1Component) {
-		log.Clean()
+		observer.Clean()
 
 		k.L(ctx).Debug("debug")
 		k.L(ctx).WithGroup("group").Info("info")
 
-		assert.Equal(t, 2, log.Len())
-		assert.Equal(t, 1, log.Filter(func(r slog.Record) bool {
-			return r.Level == slog.LevelDebug
+		assert.Equal(t, 1, observer.Len())
+		assert.Equal(t, 0, observer.Filter(func(r map[string]any) bool {
+			return r["level"] == slog.LevelDebug.String()
 		}).Len())
-	}, kod.WithLogWrapper(obs))
-
-	t.Setenv("KOD_LOG_LEVEL", "info")
+	}, kod.WithLogger(log))
 }

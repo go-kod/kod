@@ -11,7 +11,7 @@ type HelloWorld interface {
 	SayHello(ctx context.Context)
 }
 
-// lazyHelloBob is a component that implements HelloBob.
-type HelloBob interface {
+// lazyHelloBob is a component that implements HelloLazy.
+type HelloLazy interface {
 	SayHello(ctx context.Context)
 }

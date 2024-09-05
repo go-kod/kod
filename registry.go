@@ -101,16 +101,18 @@ func (k *Kod) get(ctx context.Context, reg *Registration) (any, error) {
 	}
 
 	// Fill logger.
-	if err := fillLog(obj, k.log.With("component", reg.Name)); err != nil {
+	logger := k.log.With(slog.String("component", reg.Name))
+	if err := fillLog(obj, logger); err != nil {
 		return nil, err
 	}
 
 	// Fill refs.
-	if err := fillRefs(obj, k.lazyInitComponents, func(t reflect.Type) componentGetter {
-		return func() (any, error) {
-			return k.getIntf(ctx, t)
-		}
-	}); err != nil {
+	if err := fillRefs(obj, k.lazyInitComponents,
+		func(t reflect.Type) componentGetter {
+			return func() (any, error) {
+				return k.getIntf(ctx, t)
+			}
+		}); err != nil {
 		return nil, err
 	}
 

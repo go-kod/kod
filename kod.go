@@ -214,13 +214,6 @@ func WithFakes(fakes ...fakeComponent) func(*options) {
 	}
 }
 
-// WithLogWrapper is an option setter for specifying a logger.
-func WithLogWrapper(h func(slog.Handler) slog.Handler) func(*options) {
-	return func(opts *options) {
-		opts.logWrapper = h
-	}
-}
-
 // WithRegistrations is an option setter for specifying component registrations.
 func WithRegistrations(regs ...*Registration) func(*options) {
 	return func(opts *options) {
@@ -239,6 +232,13 @@ func WithInterceptors(interceptors ...interceptor.Interceptor) func(*options) {
 func WithOpenTelemetryDisabled() func(*options) {
 	return func(opts *options) {
 		opts.enableOpenTelemetry = false
+	}
+}
+
+// WithLogger is an option setter for specifying a slog logger.
+func WithLogger(logger *slog.Logger) func(*options) {
+	return func(opts *options) {
+		opts.logger = logger
 	}
 }
 
@@ -322,6 +322,7 @@ type Kod struct {
 // options defines the configuration options for Kod.
 type options struct {
 	enableOpenTelemetry bool
+	logger              *slog.Logger
 	configFilename      string
 	fakes               map[reflect.Type]any
 	logWrapper          func(slog.Handler) slog.Handler
@@ -371,12 +372,17 @@ func newKod(ctx context.Context, opts ...func(*options)) (*Kod, error) {
 		return nil, err
 	}
 
-	if opt.enableOpenTelemetry && os.Getenv("OTEL_SDK_DISABLED") != "true" {
-		kod.initOpenTelemetry(ctx)
+	if opt.logger != nil {
+		kod.log = opt.logger
 	} else {
-		kod.log = kod.newSlog(slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{
-			AddSource: true,
-		}))
+		if opt.enableOpenTelemetry && os.Getenv("OTEL_SDK_DISABLED") != "true" {
+			kod.initOpenTelemetry(ctx)
+		} else {
+			kod.log = kod.newSlog(slog.NewTextHandler(
+				os.Stdout,
+				&slog.HandlerOptions{},
+			))
+		}
 	}
 
 	return kod, nil

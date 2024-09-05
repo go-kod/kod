@@ -11,10 +11,11 @@ import (
 	"github.com/go-kod/kod/interceptor/kmetric"
 	"github.com/go-kod/kod/interceptor/krecovery"
 	"github.com/go-kod/kod/interceptor/ktrace"
+	"github.com/go-kod/kod/internal/kslog"
 	"go.uber.org/mock/gomock"
 )
 
-func Example_helloWorld() {
+func Example_mainComponent() {
 	kod.Run(context.Background(), func(ctx context.Context, app *helloworld.App) error {
 		fmt.Println("Hello, World!")
 		return nil
@@ -25,7 +26,7 @@ func Example_helloWorld() {
 	// helloWorld shutdown
 }
 
-func Example_callComponent() {
+func Example_componentRefAndCall() {
 	kod.Run(context.Background(), func(ctx context.Context, app *helloworld.App) error {
 		app.HelloWorld.Get().SayHello(ctx)
 		return nil
@@ -36,7 +37,22 @@ func Example_callComponent() {
 	// helloWorld shutdown
 }
 
-func Example_mockComponent() {
+func Example_componentLazyInit() {
+	kod.Run(context.Background(), func(ctx context.Context, app *helloworld.App) error {
+		app.HelloLazy.Get().SayHello(ctx)
+		app.HelloWorld.Get().SayHello(ctx)
+		return nil
+	})
+	// Output:
+	// helloWorld init
+	// lazyHelloBob init
+	// Hello, Bob!
+	// Hello, World!
+	// lazyHelloBob shutdown
+	// helloWorld shutdown
+}
+
+func Example_componentMock() {
 	mock := helloworld.NewMockHelloWorld(gomock.NewController(nil))
 	mock.EXPECT().SayHello(gomock.Any()).Return()
 
@@ -63,28 +79,25 @@ func Example_config() {
 }
 
 func Example_log() {
-	wrapper, observer := kod.NewLogObserver()
+	logger, observer := kslog.NewTestLogger()
 
-	kod.Run(context.Background(), func(ctx context.Context, app *helloworld.App) error {
+	kod.RunTest(&testing.T{}, func(ctx context.Context, app *helloworld.App) {
 		app.L(ctx).Debug("Hello, World!")
 		app.L(ctx).Info("Hello, World!")
 		app.L(ctx).Warn("Hello, World!")
 		app.L(ctx).Error("Hello, World!")
-		return nil
-	}, kod.WithLogWrapper(wrapper))
+		app.HelloWorld.Get().SayHello(ctx)
+	}, kod.WithLogger(logger))
 
-	fmt.Println(observer.Len())
-	for _, entry := range observer.All() {
-		fmt.Println(entry.Level, entry.Message)
-	}
-
+	fmt.Println(observer)
 	// Output:
 	// helloWorld init
+	// Hello, World!
 	// helloWorld shutdown
-	// 3
-	// INFO Hello, World!
-	// WARN Hello, World!
-	// ERROR Hello, World!
+	// {"level":"INFO","msg":"Hello, World!","component":"github.com/go-kod/kod/Main"}
+	// {"level":"WARN","msg":"Hello, World!","component":"github.com/go-kod/kod/Main"}
+	// {"level":"ERROR","msg":"Hello, World!","component":"github.com/go-kod/kod/Main"}
+	// {"level":"INFO","msg":"Hello, World!","component":"github.com/go-kod/kod/examples/helloworld/HelloWorld"}
 }
 
 func Example_interceptor() {
@@ -107,7 +120,7 @@ func Example_interceptor() {
 	// helloWorld shutdown
 }
 
-func Example_builtinInterceptor() {
+func Example_interceptorBuiltin() {
 	kod.Run(context.Background(), func(ctx context.Context, app *helloworld.App) error {
 		app.HelloWorld.Get().SayHello(ctx)
 		return nil
@@ -140,17 +153,28 @@ func Example_testWithMockComponent() {
 	// Nothing printed from mock
 }
 
-func Example_lazyInit() {
-	kod.Run(context.Background(), func(ctx context.Context, app *helloworld.App) error {
-		app.HelloBob.Get().SayHello(ctx)
+func Example_testWithConfig() {
+	kod.RunTest(&testing.T{}, func(ctx context.Context, app *helloworld.App) {
+		fmt.Println(app.Config().Name)
 		app.HelloWorld.Get().SayHello(ctx)
-		return nil
-	})
+	}, kod.WithConfigFile("./examples/helloworld/config.toml"))
 	// Output:
 	// helloWorld init
-	// lazyHelloBob init
-	// Hello, Bob!
-	// Hello, World!
-	// lazyHelloBob shutdown
+	// globalConfig
+	// Hello, World!config
+	// helloWorld shutdown
+}
+
+// Example_testWithLogObserver demonstrates how to test log output.
+func Example_testWithLogObserver() {
+	kod.RunTest(&testing.T{}, func(ctx context.Context, app *helloworld.App) {
+		app.L(ctx).Debug("Hello, World!")
+		app.L(ctx).Info("Hello, World!")
+		app.L(ctx).Warn("Hello, World!")
+		app.L(ctx).Error("Hello, World!")
+	})
+
+	// Output:
+	// helloWorld init
 	// helloWorld shutdown
 }

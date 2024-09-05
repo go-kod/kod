@@ -39,8 +39,6 @@ var generate = &cobra.Command{
 func doGenerate(cmd *cobra.Command, dir string, args []string) {
 	startTime := time.Now()
 
-	fmt.Printf("Changes found in [%s]\n", dir)
-
 	if s2i, _ := cmd.Flags().GetBool("struct2interface"); s2i {
 		if err := Struct2Interface(cmd, dir); err != nil {
 			fmt.Println(err)
@@ -48,6 +46,8 @@ func doGenerate(cmd *cobra.Command, dir string, args []string) {
 		}
 		fmt.Printf("[struct2interface] %s \n", time.Since(startTime).String())
 	}
+
+	startTime = time.Now()
 
 	if err := Generate(dir, args, Options{}); err != nil {
 		fmt.Println(err)

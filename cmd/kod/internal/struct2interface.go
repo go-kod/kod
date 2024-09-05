@@ -322,15 +322,16 @@ func Struct2Interface(c *cobra.Command, dir string) error {
 			return nil
 		}
 
-		// if dir == "." means only generate interface for the current directory
-		if dir == "." && filepath.Dir(path) != dir {
+		if !strings.HasSuffix(filepath.Base(path), ".go") {
 			return nil
 		}
 
 		if strings.HasPrefix(filepath.Base(path), "kod_gen") {
 			return nil
 		}
-		if !strings.HasSuffix(filepath.Base(path), ".go") {
+
+		// if dir == "." means only generate interface for the current directory
+		if dir == "." && filepath.Dir(path) != dir {
 			return nil
 		}
 

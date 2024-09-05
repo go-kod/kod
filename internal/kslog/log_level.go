@@ -28,14 +28,12 @@ func (h *levelHandler) Handle(ctx context.Context, r slog.Record) error {
 
 // WithAttrs returns a new slog.handler with the provided attributes.
 func (h *levelHandler) WithAttrs(attrs []slog.Attr) slog.Handler {
-	h.next.WithAttrs(attrs)
-	return h
+	return &levelHandler{level: h.level, next: h.next.WithAttrs(attrs)}
 }
 
 // WithGroup returns a slog.handler with a group, provided the group's name.
 func (h *levelHandler) WithGroup(name string) slog.Handler {
-	h.next.WithGroup(name)
-	return h
+	return &levelHandler{level: h.level, next: h.next.WithGroup(name)}
 }
 
 // Enabled returns true if the provided level is enabled.

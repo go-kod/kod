@@ -11,9 +11,7 @@ import (
 	"github.com/go-kod/kod/internal/kslog"
 )
 
-type ObservedLogs kslog.ObservedLogs
-
-var NewLogObserver = kslog.NewLogObserver
+var NewTestObserver = kslog.NewTestLogger
 
 type fakeComponent struct {
 	intf reflect.Type

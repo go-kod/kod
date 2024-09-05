@@ -1,114 +1,99 @@
 package kslog
 
 import (
-	"context"
+	"bytes"
+	"encoding/json"
 	"log/slog"
-	"sync"
-
-	"github.com/samber/lo"
+	"strings"
 )
 
-// ObservedLogs is a structure that holds observed logs.
-type ObservedLogs struct {
-	mu      sync.Mutex
-	records []slog.Record
+// removeTime removes the top-level time attribute.
+// It is intended to be used as a ReplaceAttr function,
+// to make example output deterministic.
+func removeTime(groups []string, a slog.Attr) slog.Attr {
+	if a.Key == slog.TimeKey && len(groups) == 0 {
+		return slog.Attr{}
+	}
+	return a
+}
+
+type observer struct {
+	buf *bytes.Buffer
+}
+
+func (b *observer) parse() []map[string]any {
+	lines := strings.Split(b.buf.String(), "\n")
+
+	data := make([]map[string]any, 0)
+	for _, line := range lines {
+		if len(line) == 0 {
+			continue
+		}
+
+		var m map[string]any
+		if err := json.Unmarshal([]byte(line), &m); err != nil {
+			panic(err)
+		}
+
+		data = append(data, m)
+	}
+
+	return data
+}
+
+// String returns the observed logs as a string.
+func (b *observer) String() string {
+	return b.buf.String()
 }
 
 // Len returns the number of observed logs.
-func (l *ObservedLogs) Len() int {
-	l.mu.Lock()
-	defer l.mu.Unlock()
-
-	return len(l.records)
+func (b *observer) Len() int {
+	return len(b.parse())
 }
 
 // ErrorCount returns the number of observed logs with level error.
-func (l *ObservedLogs) ErrorCount() int {
-	return l.Filter(func(r slog.Record) bool {
-		return r.Level == slog.LevelError
+func (b *observer) ErrorCount() int {
+	return b.Filter(func(r map[string]any) bool {
+		return r["level"] == slog.LevelError.String()
 	}).Len()
 }
 
 // Filter returns a new observed logs with the provided filter applied.
-func (l *ObservedLogs) Filter(filter func(slog.Record) bool) *ObservedLogs {
-	l.mu.Lock()
-	defer l.mu.Unlock()
+func (b *observer) Filter(filter func(map[string]any) bool) *observer {
+	var filtered []map[string]any
+	for _, line := range b.parse() {
+		if filter(line) {
+			filtered = append(filtered, line)
+		}
+	}
 
-	return &ObservedLogs{
-		mu: sync.Mutex{},
-		records: lo.Filter(l.records, func(r slog.Record, _ int) bool {
-			return filter(r)
-		}),
+	buf := new(bytes.Buffer)
+	for _, line := range filtered {
+		if err := json.NewEncoder(buf).Encode(line); err != nil {
+			panic(err)
+		}
+	}
+
+	return &observer{
+		buf: buf,
 	}
 }
 
 // Clean clears the observed logs.
-func (l *ObservedLogs) Clean() *ObservedLogs {
-	l.mu.Lock()
-	defer l.mu.Unlock()
+func (b *observer) Clean() *observer {
+	b.buf.Reset()
 
-	l.records = make([]slog.Record, 0)
-
-	return l
+	return b
 }
 
-// All returns all the observed logs.
-func (l *ObservedLogs) All() []slog.Record {
-	l.mu.Lock()
-	defer l.mu.Unlock()
-
-	return l.records
-}
-
-// add adds a record to the observed logs.
-func (l *ObservedLogs) add(r slog.Record) {
-	l.mu.Lock()
-	defer l.mu.Unlock()
-	l.records = append(l.records, r)
-}
-
-// observer is a slog.Handler implementation that observes logs.
-type observer struct {
-	observedLogs *ObservedLogs
-	next         slog.Handler
-}
-
-// NewLogObserver returns a new observer and the observed logs.
-func NewLogObserver() (func(slog.Handler) slog.Handler, *ObservedLogs) {
-	logs := &ObservedLogs{
-		mu:      sync.Mutex{},
-		records: make([]slog.Record, 0),
+func NewTestLogger() (*slog.Logger, *observer) {
+	observer := &observer{
+		buf: new(bytes.Buffer),
 	}
+	log := slog.New(slog.NewJSONHandler(observer.buf, &slog.HandlerOptions{
+		ReplaceAttr: removeTime,
+	}))
+	slog.SetDefault(log)
 
-	return func(h slog.Handler) slog.Handler {
-		return &observer{
-			next:         h,
-			observedLogs: logs,
-		}
-	}, logs
-}
-
-// Handle implements slog.Handler.
-func (h *observer) Handle(ctx context.Context, r slog.Record) error {
-	h.observedLogs.add(r)
-
-	return h.next.Handle(ctx, r)
-}
-
-// WithAttrs returns a new slog.handler with the provided attributes.
-func (h *observer) WithAttrs(attrs []slog.Attr) slog.Handler {
-	h.next.WithAttrs(attrs)
-	return h
-}
-
-// WithGroup returns a slog.handler with a group, provided the group's name.
-func (h *observer) WithGroup(name string) slog.Handler {
-	h.next.WithGroup(name)
-
-	return h
-}
-
-// Enabled returns true if the provided level is enabled.
-func (h *observer) Enabled(_ context.Context, _ slog.Level) bool {
-	return true
+	return log, observer
 }

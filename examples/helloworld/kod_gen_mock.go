@@ -51,37 +51,37 @@ func (mr *MockHelloWorldMockRecorder) SayHello(ctx any) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SayHello", reflect.TypeOf((*MockHelloWorld)(nil).SayHello), ctx)
 }
 
-// MockHelloBob is a mock of HelloBob interface.
-type MockHelloBob struct {
+// MockHelloLazy is a mock of HelloLazy interface.
+type MockHelloLazy struct {
 	ctrl     *gomock.Controller
-	recorder *MockHelloBobMockRecorder
+	recorder *MockHelloLazyMockRecorder
 }
 
-// MockHelloBobMockRecorder is the mock recorder for MockHelloBob.
-type MockHelloBobMockRecorder struct {
-	mock *MockHelloBob
+// MockHelloLazyMockRecorder is the mock recorder for MockHelloLazy.
+type MockHelloLazyMockRecorder struct {
+	mock *MockHelloLazy
 }
 
-// NewMockHelloBob creates a new mock instance.
-func NewMockHelloBob(ctrl *gomock.Controller) *MockHelloBob {
-	mock := &MockHelloBob{ctrl: ctrl}
-	mock.recorder = &MockHelloBobMockRecorder{mock}
+// NewMockHelloLazy creates a new mock instance.
+func NewMockHelloLazy(ctrl *gomock.Controller) *MockHelloLazy {
+	mock := &MockHelloLazy{ctrl: ctrl}
+	mock.recorder = &MockHelloLazyMockRecorder{mock}
 	return mock
 }
 
 // EXPECT returns an object that allows the caller to indicate expected use.
-func (m *MockHelloBob) EXPECT() *MockHelloBobMockRecorder {
+func (m *MockHelloLazy) EXPECT() *MockHelloLazyMockRecorder {
 	return m.recorder
 }
 
 // SayHello mocks base method.
-func (m *MockHelloBob) SayHello(ctx context.Context) {
+func (m *MockHelloLazy) SayHello(ctx context.Context) {
 	m.ctrl.T.Helper()
 	m.ctrl.Call(m, "SayHello", ctx)
 }
 
 // SayHello indicates an expected call of SayHello.
-func (mr *MockHelloBobMockRecorder) SayHello(ctx any) *gomock.Call {
+func (mr *MockHelloLazyMockRecorder) SayHello(ctx any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SayHello", reflect.TypeOf((*MockHelloBob)(nil).SayHello), ctx)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SayHello", reflect.TypeOf((*MockHelloLazy)(nil).SayHello), ctx)
 }

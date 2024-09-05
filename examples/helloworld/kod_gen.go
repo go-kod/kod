@@ -12,8 +12,8 @@ import (
 
 func init() {
 	kod.Register(&kod.Registration{
-		Name:      "github.com/go-kod/kod/examples/helloworld/HelloBob",
-		Interface: reflect.TypeOf((*HelloBob)(nil)).Elem(),
+		Name:      "github.com/go-kod/kod/examples/helloworld/HelloLazy",
+		Interface: reflect.TypeOf((*HelloLazy)(nil)).Elem(),
 		Impl:      reflect.TypeOf(lazyHelloBob{}),
 		Refs:      ``,
 		LocalStubFn: func(ctx context.Context, info *kod.LocalStubFnInfo) any {
@@ -24,8 +24,8 @@ func init() {
 				interceptors = append(interceptors, h.Interceptors()...)
 			}
 
-			return helloBob_local_stub{
-				impl:        info.Impl.(HelloBob),
+			return helloLazy_local_stub{
+				impl:        info.Impl.(HelloLazy),
 				interceptor: interceptor.Chain(interceptors),
 				name:        info.Name,
 			}
@@ -56,7 +56,7 @@ func init() {
 		Interface: reflect.TypeOf((*kod.Main)(nil)).Elem(),
 		Impl:      reflect.TypeOf(App{}),
 		Refs: `⟦bda493e9:KoDeDgE:github.com/go-kod/kod/Main→github.com/go-kod/kod/examples/helloworld/HelloWorld⟧,
-⟦f99dfa07:KoDeDgE:github.com/go-kod/kod/Main→github.com/go-kod/kod/examples/helloworld/HelloBob⟧`,
+⟦552d63bd:KoDeDgE:github.com/go-kod/kod/Main→github.com/go-kod/kod/examples/helloworld/HelloLazy⟧`,
 		LocalStubFn: func(ctx context.Context, info *kod.LocalStubFnInfo) any {
 			interceptors := info.Interceptors
 			if h, ok := info.Impl.(interface {
@@ -75,22 +75,22 @@ func init() {
 }
 
 // kod.InstanceOf checks.
-var _ kod.InstanceOf[HelloBob] = (*lazyHelloBob)(nil)
+var _ kod.InstanceOf[HelloLazy] = (*lazyHelloBob)(nil)
 var _ kod.InstanceOf[HelloWorld] = (*helloWorld)(nil)
 var _ kod.InstanceOf[kod.Main] = (*App)(nil)
 
 // Local stub implementations.
 
-type helloBob_local_stub struct {
-	impl        HelloBob
+type helloLazy_local_stub struct {
+	impl        HelloLazy
 	name        string
 	interceptor interceptor.Interceptor
 }
 
-// Check that helloBob_local_stub implements the HelloBob interface.
-var _ HelloBob = (*helloBob_local_stub)(nil)
+// Check that helloLazy_local_stub implements the HelloLazy interface.
+var _ HelloLazy = (*helloLazy_local_stub)(nil)
 
-func (s helloBob_local_stub) SayHello(ctx context.Context) {
+func (s helloLazy_local_stub) SayHello(ctx context.Context) {
 
 	if s.interceptor == nil {
 		s.impl.SayHello(ctx)
@@ -105,7 +105,7 @@ func (s helloBob_local_stub) SayHello(ctx context.Context) {
 	info := interceptor.CallInfo{
 		Impl:       s.impl,
 		Component:  s.name,
-		FullMethod: "github.com/go-kod/kod/examples/helloworld/HelloBob.SayHello",
+		FullMethod: "github.com/go-kod/kod/examples/helloworld/HelloLazy.SayHello",
 		Method:     "SayHello",
 	}
 
