@@ -13,7 +13,7 @@ import (
 )
 
 func TestLogFile(t *testing.T) {
-	log, observer := kod.NewTestObserver()
+	log, observer := kod.NewTestLogger()
 
 	kod.RunTest(t, func(ctx context.Context, k Test1Component) {
 		_, err := k.Foo(ctx, &FooReq{Id: 1})

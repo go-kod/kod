@@ -11,7 +11,7 @@ import (
 )
 
 func TestMockLog(t *testing.T) {
-	log, observer := kod.NewTestObserver()
+	log, observer := kod.NewTestLogger()
 	t.Setenv("KOD_LOG_LEVEL", "error")
 
 	kod.RunTest(t, func(ctx context.Context, k Test1Component) {

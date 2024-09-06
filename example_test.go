@@ -11,10 +11,10 @@ import (
 	"github.com/go-kod/kod/interceptor/kmetric"
 	"github.com/go-kod/kod/interceptor/krecovery"
 	"github.com/go-kod/kod/interceptor/ktrace"
-	"github.com/go-kod/kod/internal/kslog"
 	"go.uber.org/mock/gomock"
 )
 
+// This example demonstrates how to use [kod.Run] and [kod.Implements] to run a simple application.
 func Example_mainComponent() {
 	kod.Run(context.Background(), func(ctx context.Context, app *helloworld.App) error {
 		fmt.Println("Hello, World!")
@@ -26,6 +26,7 @@ func Example_mainComponent() {
 	// helloWorld shutdown
 }
 
+// This example demonstrates how to use [kod.Ref] to reference a component and call a method on it.
 func Example_componentRefAndCall() {
 	kod.Run(context.Background(), func(ctx context.Context, app *helloworld.App) error {
 		app.HelloWorld.Get().SayHello(ctx)
@@ -37,6 +38,7 @@ func Example_componentRefAndCall() {
 	// helloWorld shutdown
 }
 
+// This example demonstrates how to use [kod.LazyInit] to defer component initialization until it is needed.
 func Example_componentLazyInit() {
 	kod.Run(context.Background(), func(ctx context.Context, app *helloworld.App) error {
 		app.HelloLazy.Get().SayHello(ctx)
@@ -52,6 +54,7 @@ func Example_componentLazyInit() {
 	// helloWorld shutdown
 }
 
+// This example demonstrates how to use [kod.WithFakes] and [kod.Fake] to provide a mock implementation of a component.
 func Example_componentMock() {
 	mock := helloworld.NewMockHelloWorld(gomock.NewController(nil))
 	mock.EXPECT().SayHello(gomock.Any()).Return()
@@ -65,21 +68,33 @@ func Example_componentMock() {
 	// Nothing printed from mock
 }
 
+// This example demonstrates how to use [kod.WithConfig] to provide a configuration to the application.
 func Example_config() {
 	kod.Run(context.Background(), func(ctx context.Context, app *helloworld.App) error {
-		fmt.Println(app.Config().Name)
 		app.HelloWorld.Get().SayHello(ctx)
 		return nil
 	}, kod.WithConfigFile("./examples/helloworld/config.toml"))
 	// Output:
 	// helloWorld init
-	// globalConfig
 	// Hello, World!config
 	// helloWorld shutdown
 }
 
+// This example demonstrates how to use [kod.WithGlobalConfig] to provide a global configuration to the application.
+func Example_configGlobal() {
+	kod.Run(context.Background(), func(ctx context.Context, app *helloworld.App) error {
+		fmt.Println(app.Config().Name)
+		return nil
+	}, kod.WithConfigFile("./examples/helloworld/config.toml"))
+	// Output:
+	// helloWorld init
+	// globalConfig
+	// helloWorld shutdown
+}
+
+// This example demonstrates how to use [kod.WithLogger] to provide a custom logger to the application.
 func Example_log() {
-	logger, observer := kslog.NewTestLogger()
+	logger, observer := kod.NewTestLogger()
 
 	kod.RunTest(&testing.T{}, func(ctx context.Context, app *helloworld.App) {
 		app.L(ctx).Debug("Hello, World!")
@@ -100,6 +115,7 @@ func Example_log() {
 	// {"level":"INFO","msg":"Hello, World!","component":"github.com/go-kod/kod/examples/helloworld/HelloWorld"}
 }
 
+// This example demonstrates how to use [kod.WithInterceptors] to provide a custom interceptor to the application.
 func Example_interceptor() {
 	interceptor := interceptor.Interceptor(func(ctx context.Context, info interceptor.CallInfo, req, res []interface{}, next interceptor.HandleFunc) error {
 		fmt.Println("Before call")
@@ -120,6 +136,8 @@ func Example_interceptor() {
 	// helloWorld shutdown
 }
 
+// This example demonstrates how to use built-in interceptors
+// Such as [krecovery.Interceptor], [ktrace.Interceptor], and [kmetric.Interceptor] ...
 func Example_interceptorBuiltin() {
 	kod.Run(context.Background(), func(ctx context.Context, app *helloworld.App) error {
 		app.HelloWorld.Get().SayHello(ctx)
@@ -131,6 +149,7 @@ func Example_interceptorBuiltin() {
 	// helloWorld shutdown
 }
 
+// This example demonstrates how to use [kod.RunTest] to run a test function.
 func Example_test() {
 	kod.RunTest(&testing.T{}, func(ctx context.Context, app *helloworld.App) {
 		app.HelloWorld.Get().SayHello(ctx)
@@ -141,6 +160,7 @@ func Example_test() {
 	// helloWorld shutdown
 }
 
+// This example demonstrates how to use [kod.RunTest], [kod.Fake] and [kod.WithFakes] to run a test function with a mock component.
 func Example_testWithMockComponent() {
 	mock := helloworld.NewMockHelloWorld(gomock.NewController(nil))
 	mock.EXPECT().SayHello(gomock.Any()).Return()
@@ -153,6 +173,7 @@ func Example_testWithMockComponent() {
 	// Nothing printed from mock
 }
 
+// This example demonstrates how to use [kod.RunTest] and [kod.WithConfigFile] to run a test function with a configuration.
 func Example_testWithConfig() {
 	kod.RunTest(&testing.T{}, func(ctx context.Context, app *helloworld.App) {
 		fmt.Println(app.Config().Name)
@@ -165,16 +186,26 @@ func Example_testWithConfig() {
 	// helloWorld shutdown
 }
 
-// Example_testWithLogObserver demonstrates how to test log output.
+// This example demonstrates how to use [kod.RunTest], [kod.NewTestLogger] and [kod.WithLogger] to run a test function with a custom logger.
 func Example_testWithLogObserver() {
-	kod.RunTest(&testing.T{}, func(ctx context.Context, app *helloworld.App) {
+	logger, observer := kod.NewTestLogger()
+
+	t := &testing.T{}
+	kod.RunTest(t, func(ctx context.Context, app *helloworld.App) {
 		app.L(ctx).Debug("Hello, World!")
 		app.L(ctx).Info("Hello, World!")
 		app.L(ctx).Warn("Hello, World!")
 		app.L(ctx).Error("Hello, World!")
-	})
+	}, kod.WithLogger(logger))
+
+	fmt.Println(observer.Len())
+	fmt.Println(observer.ErrorCount())
+	fmt.Println(observer.Clean().Len())
 
 	// Output:
 	// helloWorld init
 	// helloWorld shutdown
+	// 3
+	// 1
+	// 0
 }

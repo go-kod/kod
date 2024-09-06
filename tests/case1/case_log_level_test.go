@@ -10,7 +10,7 @@ import (
 )
 
 func TestLogLevel(t *testing.T) {
-	log, observer := kod.NewTestObserver()
+	log, observer := kod.NewTestLogger()
 
 	kod.RunTest(t, func(ctx context.Context, k *test1Component) {
 		observer.Clean()

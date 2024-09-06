@@ -10,7 +10,7 @@ import (
 )
 
 func TestLazyInit(t *testing.T) {
-	log, observer := kod.NewTestObserver()
+	log, observer := kod.NewTestLogger()
 
 	kod.RunTest(t, func(ctx context.Context, k *lazyInitImpl) {
 		require.Equal(t, 1, observer.Len(), observer.String())
@@ -28,7 +28,7 @@ func TestLazyInit(t *testing.T) {
 }
 
 func TestLazyInitTest(t *testing.T) {
-	log, observer := kod.NewTestObserver()
+	log, observer := kod.NewTestLogger()
 
 	kod.RunTest2(t, func(ctx context.Context, k *lazyInitImpl, comp *lazyInitComponent) {
 		k.Try(ctx)
@@ -42,7 +42,7 @@ func TestLazyInitTest(t *testing.T) {
 }
 
 func TestLazyInitTest2(t *testing.T) {
-	log, observer := kod.NewTestObserver()
+	log, observer := kod.NewTestLogger()
 
 	kod.RunTest2(t, func(ctx context.Context, k LazyInitImpl, comp LazyInitComponent) {
 		require.Equal(t, 2, observer.Len(), observer.String())
@@ -54,7 +54,7 @@ func TestLazyInitTest2(t *testing.T) {
 }
 
 func TestLazyInitTest3(t *testing.T) {
-	log, observer := kod.NewTestObserver()
+	log, observer := kod.NewTestLogger()
 
 	kod.RunTest2(t, func(ctx context.Context, k *lazyInitImpl, comp LazyInitComponent) {
 		k.Try(ctx)

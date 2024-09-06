@@ -5,6 +5,8 @@ import (
 	"encoding/json"
 	"log/slog"
 	"strings"
+
+	"github.com/samber/lo"
 )
 
 // removeTime removes the top-level time attribute.
@@ -31,9 +33,7 @@ func (b *observer) parse() []map[string]any {
 		}
 
 		var m map[string]any
-		if err := json.Unmarshal([]byte(line), &m); err != nil {
-			panic(err)
-		}
+		lo.Must0(json.Unmarshal([]byte(line), &m))
 
 		data = append(data, m)
 	}
@@ -69,9 +69,7 @@ func (b *observer) Filter(filter func(map[string]any) bool) *observer {
 
 	buf := new(bytes.Buffer)
 	for _, line := range filtered {
-		if err := json.NewEncoder(buf).Encode(line); err != nil {
-			panic(err)
-		}
+		lo.Must0(json.NewEncoder(buf).Encode(line))
 	}
 
 	return &observer{

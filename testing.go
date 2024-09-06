@@ -11,13 +11,16 @@ import (
 	"github.com/go-kod/kod/internal/kslog"
 )
 
-var NewTestObserver = kslog.NewTestLogger
+// NewTestLogger returns a new test logger.
+var NewTestLogger = kslog.NewTestLogger
 
+// fakeComponent is a fake component.
 type fakeComponent struct {
 	intf reflect.Type
 	impl any
 }
 
+// Fake returns a fake component.
 func Fake[T any](impl any) fakeComponent {
 	t := reflect.TypeFor[T]()
 	if _, ok := impl.(T); !ok {
@@ -26,6 +29,7 @@ func Fake[T any](impl any) fakeComponent {
 	return fakeComponent{intf: t, impl: impl}
 }
 
+// options contains options for the runner.
 type runner struct {
 	options []func(*options)
 }
@@ -51,6 +55,7 @@ func RunTest3[T1, T2, T3 any](tb testing.TB, body func(context.Context, T1, T2, 
 	runTest(tb, body, opts...)
 }
 
+// runTest runs a test function.
 func runTest(tb testing.TB, testBody any, opts ...func(*options)) {
 	tb.Helper()
 
@@ -61,6 +66,7 @@ func runTest(tb testing.TB, testBody any, opts ...func(*options)) {
 	}
 }
 
+// sub runs a test function.
 func (r runner) sub(tb testing.TB, testBody any) error {
 	tb.Helper()
 
