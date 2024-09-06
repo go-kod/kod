@@ -53,7 +53,7 @@ func Example_componentRefAndCall() {
 // This example demonstrates how to use [kod.LazyInit] to defer component initialization until it is needed.
 func Example_componentLazyInit() {
 	kod.Run(context.Background(), func(ctx context.Context, app *helloworld.App) error {
-		app.HelloLazy.Get().SayHello(ctx)
+		app.HelloWorldLazy.Get().SayHello(ctx)
 		app.HelloWorld.Get().SayHello(ctx)
 		return nil
 	})
@@ -169,8 +169,8 @@ func Example_openTelemetryMetric() {
 	// helloWorld shutdown
 }
 
-// This example demonstrates how to use [kod.WithInterceptors] to provide a custom interceptor to the application.
-func Example_interceptor() {
+// This example demonstrates how to use [kod.WithInterceptors] to provide global interceptors to the application.
+func Example_interceptorGlobal() {
 	interceptor := interceptor.Interceptor(func(ctx context.Context, info interceptor.CallInfo, req, res []interface{}, next interceptor.HandleFunc) error {
 		fmt.Println("Before call")
 		err := next(ctx, info, req, res)
@@ -190,7 +190,21 @@ func Example_interceptor() {
 	// helloWorld shutdown
 }
 
-// This example demonstrates how to use built-in interceptors
+// This example demonstrates how to use [kod.WithInterceptors] to provide component-specific interceptors to the application.
+func Example_interceptorComponent() {
+	kod.Run(context.Background(), func(ctx context.Context, app *helloworld.App) error {
+		app.HelloWorldInterceptor.Get().SayHello(ctx)
+		return nil
+	})
+	// Output:
+	// helloWorld init
+	// Before call
+	// Hello, Interceptor!
+	// After call
+	// helloWorld shutdown
+}
+
+// This example demonstrates how to use built-in interceptors with [kod.WithInterceptors].
 // Such as [krecovery.Interceptor], [ktrace.Interceptor], and [kmetric.Interceptor] ...
 func Example_interceptorBuiltin() {
 	kod.Run(context.Background(), func(ctx context.Context, app *helloworld.App) error {

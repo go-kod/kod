@@ -5,14 +5,16 @@ import (
 	"fmt"
 
 	"github.com/go-kod/kod"
+	"github.com/go-kod/kod/interceptor"
 )
 
 type App struct {
 	kod.Implements[kod.Main]
 	kod.WithGlobalConfig[GlobalConfig]
 
-	HelloWorld kod.Ref[HelloWorld]
-	HelloLazy  kod.Ref[HelloLazy]
+	HelloWorld            kod.Ref[HelloWorld]
+	HelloWorldLazy        kod.Ref[HelloWorldLazy]
+	HelloWorldInterceptor kod.Ref[HelloWorldInterceptor]
 }
 
 type GlobalConfig struct {
@@ -44,21 +46,40 @@ func (h *helloWorld) Shutdown(ctx context.Context) error {
 	return nil
 }
 
-type lazyHelloBob struct {
-	kod.Implements[HelloLazy]
+type lazyHelloWorld struct {
+	kod.Implements[HelloWorldLazy]
 	kod.LazyInit
 }
 
-func (h *lazyHelloBob) Init(ctx context.Context) error {
+func (h *lazyHelloWorld) Init(ctx context.Context) error {
 	fmt.Println("lazyHelloBob init")
 	return nil
 }
 
-func (h *lazyHelloBob) SayHello(ctx context.Context) {
+func (h *lazyHelloWorld) SayHello(ctx context.Context) {
 	fmt.Println("Hello, Bob!")
 }
 
-func (h *lazyHelloBob) Shutdown(ctx context.Context) error {
+func (h *lazyHelloWorld) Shutdown(ctx context.Context) error {
 	fmt.Println("lazyHelloBob shutdown")
 	return nil
+}
+
+type helloWorldInterceptor struct {
+	kod.Implements[HelloWorldInterceptor]
+}
+
+func (h *helloWorldInterceptor) SayHello(ctx context.Context) {
+	fmt.Println("Hello, Interceptor!")
+}
+
+func (h *helloWorldInterceptor) Interceptors() []interceptor.Interceptor {
+	return []interceptor.Interceptor{
+		func(ctx context.Context, info interceptor.CallInfo, req, reply []any, invoker interceptor.HandleFunc) error {
+			fmt.Println("Before call")
+			err := invoker(ctx, info, req, reply)
+			fmt.Println("After call")
+			return err
+		},
+	}
 }

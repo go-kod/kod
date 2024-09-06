@@ -51,37 +51,72 @@ func (mr *MockHelloWorldMockRecorder) SayHello(ctx any) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SayHello", reflect.TypeOf((*MockHelloWorld)(nil).SayHello), ctx)
 }
 
-// MockHelloLazy is a mock of HelloLazy interface.
-type MockHelloLazy struct {
+// MockHelloWorldLazy is a mock of HelloWorldLazy interface.
+type MockHelloWorldLazy struct {
 	ctrl     *gomock.Controller
-	recorder *MockHelloLazyMockRecorder
+	recorder *MockHelloWorldLazyMockRecorder
 }
 
-// MockHelloLazyMockRecorder is the mock recorder for MockHelloLazy.
-type MockHelloLazyMockRecorder struct {
-	mock *MockHelloLazy
+// MockHelloWorldLazyMockRecorder is the mock recorder for MockHelloWorldLazy.
+type MockHelloWorldLazyMockRecorder struct {
+	mock *MockHelloWorldLazy
 }
 
-// NewMockHelloLazy creates a new mock instance.
-func NewMockHelloLazy(ctrl *gomock.Controller) *MockHelloLazy {
-	mock := &MockHelloLazy{ctrl: ctrl}
-	mock.recorder = &MockHelloLazyMockRecorder{mock}
+// NewMockHelloWorldLazy creates a new mock instance.
+func NewMockHelloWorldLazy(ctrl *gomock.Controller) *MockHelloWorldLazy {
+	mock := &MockHelloWorldLazy{ctrl: ctrl}
+	mock.recorder = &MockHelloWorldLazyMockRecorder{mock}
 	return mock
 }
 
 // EXPECT returns an object that allows the caller to indicate expected use.
-func (m *MockHelloLazy) EXPECT() *MockHelloLazyMockRecorder {
+func (m *MockHelloWorldLazy) EXPECT() *MockHelloWorldLazyMockRecorder {
 	return m.recorder
 }
 
 // SayHello mocks base method.
-func (m *MockHelloLazy) SayHello(ctx context.Context) {
+func (m *MockHelloWorldLazy) SayHello(ctx context.Context) {
 	m.ctrl.T.Helper()
 	m.ctrl.Call(m, "SayHello", ctx)
 }
 
 // SayHello indicates an expected call of SayHello.
-func (mr *MockHelloLazyMockRecorder) SayHello(ctx any) *gomock.Call {
+func (mr *MockHelloWorldLazyMockRecorder) SayHello(ctx any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SayHello", reflect.TypeOf((*MockHelloLazy)(nil).SayHello), ctx)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SayHello", reflect.TypeOf((*MockHelloWorldLazy)(nil).SayHello), ctx)
+}
+
+// MockHelloWorldInterceptor is a mock of HelloWorldInterceptor interface.
+type MockHelloWorldInterceptor struct {
+	ctrl     *gomock.Controller
+	recorder *MockHelloWorldInterceptorMockRecorder
+}
+
+// MockHelloWorldInterceptorMockRecorder is the mock recorder for MockHelloWorldInterceptor.
+type MockHelloWorldInterceptorMockRecorder struct {
+	mock *MockHelloWorldInterceptor
+}
+
+// NewMockHelloWorldInterceptor creates a new mock instance.
+func NewMockHelloWorldInterceptor(ctrl *gomock.Controller) *MockHelloWorldInterceptor {
+	mock := &MockHelloWorldInterceptor{ctrl: ctrl}
+	mock.recorder = &MockHelloWorldInterceptorMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MockHelloWorldInterceptor) EXPECT() *MockHelloWorldInterceptorMockRecorder {
+	return m.recorder
+}
+
+// SayHello mocks base method.
+func (m *MockHelloWorldInterceptor) SayHello(ctx context.Context) {
+	m.ctrl.T.Helper()
+	m.ctrl.Call(m, "SayHello", ctx)
+}
+
+// SayHello indicates an expected call of SayHello.
+func (mr *MockHelloWorldInterceptorMockRecorder) SayHello(ctx any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SayHello", reflect.TypeOf((*MockHelloWorldInterceptor)(nil).SayHello), ctx)
 }
