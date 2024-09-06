@@ -15,7 +15,7 @@ import (
 )
 
 // This example demonstrates how to use [kod.Run] and [kod.Implements] to run a simple application.
-func Example_mainComponent() {
+func Example_componentMain() {
 	kod.Run(context.Background(), func(ctx context.Context, app *helloworld.App) error {
 		fmt.Println("Hello, World!")
 		return nil
@@ -92,8 +92,8 @@ func Example_configGlobal() {
 	// helloWorld shutdown
 }
 
-// This example demonstrates how to use [kod.WithLogger] to provide a custom logger to the application.
-func Example_log() {
+// This example demonstrates how to use logging with OpenTelemetry.
+func Example_openTelemetryLog() {
 	logger, observer := kod.NewTestLogger()
 
 	kod.RunTest(&testing.T{}, func(ctx context.Context, app *helloworld.App) {
@@ -104,15 +104,57 @@ func Example_log() {
 		app.HelloWorld.Get().SayHello(ctx)
 	}, kod.WithLogger(logger))
 
-	fmt.Println(observer)
+	fmt.Println(observer.RemoveKeys("trace_id", "span_id", "time"))
+
 	// Output:
 	// helloWorld init
 	// Hello, World!
 	// helloWorld shutdown
-	// {"level":"INFO","msg":"Hello, World!","component":"github.com/go-kod/kod/Main"}
-	// {"level":"WARN","msg":"Hello, World!","component":"github.com/go-kod/kod/Main"}
-	// {"level":"ERROR","msg":"Hello, World!","component":"github.com/go-kod/kod/Main"}
-	// {"level":"INFO","msg":"Hello, World!","component":"github.com/go-kod/kod/examples/helloworld/HelloWorld"}
+	// {"component":"github.com/go-kod/kod/Main","level":"INFO","msg":"Hello, World!"}
+	// {"component":"github.com/go-kod/kod/Main","level":"WARN","msg":"Hello, World!"}
+	// {"component":"github.com/go-kod/kod/Main","level":"ERROR","msg":"Hello, World!"}
+	// {"component":"github.com/go-kod/kod/examples/helloworld/HelloWorld","level":"INFO","msg":"Hello, World!"}
+}
+
+// This example demonstrates how to use tracing with OpenTelemetry.
+func Example_openTelemetryTrace() {
+	logger, observer := kod.NewTestLogger()
+
+	kod.Run(context.Background(), func(ctx context.Context, app *helloworld.App) error {
+		ctx, span := app.Tracer().Start(ctx, "example")
+		defer span.End()
+		app.L(ctx).Info("Hello, World!")
+		app.L(ctx).WarnContext(ctx, "Hello, World!")
+
+		app.HelloWorld.Get().SayHello(ctx)
+		return nil
+	}, kod.WithInterceptors(ktrace.Interceptor()), kod.WithLogger(logger))
+
+	fmt.Println(observer.Filter(func(m map[string]any) bool {
+		return m["trace_id"] != nil && m["span_id"] != nil
+	}).RemoveKeys("trace_id", "span_id", "time"))
+
+	// Output:
+	// helloWorld init
+	// Hello, World!
+	// helloWorld shutdown
+	// {"component":"github.com/go-kod/kod/Main","level":"INFO","msg":"Hello, World!"}
+	// {"component":"github.com/go-kod/kod/Main","level":"WARN","msg":"Hello, World!"}
+	// {"component":"github.com/go-kod/kod/examples/helloworld/HelloWorld","level":"INFO","msg":"Hello, World!"}
+}
+
+// This example demonstrates how to use metrics with OpenTelemetry.
+func Example_openTelemetryMetric() {
+	kod.Run(context.Background(), func(ctx context.Context, app *helloworld.App) error {
+		metric, _ := app.Meter().Int64Counter("example")
+		metric.Add(ctx, 1)
+
+		return nil
+	})
+
+	// Output:
+	// helloWorld init
+	// helloWorld shutdown
 }
 
 // This example demonstrates how to use [kod.WithInterceptors] to provide a custom interceptor to the application.

@@ -20,12 +20,14 @@ import (
 	"go.opentelemetry.io/contrib/instrumentation/runtime"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/log/global"
+	"go.opentelemetry.io/otel/metric"
 	"go.opentelemetry.io/otel/propagation"
 	"go.opentelemetry.io/otel/sdk/log"
-	"go.opentelemetry.io/otel/sdk/metric"
-	"go.opentelemetry.io/otel/sdk/resource"
-	"go.opentelemetry.io/otel/sdk/trace"
+	sdkmetric "go.opentelemetry.io/otel/sdk/metric"
+	sdkresource "go.opentelemetry.io/otel/sdk/resource"
+	sdktrace "go.opentelemetry.io/otel/sdk/trace"
 	semconv "go.opentelemetry.io/otel/semconv/v1.25.0"
+	"go.opentelemetry.io/otel/trace"
 
 	"github.com/go-kod/kod/interceptor"
 	"github.com/go-kod/kod/internal/hooks"
@@ -41,7 +43,8 @@ const (
 // Implements[T any] provides a common structure for components,
 // with logging capabilities and a reference to the component's interface.
 type Implements[T any] struct {
-	log *slog.Logger
+	name string
+	log  *slog.Logger
 	//nolint
 	component_interface_type T
 }
@@ -51,10 +54,21 @@ func (i *Implements[T]) L(ctx context.Context) *slog.Logger {
 	return kslog.LogWithContext(ctx, i.log)
 }
 
+// T return the associated tracer.
+func (i *Implements[T]) Tracer(opts ...trace.TracerOption) trace.Tracer {
+	return otel.Tracer(i.name, opts...)
+}
+
+// M return the associated meter.
+func (i *Implements[T]) Meter(opts ...metric.MeterOption) metric.Meter {
+	return otel.GetMeterProvider().Meter(i.name, opts...)
+}
+
 // setLogger sets the logger for the component.
 // nolint
-func (i *Implements[T]) setLogger(log *slog.Logger) {
-	i.log = log
+func (i *Implements[T]) setLogger(name string, log *slog.Logger) {
+	i.name = name
+	i.log = log.With("component", name)
 }
 
 // implements is a marker method to assert implementation of an interface.
@@ -461,11 +475,11 @@ func (k *Kod) initOpenTelemetry(ctx context.Context) {
 	lo.Must0(host.Start())
 	lo.Must0(runtime.Start())
 
-	res := lo.Must(resource.New(ctx,
-		resource.WithFromEnv(),
-		resource.WithTelemetrySDK(),
-		resource.WithHost(),
-		resource.WithAttributes(
+	res := lo.Must(sdkresource.New(ctx,
+		sdkresource.WithFromEnv(),
+		sdkresource.WithTelemetrySDK(),
+		sdkresource.WithHost(),
+		sdkresource.WithAttributes(
 			semconv.ServiceNameKey.String(k.config.Name),
 			semconv.ServiceVersionKey.String(k.config.Version),
 			semconv.DeploymentEnvironmentKey.String(k.config.Env),
@@ -478,11 +492,11 @@ func (k *Kod) initOpenTelemetry(ctx context.Context) {
 }
 
 // configureTrace configures the trace provider with the provided context and resource.
-func (k *Kod) configureTrace(ctx context.Context, res *resource.Resource) {
+func (k *Kod) configureTrace(ctx context.Context, res *sdkresource.Resource) {
 	spanExporter := lo.Must(autoexport.NewSpanExporter(ctx))
-	spanProvider := trace.NewTracerProvider(
-		trace.WithBatcher(spanExporter),
-		trace.WithResource(res),
+	spanProvider := sdktrace.NewTracerProvider(
+		sdktrace.WithBatcher(spanExporter),
+		sdktrace.WithResource(res),
 	)
 
 	otel.SetTextMapPropagator(
@@ -499,11 +513,11 @@ func (k *Kod) configureTrace(ctx context.Context, res *resource.Resource) {
 }
 
 // configureMetric configures the metric provider with the provided context and resource.
-func (k *Kod) configureMetric(ctx context.Context, res *resource.Resource) {
+func (k *Kod) configureMetric(ctx context.Context, res *sdkresource.Resource) {
 	metricReader := lo.Must(autoexport.NewMetricReader(ctx))
-	metricProvider := metric.NewMeterProvider(
-		metric.WithReader(metricReader),
-		metric.WithResource(res),
+	metricProvider := sdkmetric.NewMeterProvider(
+		sdkmetric.WithReader(metricReader),
+		sdkmetric.WithResource(res),
 	)
 
 	otel.SetMeterProvider(metricProvider)
@@ -515,7 +529,7 @@ func (k *Kod) configureMetric(ctx context.Context, res *resource.Resource) {
 }
 
 // configureLog configures the log provider with the provided context and resource.
-func (k *Kod) configureLog(ctx context.Context, res *resource.Resource) {
+func (k *Kod) configureLog(ctx context.Context, res *sdkresource.Resource) {
 	logExporter := lo.Must(autoexport.NewLogExporter(ctx))
 	loggerProvider := log.NewLoggerProvider(
 		log.WithProcessor(

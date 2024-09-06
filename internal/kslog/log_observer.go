@@ -9,14 +9,15 @@ import (
 	"github.com/samber/lo"
 )
 
-// removeTime removes the top-level time attribute.
-// It is intended to be used as a ReplaceAttr function,
-// to make example output deterministic.
-func removeTime(groups []string, a slog.Attr) slog.Attr {
-	if a.Key == slog.TimeKey && len(groups) == 0 {
-		return slog.Attr{}
+// NewTestLogger returns a new test logger.
+func NewTestLogger() (*slog.Logger, *observer) {
+	observer := &observer{
+		buf: new(bytes.Buffer),
 	}
-	return a
+	log := slog.New(slog.NewJSONHandler(observer.buf, nil))
+	slog.SetDefault(log)
+
+	return log, observer
 }
 
 type observer struct {
@@ -77,21 +78,30 @@ func (b *observer) Filter(filter func(map[string]any) bool) *observer {
 	}
 }
 
+// RemoveKeys removes the provided keys from the observed logs.
+func (b *observer) RemoveKeys(keys ...string) *observer {
+	filtered := make([]map[string]any, 0)
+	for _, line := range b.parse() {
+		for _, key := range keys {
+			delete(line, key)
+		}
+
+		filtered = append(filtered, line)
+	}
+
+	buf := new(bytes.Buffer)
+	for _, line := range filtered {
+		lo.Must0(json.NewEncoder(buf).Encode(line))
+	}
+
+	return &observer{
+		buf: buf,
+	}
+}
+
 // Clean clears the observed logs.
 func (b *observer) Clean() *observer {
 	b.buf.Reset()
 
 	return b
-}
-
-func NewTestLogger() (*slog.Logger, *observer) {
-	observer := &observer{
-		buf: new(bytes.Buffer),
-	}
-	log := slog.New(slog.NewJSONHandler(observer.buf, &slog.HandlerOptions{
-		ReplaceAttr: removeTime,
-	}))
-	slog.SetDefault(log)
-
-	return log, observer
 }

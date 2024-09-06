@@ -13,7 +13,7 @@ import (
 
 func TestFill(t *testing.T) {
 	t.Run("case 1", func(t *testing.T) {
-		assert.NotNil(t, fillLog(nil, nil))
+		assert.NotNil(t, fillLog("", nil, nil))
 	})
 
 	t.Run("case 2", func(t *testing.T) {

@@ -101,8 +101,7 @@ func (k *Kod) get(ctx context.Context, reg *Registration) (any, error) {
 	}
 
 	// Fill logger.
-	logger := k.log.With(slog.String("component", reg.Name))
-	if err := fillLog(obj, logger); err != nil {
+	if err := fillLog(reg.Name, obj, k.log); err != nil {
 		return nil, err
 	}
 
@@ -136,13 +135,13 @@ func (k *Kod) get(ctx context.Context, reg *Registration) (any, error) {
 	return obj, nil
 }
 
-func fillLog(obj any, log *slog.Logger) error {
-	x, ok := obj.(interface{ setLogger(*slog.Logger) })
+func fillLog(name string, obj any, log *slog.Logger) error {
+	x, ok := obj.(interface{ setLogger(string, *slog.Logger) })
 	if !ok {
 		return fmt.Errorf("fillLog: %T does not implement kod.Implements", obj)
 	}
 
-	x.setLogger(log)
+	x.setLogger(name, log)
 	return nil
 }
 
