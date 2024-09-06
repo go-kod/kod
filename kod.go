@@ -41,7 +41,7 @@ const (
 )
 
 // Implements[T any] provides a common structure for components,
-// with logging capabilities and a reference to the component's interface.
+// with logging/tracing/metrics capabilities and a reference to the component's interface.
 type Implements[T any] struct {
 	name string
 	log  *slog.Logger
@@ -54,12 +54,12 @@ func (i *Implements[T]) L(ctx context.Context) *slog.Logger {
 	return kslog.LogWithContext(ctx, i.log)
 }
 
-// T return the associated tracer.
+// Tracer return the associated tracer.
 func (i *Implements[T]) Tracer(opts ...trace.TracerOption) trace.Tracer {
 	return otel.Tracer(i.name, opts...)
 }
 
-// M return the associated meter.
+// Meter return the associated meter.
 func (i *Implements[T]) Meter(opts ...metric.MeterOption) metric.Meter {
 	return otel.GetMeterProvider().Meter(i.name, opts...)
 }
@@ -68,7 +68,7 @@ func (i *Implements[T]) Meter(opts ...metric.MeterOption) metric.Meter {
 // nolint
 func (i *Implements[T]) setLogger(name string, log *slog.Logger) {
 	i.name = name
-	i.log = log.With("component", name)
+	i.log = log.With(slog.String("component", name))
 }
 
 // implements is a marker method to assert implementation of an interface.
@@ -254,6 +254,12 @@ func WithLogger(logger *slog.Logger) func(*options) {
 	return func(opts *options) {
 		opts.logger = logger
 	}
+}
+
+// MustRun is a helper function to run the application with the provided main component and options.
+// It panics if an error occurs during the execution.
+func MustRun[T any, P PointerToMain[T]](ctx context.Context, run func(context.Context, *T) error, opts ...func(*options)) {
+	lo.Must0(Run[T, P](ctx, run, opts...))
 }
 
 // Run initializes and runs the application with the provided main component and options.

@@ -15,8 +15,20 @@ import (
 )
 
 // This example demonstrates how to use [kod.Run] and [kod.Implements] to run a simple application.
-func Example_componentMain() {
+func Example_componentRun() {
 	kod.Run(context.Background(), func(ctx context.Context, app *helloworld.App) error {
+		fmt.Println("Hello, World!")
+		return nil
+	})
+	// Output:
+	// helloWorld init
+	// Hello, World!
+	// helloWorld shutdown
+}
+
+// This example demonstrates how to use [kod.MustRun] and [kod.Implements] to run a simple application.
+func Example_componentRunMust() {
+	kod.MustRun(context.Background(), func(ctx context.Context, app *helloworld.App) error {
 		fmt.Println("Hello, World!")
 		return nil
 	})
@@ -69,7 +81,7 @@ func Example_componentMock() {
 }
 
 // This example demonstrates how to use [kod.WithConfig] to provide a configuration to the application.
-func Example_config() {
+func Example_configInComponent() {
 	kod.Run(context.Background(), func(ctx context.Context, app *helloworld.App) error {
 		app.HelloWorld.Get().SayHello(ctx)
 		return nil
@@ -192,7 +204,7 @@ func Example_interceptorBuiltin() {
 }
 
 // This example demonstrates how to use [kod.RunTest] to run a test function.
-func Example_test() {
+func Example_testRun() {
 	kod.RunTest(&testing.T{}, func(ctx context.Context, app *helloworld.App) {
 		app.HelloWorld.Get().SayHello(ctx)
 	})
