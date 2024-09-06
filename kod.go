@@ -61,7 +61,7 @@ func (i *Implements[T]) Tracer(opts ...trace.TracerOption) trace.Tracer {
 
 // Meter return the associated meter.
 func (i *Implements[T]) Meter(opts ...metric.MeterOption) metric.Meter {
-	return otel.GetMeterProvider().Meter(i.name, opts...)
+	return otel.Meter(i.name, opts...)
 }
 
 // setLogger sets the logger for the component.
