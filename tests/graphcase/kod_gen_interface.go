@@ -9,27 +9,37 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// test1Controller is a component interface implemented by [test1ControllerImpl].
+// test1Controller is implemented by [test1ControllerImpl],
+// which can be mocked with [NewMocktest1Controller].
 type test1Controller interface {
+	// Foo is implemented by [test1ControllerImpl.Foo]
 	Foo(cccccc *gin.Context)
 }
 
-// HTTPController is a component interface implemented by [httpControllerImpl].
+// HTTPController is implemented by [httpControllerImpl],
+// which can be mocked with [NewMockHTTPController].
 type HTTPController interface {
+	// Foo is implemented by [httpControllerImpl.Foo]
 	Foo(w http.ResponseWriter, r http.Request)
 }
 
-// testService is a component interface implemented by [serviceImpl].
+// testService is implemented by [serviceImpl],
+// which can be mocked with [NewMocktestService].
 type testService interface {
+	// Foo is implemented by [serviceImpl.Foo]
 	Foo(ctx context.Context) error
 }
 
-// testModel is a component interface implemented by [modelImpl].
+// testModel is implemented by [modelImpl],
+// which can be mocked with [NewMocktestModel].
 type testModel interface {
+	// Foo is implemented by [modelImpl.Foo]
 	Foo(ctx context.Context) error
 }
 
-// Test1Component is a component interface implemented by [test1Component].
+// Test1Component is implemented by [test1Component],
+// which can be mocked with [NewMockTest1Component].
 type Test1Component interface {
+	// Foo is implemented by [test1Component.Foo]
 	Foo(ctx context.Context, req *FooReq) error
 }

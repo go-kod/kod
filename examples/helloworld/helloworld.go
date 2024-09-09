@@ -25,6 +25,7 @@ type Config struct {
 	Name string
 }
 
+// HelloWorld ...
 type helloWorld struct {
 	kod.Implements[HelloWorld]
 	kod.WithConfig[Config]
@@ -35,6 +36,8 @@ func (h *helloWorld) Init(ctx context.Context) error {
 	return nil
 }
 
+// SayHello ...
+// line two
 func (h *helloWorld) SayHello(ctx context.Context) {
 	h.L(ctx).Info("Hello, World!")
 
@@ -52,23 +55,26 @@ type lazyHelloWorld struct {
 }
 
 func (h *lazyHelloWorld) Init(ctx context.Context) error {
-	fmt.Println("lazyHelloBob init")
+	fmt.Println("lazyHelloWorld init")
 	return nil
 }
 
+// SayHello ...
 func (h *lazyHelloWorld) SayHello(ctx context.Context) {
-	fmt.Println("Hello, Bob!")
+	fmt.Println("Hello, Lazy!")
 }
 
 func (h *lazyHelloWorld) Shutdown(ctx context.Context) error {
-	fmt.Println("lazyHelloBob shutdown")
+	fmt.Println("lazyHelloWorld shutdown")
 	return nil
 }
 
+// helloWorldInterceptor ...
 type helloWorldInterceptor struct {
 	kod.Implements[HelloWorldInterceptor]
 }
 
+// SayHello ...
 func (h *helloWorldInterceptor) SayHello(ctx context.Context) {
 	fmt.Println("Hello, Interceptor!")
 }

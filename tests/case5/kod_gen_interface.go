@@ -2,6 +2,7 @@
 
 package case5
 
-// TestRefStruct1 is a component interface implemented by [testRefStruct1].
+// TestRefStruct1 is implemented by [testRefStruct1],
+// which can be mocked with [NewMockTestRefStruct1].
 type TestRefStruct1 interface {
 }

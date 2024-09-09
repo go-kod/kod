@@ -59,10 +59,10 @@ func Example_componentLazyInit() {
 	})
 	// Output:
 	// helloWorld init
-	// lazyHelloBob init
-	// Hello, Bob!
+	// lazyHelloWorld init
+	// Hello, Lazy!
 	// Hello, World!
-	// lazyHelloBob shutdown
+	// lazyHelloWorld shutdown
 	// helloWorld shutdown
 }
 

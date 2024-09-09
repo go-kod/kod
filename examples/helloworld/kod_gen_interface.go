@@ -6,17 +6,34 @@ import (
 	"context"
 )
 
-// HelloWorld is a component interface implemented by [helloWorld].
+// HelloWorld is implemented by [helloWorld],
+// which can be mocked with [NewMockHelloWorld].
+//
+//	HelloWorld ...
 type HelloWorld interface {
+	// SayHello is implemented by [helloWorld.SayHello]
+	//
+	//	SayHello ...
+	//	line two
 	SayHello(ctx context.Context)
 }
 
-// HelloWorldLazy is a component interface implemented by [lazyHelloWorld].
+// HelloWorldLazy is implemented by [lazyHelloWorld],
+// which can be mocked with [NewMockHelloWorldLazy].
 type HelloWorldLazy interface {
+	// SayHello is implemented by [lazyHelloWorld.SayHello]
+	//
+	//	SayHello ...
 	SayHello(ctx context.Context)
 }
 
-// HelloWorldInterceptor is a component interface implemented by [helloWorldInterceptor].
+// HelloWorldInterceptor is implemented by [helloWorldInterceptor],
+// which can be mocked with [NewMockHelloWorldInterceptor].
+//
+//	helloWorldInterceptor ...
 type HelloWorldInterceptor interface {
+	// SayHello is implemented by [helloWorldInterceptor.SayHello]
+	//
+	//	SayHello ...
 	SayHello(ctx context.Context)
 }

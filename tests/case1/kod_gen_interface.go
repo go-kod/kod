@@ -10,78 +10,112 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-// test1Controller is a component interface implemented by [test1ControllerImpl].
+// test1Controller is implemented by [test1ControllerImpl],
+// which can be mocked with [NewMocktest1Controller].
 type test1Controller interface {
 }
 
-// testService is a component interface implemented by [serviceImpl].
+// testService is implemented by [serviceImpl],
+// which can be mocked with [NewMocktestService].
 type testService interface {
+	// Foo is implemented by [serviceImpl.Foo]
 	Foo(ctx context.Context) error
 }
 
-// testRepository is a component interface implemented by [modelImpl].
+// testRepository is implemented by [modelImpl],
+// which can be mocked with [NewMocktestRepository].
 type testRepository interface {
+	// Foo is implemented by [modelImpl.Foo]
 	Foo(ctx context.Context) error
 }
 
-// Test1Component is a component interface implemented by [test1Component].
+// Test1Component is implemented by [test1Component],
+// which can be mocked with [NewMockTest1Component].
 type Test1Component interface {
+	// Foo is implemented by [test1Component.Foo]
 	Foo(ctx context.Context, req *FooReq) (*FooRes, error)
 }
 
-// Test2Component is a component interface implemented by [test2Component].
+// Test2Component is implemented by [test2Component],
+// which can be mocked with [NewMockTest2Component].
 type Test2Component interface {
+	// GetClient is implemented by [test2Component.GetClient]
 	GetClient() *http.Client
 }
 
-// ctxInterface is a component interface implemented by [ctxImpl].
+// ctxInterface is implemented by [ctxImpl],
+// which can be mocked with [NewMockctxInterface].
 type ctxInterface interface {
-	// Foo is a http handler
+	// Foo is implemented by [ctxImpl.Foo]
+	//
+	//	Foo is a http handler
 	Foo(ctx context.Context)
 }
 
-// testEchoController is a component interface implemented by [testEchoControllerImpl].
+// testEchoController is implemented by [testEchoControllerImpl],
+// which can be mocked with [NewMocktestEchoController].
 type testEchoController interface {
-	// Hello is a method of testEchoControllerImpl
+	// Hello is implemented by [testEchoControllerImpl.Hello]
+	//
+	//	Hello is a method of testEchoControllerImpl
 	Hello(c echo.Context) error
-	// Error is a method of testEchoControllerImpl
+	// Error is implemented by [testEchoControllerImpl.Error]
+	//
+	//	Error is a method of testEchoControllerImpl
 	Error(c echo.Context) error
 }
 
-// testGinController is a component interface implemented by [testGinControllerImpl].
+// testGinController is implemented by [testGinControllerImpl],
+// which can be mocked with [NewMocktestGinController].
 type testGinController interface {
-	// Hello is a method of testGinControllerImpl
+	// Hello is implemented by [testGinControllerImpl.Hello]
+	//
+	//	Hello is a method of testGinControllerImpl
 	Hello(c *gin.Context)
 }
 
-// HTTPController is a component interface implemented by [httpControllerImpl].
+// HTTPController is implemented by [httpControllerImpl],
+// which can be mocked with [NewMockHTTPController].
 type HTTPController interface {
-	// Foo is a http handler
+	// Foo is implemented by [httpControllerImpl.Foo]
+	//
+	//	Foo is a http handler
 	Foo(w http.ResponseWriter, r *http.Request)
 }
 
-// InterceptorRetry is a component interface implemented by [interceptorRetry].
+// InterceptorRetry is implemented by [interceptorRetry],
+// which can be mocked with [NewMockInterceptorRetry].
 type InterceptorRetry interface {
+	// TestError is implemented by [interceptorRetry.TestError]
 	TestError(ctx context.Context) error
+	// TestNormal is implemented by [interceptorRetry.TestNormal]
 	TestNormal(ctx context.Context) error
 }
 
-// LazyInitImpl is a component interface implemented by [lazyInitImpl].
+// LazyInitImpl is implemented by [lazyInitImpl],
+// which can be mocked with [NewMockLazyInitImpl].
 type LazyInitImpl interface {
+	// Try is implemented by [lazyInitImpl.Try]
 	Try(ctx context.Context)
 }
 
-// LazyInitComponent is a component interface implemented by [lazyInitComponent].
+// LazyInitComponent is implemented by [lazyInitComponent],
+// which can be mocked with [NewMockLazyInitComponent].
 type LazyInitComponent interface {
+	// Try is implemented by [lazyInitComponent.Try]
 	Try(ctx context.Context) error
 }
 
-// panicCaseInterface is a component interface implemented by [panicCase].
+// panicCaseInterface is implemented by [panicCase],
+// which can be mocked with [NewMockpanicCaseInterface].
 type panicCaseInterface interface {
+	// TestPanic is implemented by [panicCase.TestPanic]
 	TestPanic(ctx context.Context)
 }
 
-// panicNoRecvoeryCaseInterface is a component interface implemented by [panicNoRecvoeryCase].
+// panicNoRecvoeryCaseInterface is implemented by [panicNoRecvoeryCase],
+// which can be mocked with [NewMockpanicNoRecvoeryCaseInterface].
 type panicNoRecvoeryCaseInterface interface {
+	// TestPanic is implemented by [panicNoRecvoeryCase.TestPanic]
 	TestPanic(ctx context.Context)
 }

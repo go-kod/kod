@@ -29,13 +29,22 @@ type makeInterfaceFile struct {
 }
 
 type Method struct {
-	Code string
-	Docs []string
+	StructName string
+	MethodName string
+	Code       string
+	Docs       []string
 }
 
 func (m *Method) Lines() []string {
 	var lines []string
-	lines = append(lines, m.Docs...)
+	lines = append(lines, fmt.Sprintf("// %s is implemented by [%s.%s]\n//\t",
+		m.MethodName, m.StructName, m.MethodName))
+
+	docs := lo.Map(m.Docs, func(s string, _ int) string {
+		return strings.Replace(s, "//", "//\t", -1)
+	})
+
+	lines = append(lines, docs...)
 	lines = append(lines, m.Code)
 	return lines
 }
@@ -174,8 +183,10 @@ func parseStruct(src []byte) (structInfo structInfo, err error) {
 			}
 
 			structInfo.methods[structName] = append(structInfo.methods[structName], Method{
-				Code: method,
-				Docs: docs,
+				StructName: structName,
+				MethodName: fd.Name.String(),
+				Code:       method,
+				Docs:       docs,
 			})
 		}
 	}
@@ -204,9 +215,8 @@ func makeInterfaceHead(pkgName string, imports []string) []string {
 }
 
 func makeInterfaceBody(output []string, ifaceComment map[string]string, structName, intfName string, methods []string) []string {
-	comment := strings.TrimSuffix(strings.Replace(ifaceComment[structName], "\n", "\n//\t", -1), "\n//\t")
-	if len(strings.TrimSpace(comment)) > 0 {
-		output = append(output, fmt.Sprintf("// %s", comment))
+	if len(strings.TrimSpace(ifaceComment[structName])) > 0 {
+		output = append(output, fmt.Sprintf("// %s", ifaceComment[structName]))
 	}
 
 	output = append(output, fmt.Sprintf("type %s interface {", intfName))
@@ -242,7 +252,7 @@ func createFile(c *cobra.Command, objs map[string]*makeInterfaceFile) error {
 		code := strings.Join(output, "\n")
 		result, err := ImportsCode(code)
 		if err != nil {
-			fmt.Printf("[struct2interface] %s \n", "formatCode error")
+			fmt.Printf("[struct2interface] formatCode error:\n%s", code)
 			return err
 		}
 		fileName := filepath.Join(obj.DirPath, "kod_gen_interface.go")
@@ -297,8 +307,13 @@ func makeFile(file string) (*makeInterfaceFile, error) {
 	}
 
 	for _, structName := range structInfo.structs {
-		typeDoc[structName] = fmt.Sprintf("%s is a component interface implemented by [%s].\n%s",
-			structInfo.struct2Interfaces[structName], structName, structInfo.typeDoc[structName])
+		mockComment := ""
+		if commandExists("mockgen") {
+			mockComment = fmt.Sprintf(",\n// which can be mocked with [NewMock%s]", structInfo.struct2Interfaces[structName])
+		}
+
+		typeDoc[structName] = fmt.Sprintf("%s is implemented by [%s]%s.\n//\t%s",
+			structInfo.struct2Interfaces[structName], structName, mockComment, structInfo.typeDoc[structName])
 	}
 
 	for structName, methods := range structInfo.methods {
