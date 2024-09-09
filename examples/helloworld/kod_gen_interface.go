@@ -6,17 +6,17 @@ import (
 	"context"
 )
 
-// helloWorld is a component that implements HelloWorld.
+// HelloWorld is a component interface implemented by [helloWorld].
 type HelloWorld interface {
 	SayHello(ctx context.Context)
 }
 
-// lazyHelloWorld is a component that implements HelloWorldLazy.
+// HelloWorldLazy is a component interface implemented by [lazyHelloWorld].
 type HelloWorldLazy interface {
 	SayHello(ctx context.Context)
 }
 
-// helloWorldInterceptor is a component that implements HelloWorldInterceptor.
+// HelloWorldInterceptor is a component interface implemented by [helloWorldInterceptor].
 type HelloWorldInterceptor interface {
 	SayHello(ctx context.Context)
 }

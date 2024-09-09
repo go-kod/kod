@@ -9,27 +9,27 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// test1ControllerImpl is a component that implements test1Controller.
+// test1Controller is a component interface implemented by [test1ControllerImpl].
 type test1Controller interface {
 	Foo(cccccc *gin.Context)
 }
 
-// httpControllerImpl is a component that implements HTTPController.
+// HTTPController is a component interface implemented by [httpControllerImpl].
 type HTTPController interface {
 	Foo(w http.ResponseWriter, r http.Request)
 }
 
-// serviceImpl is a component that implements testService.
+// testService is a component interface implemented by [serviceImpl].
 type testService interface {
 	Foo(ctx context.Context) error
 }
 
-// modelImpl is a component that implements testModel.
+// testModel is a component interface implemented by [modelImpl].
 type testModel interface {
 	Foo(ctx context.Context) error
 }
 
-// test1Component is a component that implements Test1Component.
+// Test1Component is a component interface implemented by [test1Component].
 type Test1Component interface {
 	Foo(ctx context.Context, req *FooReq) error
 }

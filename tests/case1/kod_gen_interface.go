@@ -10,36 +10,37 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
+// test1Controller is a component interface implemented by [test1ControllerImpl].
 type test1Controller interface {
 }
 
-// serviceImpl is a component that implements testService.
+// testService is a component interface implemented by [serviceImpl].
 type testService interface {
 	Foo(ctx context.Context) error
 }
 
-// modelImpl is a component that implements testRepository.
+// testRepository is a component interface implemented by [modelImpl].
 type testRepository interface {
 	Foo(ctx context.Context) error
 }
 
-// test1Component is a component that implements Test1Component.
+// Test1Component is a component interface implemented by [test1Component].
 type Test1Component interface {
 	Foo(ctx context.Context, req *FooReq) (*FooRes, error)
 }
 
-// test2Component is a component that implements Test2Component.
+// Test2Component is a component interface implemented by [test2Component].
 type Test2Component interface {
 	GetClient() *http.Client
 }
 
-// ctxImpl is a component that implements ctxInterface.
+// ctxInterface is a component interface implemented by [ctxImpl].
 type ctxInterface interface {
 	// Foo is a http handler
 	Foo(ctx context.Context)
 }
 
-// testEchoControllerImpl is a component that implements testEchoController.
+// testEchoController is a component interface implemented by [testEchoControllerImpl].
 type testEchoController interface {
 	// Hello is a method of testEchoControllerImpl
 	Hello(c echo.Context) error
@@ -47,40 +48,40 @@ type testEchoController interface {
 	Error(c echo.Context) error
 }
 
-// testGinControllerImpl is a component that implements testGinController.
+// testGinController is a component interface implemented by [testGinControllerImpl].
 type testGinController interface {
 	// Hello is a method of testGinControllerImpl
 	Hello(c *gin.Context)
 }
 
-// httpControllerImpl is a component that implements HTTPController.
+// HTTPController is a component interface implemented by [httpControllerImpl].
 type HTTPController interface {
 	// Foo is a http handler
 	Foo(w http.ResponseWriter, r *http.Request)
 }
 
-// interceptorRetry is a component that implements InterceptorRetry.
+// InterceptorRetry is a component interface implemented by [interceptorRetry].
 type InterceptorRetry interface {
 	TestError(ctx context.Context) error
 	TestNormal(ctx context.Context) error
 }
 
-// lazyInitImpl is a component that implements LazyInitImpl.
+// LazyInitImpl is a component interface implemented by [lazyInitImpl].
 type LazyInitImpl interface {
 	Try(ctx context.Context)
 }
 
-// lazyInitComponent is a component that implements LazyInitComponent.
+// LazyInitComponent is a component interface implemented by [lazyInitComponent].
 type LazyInitComponent interface {
 	Try(ctx context.Context) error
 }
 
-// panicCase is a component that implements panicCaseInterface.
+// panicCaseInterface is a component interface implemented by [panicCase].
 type panicCaseInterface interface {
 	TestPanic(ctx context.Context)
 }
 
-// panicNoRecvoeryCase is a component that implements panicNoRecvoeryCaseInterface.
+// panicNoRecvoeryCaseInterface is a component interface implemented by [panicNoRecvoeryCase].
 type panicNoRecvoeryCaseInterface interface {
 	TestPanic(ctx context.Context)
 }

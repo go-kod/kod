@@ -59,6 +59,7 @@ var _ kod.InstanceOf[TestRefStruct1] = (*testRefStruct1)(nil)
 
 // Local stub implementations.
 
+// main_local_stub is a local stub implementation of [kod.Main].
 type main_local_stub struct {
 	impl        kod.Main
 	name        string
@@ -68,6 +69,7 @@ type main_local_stub struct {
 // Check that main_local_stub implements the kod.Main interface.
 var _ kod.Main = (*main_local_stub)(nil)
 
+// testRefStruct1_local_stub is a local stub implementation of [TestRefStruct1].
 type testRefStruct1_local_stub struct {
 	impl        TestRefStruct1
 	name        string

@@ -335,6 +335,7 @@ var _ kod.InstanceOf[testService] = (*serviceImpl)(nil)
 
 // Local stub implementations.
 
+// hTTPController_local_stub is a local stub implementation of [HTTPController].
 type hTTPController_local_stub struct {
 	impl        HTTPController
 	name        string
@@ -350,6 +351,7 @@ func (s hTTPController_local_stub) Foo(a0 http.ResponseWriter, a1 *http.Request)
 	return
 }
 
+// interceptorRetry_local_stub is a local stub implementation of [InterceptorRetry].
 type interceptorRetry_local_stub struct {
 	impl        InterceptorRetry
 	name        string
@@ -405,6 +407,7 @@ func (s interceptorRetry_local_stub) TestNormal(ctx context.Context) (err error)
 	return
 }
 
+// lazyInitComponent_local_stub is a local stub implementation of [LazyInitComponent].
 type lazyInitComponent_local_stub struct {
 	impl        LazyInitComponent
 	name        string
@@ -437,6 +440,7 @@ func (s lazyInitComponent_local_stub) Try(ctx context.Context) (err error) {
 	return
 }
 
+// lazyInitImpl_local_stub is a local stub implementation of [LazyInitImpl].
 type lazyInitImpl_local_stub struct {
 	impl        LazyInitImpl
 	name        string
@@ -468,6 +472,7 @@ func (s lazyInitImpl_local_stub) Try(ctx context.Context) {
 	_ = s.interceptor(ctx, info, []any{}, []any{}, call)
 }
 
+// main_local_stub is a local stub implementation of [kod.Main].
 type main_local_stub struct {
 	impl        kod.Main
 	name        string
@@ -477,6 +482,7 @@ type main_local_stub struct {
 // Check that main_local_stub implements the kod.Main interface.
 var _ kod.Main = (*main_local_stub)(nil)
 
+// test1Component_local_stub is a local stub implementation of [Test1Component].
 type test1Component_local_stub struct {
 	impl        Test1Component
 	name        string
@@ -510,6 +516,7 @@ func (s test1Component_local_stub) Foo(ctx context.Context, a1 *FooReq) (r0 *Foo
 	return
 }
 
+// test2Component_local_stub is a local stub implementation of [Test2Component].
 type test2Component_local_stub struct {
 	impl        Test2Component
 	name        string
@@ -525,6 +532,7 @@ func (s test2Component_local_stub) GetClient() (r0 *http.Client) {
 	return
 }
 
+// ctxInterface_local_stub is a local stub implementation of [ctxInterface].
 type ctxInterface_local_stub struct {
 	impl        ctxInterface
 	name        string
@@ -556,6 +564,7 @@ func (s ctxInterface_local_stub) Foo(ctx context.Context) {
 	_ = s.interceptor(ctx, info, []any{}, []any{}, call)
 }
 
+// panicCaseInterface_local_stub is a local stub implementation of [panicCaseInterface].
 type panicCaseInterface_local_stub struct {
 	impl        panicCaseInterface
 	name        string
@@ -587,6 +596,7 @@ func (s panicCaseInterface_local_stub) TestPanic(ctx context.Context) {
 	_ = s.interceptor(ctx, info, []any{}, []any{}, call)
 }
 
+// panicNoRecvoeryCaseInterface_local_stub is a local stub implementation of [panicNoRecvoeryCaseInterface].
 type panicNoRecvoeryCaseInterface_local_stub struct {
 	impl        panicNoRecvoeryCaseInterface
 	name        string
@@ -618,6 +628,7 @@ func (s panicNoRecvoeryCaseInterface_local_stub) TestPanic(ctx context.Context) 
 	_ = s.interceptor(ctx, info, []any{}, []any{}, call)
 }
 
+// test1Controller_local_stub is a local stub implementation of [test1Controller].
 type test1Controller_local_stub struct {
 	impl        test1Controller
 	name        string
@@ -627,6 +638,7 @@ type test1Controller_local_stub struct {
 // Check that test1Controller_local_stub implements the test1Controller interface.
 var _ test1Controller = (*test1Controller_local_stub)(nil)
 
+// testEchoController_local_stub is a local stub implementation of [testEchoController].
 type testEchoController_local_stub struct {
 	impl        testEchoController
 	name        string
@@ -648,6 +660,7 @@ func (s testEchoController_local_stub) Hello(a0 echo.Context) (err error) {
 	return
 }
 
+// testGinController_local_stub is a local stub implementation of [testGinController].
 type testGinController_local_stub struct {
 	impl        testGinController
 	name        string
@@ -663,6 +676,7 @@ func (s testGinController_local_stub) Hello(a0 *gin.Context) {
 	return
 }
 
+// testRepository_local_stub is a local stub implementation of [testRepository].
 type testRepository_local_stub struct {
 	impl        testRepository
 	name        string
@@ -695,6 +709,7 @@ func (s testRepository_local_stub) Foo(ctx context.Context) (err error) {
 	return
 }
 
+// testService_local_stub is a local stub implementation of [testService].
 type testService_local_stub struct {
 	impl        testService
 	name        string
