@@ -559,13 +559,14 @@ func (k *Kod) configureLog(ctx context.Context, res *sdkresource.Resource) {
 
 // newSlog creates a new slog logger with the provided handler.
 func (k *Kod) newSlog(handler slog.Handler) *slog.Logger {
+	var logger *slog.Logger
+
 	if k.opts.logger != nil {
-		return k.opts.logger
+		logger = k.opts.logger
+	} else {
+		handler = kslog.NewLevelHandler(k.config.LogLevel)(handler)
+		logger = slog.New(handler)
 	}
-
-	handler = kslog.NewLevelHandler(k.config.LogLevel)(handler)
-
-	logger := slog.New(handler)
 
 	slog.SetDefault(logger)
 
