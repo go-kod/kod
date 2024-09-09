@@ -102,6 +102,7 @@ var _ kod.InstanceOf[Test3Component] = (*test3Component)(nil)
 
 // Local stub implementations.
 
+// main_local_stub is a local stub implementation of [kod.Main].
 type main_local_stub struct {
 	impl        kod.Main
 	name        string
@@ -111,6 +112,7 @@ type main_local_stub struct {
 // Check that main_local_stub implements the kod.Main interface.
 var _ kod.Main = (*main_local_stub)(nil)
 
+// test1Component_local_stub is a local stub implementation of [Test1Component].
 type test1Component_local_stub struct {
 	impl        Test1Component
 	name        string
@@ -143,6 +145,7 @@ func (s test1Component_local_stub) Foo(ctx context.Context, a1 *FooReq) (err err
 	return
 }
 
+// test2Component_local_stub is a local stub implementation of [Test2Component].
 type test2Component_local_stub struct {
 	impl        Test2Component
 	name        string
@@ -175,6 +178,7 @@ func (s test2Component_local_stub) Foo(ctx context.Context, a1 *FooReq) (err err
 	return
 }
 
+// test3Component_local_stub is a local stub implementation of [Test3Component].
 type test3Component_local_stub struct {
 	impl        Test3Component
 	name        string

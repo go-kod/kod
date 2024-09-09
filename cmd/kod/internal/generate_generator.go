@@ -740,13 +740,14 @@ func (g *generator) generateLocalStubs(p printFn) {
 	p(``)
 	p(``)
 	p(`// Local stub implementations.`)
+	p(``)
 	g.tset.importPackage("context", "context")
 
 	var b strings.Builder
 	for _, comp := range g.components {
 
 		stub := notExported(comp.intfName()) + "_local_stub"
-		p(``)
+		p(`// %s is a local stub implementation of [%s].`, stub, g.tset.genTypeString(comp.intf))
 		p(`type %s struct{`, stub)
 		p(`	impl %s`, g.componentRef(comp))
 		p(`	name   string`)

@@ -147,6 +147,7 @@ var _ kod.InstanceOf[testService] = (*serviceImpl)(nil)
 
 // Local stub implementations.
 
+// hTTPController_local_stub is a local stub implementation of [HTTPController].
 type hTTPController_local_stub struct {
 	impl        HTTPController
 	name        string
@@ -162,6 +163,7 @@ func (s hTTPController_local_stub) Foo(a0 http.ResponseWriter, a1 http.Request) 
 	return
 }
 
+// main_local_stub is a local stub implementation of [kod.Main].
 type main_local_stub struct {
 	impl        kod.Main
 	name        string
@@ -171,6 +173,7 @@ type main_local_stub struct {
 // Check that main_local_stub implements the kod.Main interface.
 var _ kod.Main = (*main_local_stub)(nil)
 
+// test1Component_local_stub is a local stub implementation of [Test1Component].
 type test1Component_local_stub struct {
 	impl        Test1Component
 	name        string
@@ -203,6 +206,7 @@ func (s test1Component_local_stub) Foo(ctx context.Context, a1 *FooReq) (err err
 	return
 }
 
+// test1Controller_local_stub is a local stub implementation of [test1Controller].
 type test1Controller_local_stub struct {
 	impl        test1Controller
 	name        string
@@ -218,6 +222,7 @@ func (s test1Controller_local_stub) Foo(a0 *gin.Context) {
 	return
 }
 
+// testModel_local_stub is a local stub implementation of [testModel].
 type testModel_local_stub struct {
 	impl        testModel
 	name        string
@@ -250,6 +255,7 @@ func (s testModel_local_stub) Foo(ctx context.Context) (err error) {
 	return
 }
 
+// testService_local_stub is a local stub implementation of [testService].
 type testService_local_stub struct {
 	impl        testService
 	name        string

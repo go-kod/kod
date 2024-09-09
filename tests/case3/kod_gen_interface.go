@@ -6,17 +6,17 @@ import (
 	"context"
 )
 
-// test1Component is a component that implements Test1Component.
+// Test1Component is a component interface implemented by [test1Component].
 type Test1Component interface {
 	Foo(ctx context.Context, req *FooReq) error
 }
 
-// test2Component is a component that implements Test2Component.
+// Test2Component is a component interface implemented by [test2Component].
 type Test2Component interface {
 	Foo(ctx context.Context, req *FooReq) error
 }
 
-// test3Component is a component that implements Test3Component.
+// Test3Component is a component interface implemented by [test3Component].
 type Test3Component interface {
 	Foo(ctx context.Context, req *FooReq) error
 }

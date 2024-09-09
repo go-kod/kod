@@ -2,5 +2,6 @@
 
 package case5
 
+// TestRefStruct1 is a component interface implemented by [testRefStruct1].
 type TestRefStruct1 interface {
 }

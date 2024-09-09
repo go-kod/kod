@@ -296,9 +296,12 @@ func makeFile(file string) (*makeInterfaceFile, error) {
 		}
 	}
 
+	for _, structName := range structInfo.structs {
+		typeDoc[structName] = fmt.Sprintf("%s is a component interface implemented by [%s].\n%s",
+			structInfo.struct2Interfaces[structName], structName, structInfo.typeDoc[structName])
+	}
+
 	for structName, methods := range structInfo.methods {
-		typeDoc[structName] = fmt.Sprintf("%s is a component that implements %s.\n%s",
-			structName, structInfo.struct2Interfaces[structName], structInfo.typeDoc[structName])
 		for _, m := range methods {
 			allMethods[structName] = append(allMethods[structName], m.Lines()...)
 		}

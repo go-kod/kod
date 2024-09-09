@@ -103,6 +103,7 @@ var _ kod.InstanceOf[kod.Main] = (*App)(nil)
 
 // Local stub implementations.
 
+// helloWorld_local_stub is a local stub implementation of [HelloWorld].
 type helloWorld_local_stub struct {
 	impl        HelloWorld
 	name        string
@@ -134,6 +135,7 @@ func (s helloWorld_local_stub) SayHello(ctx context.Context) {
 	_ = s.interceptor(ctx, info, []any{}, []any{}, call)
 }
 
+// helloWorldInterceptor_local_stub is a local stub implementation of [HelloWorldInterceptor].
 type helloWorldInterceptor_local_stub struct {
 	impl        HelloWorldInterceptor
 	name        string
@@ -165,6 +167,7 @@ func (s helloWorldInterceptor_local_stub) SayHello(ctx context.Context) {
 	_ = s.interceptor(ctx, info, []any{}, []any{}, call)
 }
 
+// helloWorldLazy_local_stub is a local stub implementation of [HelloWorldLazy].
 type helloWorldLazy_local_stub struct {
 	impl        HelloWorldLazy
 	name        string
@@ -196,6 +199,7 @@ func (s helloWorldLazy_local_stub) SayHello(ctx context.Context) {
 	_ = s.interceptor(ctx, info, []any{}, []any{}, call)
 }
 
+// main_local_stub is a local stub implementation of [kod.Main].
 type main_local_stub struct {
 	impl        kod.Main
 	name        string
