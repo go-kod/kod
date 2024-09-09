@@ -100,10 +100,7 @@ type Ref[T any] struct {
 
 // Get returns the held reference value.
 func (r *Ref[T]) Get() T {
-	r.once.Do(func() {
-		r.value = lo.Must(r.getter()).(T)
-	})
-
+	r.init()
 	return r.value
 }
 
@@ -116,10 +113,13 @@ func (r Ref[T]) isRef() {}
 func (r *Ref[T]) setRef(lazyInit bool, getter componentGetter) {
 	r.getter = getter
 	if !lazyInit {
-		r.once.Do(func() {
-			r.value = lo.Must(r.getter()).(T)
-		})
+		r.init()
 	}
+}
+
+// init initializes the reference value.
+func (r *Ref[T]) init() {
+	r.once.Do(func() { r.value = lo.Must(r.getter()).(T) })
 }
 
 // componentGetter is a function type for getting a reference value.
