@@ -5,10 +5,12 @@
 //
 //	mockgen -source=watcher.go -destination=mock_watcher_test.go -package=internal
 //
+
 // Package internal is a generated GoMock package.
 package internal
 
 import (
+	context "context"
 	reflect "reflect"
 
 	fsnotify "github.com/fsnotify/fsnotify"
@@ -50,6 +52,20 @@ func (m *MockWatcher) Add(arg0 string) error {
 func (mr *MockWatcherMockRecorder) Add(arg0 any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Add", reflect.TypeOf((*MockWatcher)(nil).Add), arg0)
+}
+
+// Context mocks base method.
+func (m *MockWatcher) Context() context.Context {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Context")
+	ret0, _ := ret[0].(context.Context)
+	return ret0
+}
+
+// Context indicates an expected call of Context.
+func (mr *MockWatcherMockRecorder) Context() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Context", reflect.TypeOf((*MockWatcher)(nil).Context))
 }
 
 // Errors mocks base method.

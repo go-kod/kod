@@ -1,6 +1,7 @@
 package internal
 
 import (
+	"context"
 	"fmt"
 	"path/filepath"
 	"time"
@@ -19,21 +20,22 @@ var generate = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		{
 			if watch, _ := cmd.Flags().GetBool("watch"); watch {
-				// Create new watcher.
-				w := lo.Must(fsnotify.NewWatcher())
-				defer w.Close()
-
-				Watch(&watcher{w: w}, ".",
-					func(event fsnotify.Event) {
-						doGenerate(cmd, filepath.Dir(event.Name), args)
-					},
-					lo.Must(cmd.Flags().GetBool("verbose")),
-				)
+				startWatcher(cmd.Context(), cmd, args)
 			}
 
 			doGenerate(cmd, "./", args)
 		}
 	},
+}
+
+func startWatcher(ctx context.Context, cmd *cobra.Command, args []string) {
+	// Create new watcher.
+	w := lo.Must(fsnotify.NewWatcher())
+	defer w.Close()
+
+	Watch(&watcher{ctx: ctx, w: w}, ".",
+		func(event fsnotify.Event) { doGenerate(cmd, filepath.Dir(event.Name), args) }, lo.Must(cmd.Flags().GetBool("verbose")),
+	)
 }
 
 func doGenerate(cmd *cobra.Command, dir string, args []string) {

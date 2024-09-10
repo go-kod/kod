@@ -1,6 +1,7 @@
 package internal
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"os"
@@ -16,10 +17,12 @@ type Watcher interface {
 	Remove(string) error
 	Events() chan fsnotify.Event
 	Errors() chan error
+	Context() context.Context
 }
 
 type watcher struct {
-	w *fsnotify.Watcher
+	ctx context.Context
+	w   *fsnotify.Watcher
 }
 
 func (w *watcher) Add(name string) error {
@@ -32,6 +35,10 @@ func (w *watcher) Events() chan fsnotify.Event {
 
 func (w *watcher) Errors() chan error {
 	return w.w.Errors
+}
+
+func (w *watcher) Context() context.Context {
+	return w.ctx
 }
 
 func (w *watcher) Remove(name string) error {
@@ -53,6 +60,7 @@ func Watch(watcher Watcher, dir string, callback func(fsnotify.Event), verbose b
 	go func() {
 		for {
 			select {
+
 			case event, ok := <-watcher.Events():
 				if !ok {
 					stop <- struct{}{}
@@ -93,6 +101,9 @@ func Watch(watcher Watcher, dir string, callback func(fsnotify.Event), verbose b
 				}
 				log.Println("error:", err)
 				stop <- struct{}{}
+			case <-watcher.Context().Done():
+				stop <- struct{}{}
+				return
 			}
 		}
 	}()

@@ -1,6 +1,7 @@
 package internal
 
 import (
+	"context"
 	"errors"
 	"testing"
 	"time"
@@ -25,6 +26,7 @@ func TestWatcherNormal(t *testing.T) {
 
 	w.EXPECT().Events().Return(events).AnyTimes()
 	w.EXPECT().Errors().Return(nil).AnyTimes()
+	w.EXPECT().Context().Return(context.Background()).AnyTimes()
 
 	time.AfterFunc(time.Second, func() {
 		close(events)
@@ -47,6 +49,7 @@ func TestWatcherNotExistFile(t *testing.T) {
 
 	w.EXPECT().Events().Return(events).AnyTimes()
 	w.EXPECT().Errors().Return(nil).AnyTimes()
+	w.EXPECT().Context().Return(context.Background()).AnyTimes()
 
 	time.AfterFunc(time.Second, func() {
 		close(events)
@@ -69,6 +72,7 @@ func TestWatcherAddDir(t *testing.T) {
 
 	w.EXPECT().Events().Return(events).AnyTimes()
 	w.EXPECT().Errors().Return(nil).AnyTimes()
+	w.EXPECT().Context().Return(context.Background()).AnyTimes()
 
 	time.AfterFunc(time.Second, func() {
 		close(events)
@@ -92,6 +96,7 @@ func TestWatcherRemoveDir(t *testing.T) {
 
 	w.EXPECT().Events().Return(events).AnyTimes()
 	w.EXPECT().Errors().Return(nil).AnyTimes()
+	w.EXPECT().Context().Return(context.Background()).AnyTimes()
 
 	time.AfterFunc(time.Second, func() {
 		close(events)
@@ -114,6 +119,7 @@ func TestWatcherNonGofile(t *testing.T) {
 
 	w.EXPECT().Events().Return(events).AnyTimes()
 	w.EXPECT().Errors().Return(nil).AnyTimes()
+	w.EXPECT().Context().Return(context.Background()).AnyTimes()
 
 	time.AfterFunc(time.Second, func() {
 		close(events)
@@ -136,6 +142,7 @@ func TestWatcherInvalidEvents(t *testing.T) {
 
 	w.EXPECT().Events().Return(events).AnyTimes()
 	w.EXPECT().Errors().Return(nil).AnyTimes()
+	w.EXPECT().Context().Return(context.Background()).AnyTimes()
 
 	time.AfterFunc(time.Second, func() {
 		close(events)
@@ -154,6 +161,7 @@ func TestWatcherErrors(t *testing.T) {
 	events <- fsnotify.ErrEventOverflow
 	w.EXPECT().Events().Return(nil).AnyTimes()
 	w.EXPECT().Errors().Return(events).AnyTimes()
+	w.EXPECT().Context().Return(context.Background()).AnyTimes()
 
 	Watch(w, ".", func(fsnotify.Event) {}, true)
 }
@@ -168,6 +176,7 @@ func TestWatcherAddFail(t *testing.T) {
 	events <- fsnotify.ErrEventOverflow
 	w.EXPECT().Events().Return(nil).AnyTimes()
 	w.EXPECT().Errors().Return(events).AnyTimes()
+	w.EXPECT().Context().Return(context.Background()).AnyTimes()
 
 	Watch(w, ".", func(fsnotify.Event) {}, true)
 }
@@ -181,6 +190,7 @@ func TestWatcherErrorsClose(t *testing.T) {
 	events := make(chan error, 2)
 	w.EXPECT().Events().Return(nil).AnyTimes()
 	w.EXPECT().Errors().Return(events).AnyTimes()
+	w.EXPECT().Context().Return(context.Background()).AnyTimes()
 
 	time.AfterFunc(time.Second, func() {
 		close(events)
@@ -203,6 +213,7 @@ func TestWatcherFilterGenPath(t *testing.T) {
 
 	w.EXPECT().Events().Return(events).AnyTimes()
 	w.EXPECT().Errors().Return(nil).AnyTimes()
+	w.EXPECT().Context().Return(context.Background()).AnyTimes()
 
 	time.AfterFunc(time.Second, func() {
 		close(events)
