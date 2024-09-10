@@ -6,7 +6,6 @@ import (
 	"sort"
 
 	"golang.org/x/tools/go/packages"
-	"golang.org/x/tools/go/types/typeutil"
 )
 
 const kodPackagePath = "github.com/go-kod/kod"
@@ -17,16 +16,6 @@ type typeSet struct {
 	imported       []importPkg          // imported packages
 	importedByPath map[string]importPkg // imported, indexed by path
 	importedByName map[string]importPkg // imported, indexed by name
-
-	// If checked[t] != nil, then checked[t] is the cached result of calling
-	// check(pkg, t, string[]{}). Otherwise, if checked[t] == nil, then t has
-	// not yet been checked for serializability. Read typeutil.Map's
-	// documentation for why checked shouldn't be a map[types.Type]bool.
-	// checked typeutil.Map
-
-	// If measurable[t] != nil, then measurable[t] == isMeasurableType(t).
-	//nolint
-	measurable typeutil.Map
 }
 
 // importPkg is a package imported by the generated code.
