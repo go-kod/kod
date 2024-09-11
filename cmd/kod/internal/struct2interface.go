@@ -235,6 +235,8 @@ func createFile(c *cobra.Command, objs map[string]*makeInterfaceFile) error {
 		var (
 			pkgName          = obj.PkgName
 			structAllImports = obj.AllImports
+			result           []byte
+			err              error
 		)
 
 		structAllImports = lo.Uniq(structAllImports)
@@ -246,7 +248,10 @@ func createFile(c *cobra.Command, objs map[string]*makeInterfaceFile) error {
 		}
 
 		code := strings.Join(output, "\n")
-		result, err := ImportsCode(code)
+
+		calculateElapsedTime(c, "[struct2interface] formatCode", func() {
+			result, err = ImportsCode(code)
+		})
 		if err != nil {
 			fmt.Printf("[struct2interface] formatCode error:\n%s", code)
 			return err
@@ -257,14 +262,15 @@ func createFile(c *cobra.Command, objs map[string]*makeInterfaceFile) error {
 		}
 
 		if commandExists("mockgen") {
-			cmd := exec.Command("mockgen", "-source", fileName, "-destination", filepath.Join(obj.DirPath, "kod_gen_mock.go"), "-package", pkgName)
+			cmd := exec.Command("mockgen", "-source", fileName, "-destination", filepath.Join(obj.DirPath, "kod_gen_mock.go"), "-package", pkgName, "-typed")
 			cmd.Stderr = os.Stderr
 			cmd.Stdout = os.Stdout
-			if err = cmd.Run(); err != nil {
+
+			calculateElapsedTime(c, "[struct2interface] mockgen", func() {
+				err = cmd.Run()
+			})
+			if err != nil {
 				return fmt.Errorf("mockgen error: %s", err.Error())
-			}
-			if verbose, _ := c.Flags().GetBool("verbose"); verbose {
-				fmt.Println(cmd.String())
 			}
 		} else {
 			fmt.Println(color.YellowString("mockgen not found, please install it by running `go install go.uber.org/mock/mockgen@latest`"))
@@ -329,60 +335,83 @@ func makeFile(file string) (*makeInterfaceFile, error) {
 	}, nil
 }
 
-func Struct2Interface(c *cobra.Command, dir string) error {
+// Struct2Interface generate interface from struct for your kod application.
+func Struct2Interface(c *cobra.Command, dir string) (err error) {
 	mapDirPath := make(map[string]*makeInterfaceFile)
-	err := filepath.WalkDir(dir, func(path string, d fs.DirEntry, _ error) error {
-		if d == nil || d.IsDir() {
-			return nil
-		}
 
-		if !strings.HasSuffix(filepath.Base(path), ".go") {
-			return nil
-		}
-
-		if strings.HasPrefix(filepath.Base(path), "kod_gen") {
-			return nil
-		}
-
-		// if dir == "." means only generate interface for the current directory
-		if dir == "." && filepath.Dir(path) != dir {
-			return nil
-		}
-
-		result, err := makeFile(path)
-		if err != nil {
-			return fmt.Errorf("makeFile error: %s", err.Error())
-		}
-
-		if obj, ok := mapDirPath[filepath.Dir(path)+result.PkgName]; ok {
-
-			obj.AllImports = append(obj.AllImports, result.AllImports...)
-			obj.Structs = append(obj.Structs, result.Structs...)
-			for k, v := range result.Struct2Interfaces {
-				obj.Struct2Interfaces[k] = v
+	walkDir := func() {
+		err = filepath.WalkDir(dir, func(path string, d fs.DirEntry, _ error) error {
+			if d.IsDir() && strings.HasPrefix(path, ".git") {
+				return filepath.SkipDir
 			}
 
-			for k, v := range result.TypeDoc {
-				obj.TypeDoc[k] = v
+			if d.IsDir() {
+				return nil
 			}
-			for k, v := range result.AllMethods {
-				if vv, ok := obj.AllMethods[k]; ok {
-					obj.AllMethods[k] = append(vv, v...)
-				} else {
-					obj.AllMethods[k] = v
+
+			if !strings.HasSuffix(filepath.Base(path), ".go") {
+				return nil
+			}
+
+			if strings.HasPrefix(filepath.Base(path), "kod_gen") {
+				return nil
+			}
+
+			// if dir == "." means only generate interface for the current directory
+			if dir == "." && filepath.Dir(path) != dir {
+				return nil
+			}
+
+			result, err := makeFile(path)
+			if err != nil {
+				return fmt.Errorf("makeFile error: %s", err.Error())
+			}
+
+			if obj, ok := mapDirPath[filepath.Dir(path)+result.PkgName]; ok {
+
+				obj.AllImports = append(obj.AllImports, result.AllImports...)
+				obj.Structs = append(obj.Structs, result.Structs...)
+				for k, v := range result.Struct2Interfaces {
+					obj.Struct2Interfaces[k] = v
 				}
-			}
-		} else {
-			mapDirPath[filepath.Dir(path)+result.PkgName] = result
-		}
 
-		return nil
-	})
+				for k, v := range result.TypeDoc {
+					obj.TypeDoc[k] = v
+				}
+				for k, v := range result.AllMethods {
+					if vv, ok := obj.AllMethods[k]; ok {
+						obj.AllMethods[k] = append(vv, v...)
+					} else {
+						obj.AllMethods[k] = v
+					}
+				}
+			} else {
+				mapDirPath[filepath.Dir(path)+result.PkgName] = result
+			}
+
+			return nil
+		})
+	}
+
+	calculateElapsedTime(c, "[struct2interface] walkDir", walkDir)
 	if err != nil {
 		return err
 	}
 
-	return createFile(c, mapDirPath)
+	calculateElapsedTime(c, "[struct2interface] createFile", func() {
+		err = createFile(c, mapDirPath)
+	})
+
+	return err
+}
+
+func calculateElapsedTime(c *cobra.Command, name string, fn func()) {
+	startTime := time.Now()
+	fn()
+
+	if c.Flags().Changed("verbose") {
+		fmt.Printf("%s %s \n", name, time.Since(startTime).String())
+	}
 }
 
 var struct2interface = &cobra.Command{
@@ -408,5 +437,6 @@ var struct2interface = &cobra.Command{
 }
 
 func init() {
+	struct2interface.Flags().BoolP("verbose", "v", false, "verbose mode.")
 	rootCmd.AddCommand(struct2interface)
 }

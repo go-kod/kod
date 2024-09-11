@@ -7,11 +7,11 @@ import (
 )
 
 func TestGenerate(t *testing.T) {
-	execute(t, "generate github.com/go-kod/kod/tests/graphcase/...")
+	execute(t, "generate github.com/go-kod/kod/tests/graphcase/... -v")
 }
 
 func TestGenerateWithStruct2Interface(t *testing.T) {
-	execute(t, "generate -s github.com/go-kod/kod/tests/graphcase/...")
+	execute(t, "generate -s github.com/go-kod/kod/tests/graphcase/...  -v")
 }
 
 func TestStartWatch(t *testing.T) {

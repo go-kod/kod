@@ -69,15 +69,16 @@ func Example_componentLazyInit() {
 // This example demonstrates how to use [kod.WithFakes] and [kod.Fake] to provide a mock implementation of a component.
 func Example_componentMock() {
 	mock := helloworld.NewMockHelloWorld(gomock.NewController(nil))
-	mock.EXPECT().SayHello(gomock.Any()).Return()
+	mock.EXPECT().SayHello(gomock.Any()).DoAndReturn(func(ctx context.Context) {
+		fmt.Println("Hello, Mock!")
+	})
 
 	kod.Run(context.Background(), func(ctx context.Context, app *helloworld.App) error {
 		app.HelloWorld.Get().SayHello(ctx)
-		fmt.Println("Nothing printed from mock")
 		return nil
 	}, kod.WithFakes(kod.Fake[helloworld.HelloWorld](mock)))
 	// Output:
-	// Nothing printed from mock
+	// Hello, Mock!
 }
 
 // This example demonstrates how to use [kod.WithConfig] to provide a configuration to the application.
@@ -231,14 +232,15 @@ func Example_testRun() {
 // This example demonstrates how to use [kod.RunTest], [kod.Fake] and [kod.WithFakes] to run a test function with a mock component.
 func Example_testWithMockComponent() {
 	mock := helloworld.NewMockHelloWorld(gomock.NewController(nil))
-	mock.EXPECT().SayHello(gomock.Any()).Return()
+	mock.EXPECT().SayHello(gomock.Any()).DoAndReturn(func(ctx context.Context) {
+		fmt.Println("Hello, Mock!")
+	})
 
 	kod.RunTest(&testing.T{}, func(ctx context.Context, app *helloworld.App) {
 		app.HelloWorld.Get().SayHello(ctx)
-		fmt.Println("Nothing printed from mock")
 	}, kod.WithFakes(kod.Fake[helloworld.HelloWorld](mock)))
 	// Output:
-	// Nothing printed from mock
+	// Hello, Mock!
 }
 
 // This example demonstrates how to use [kod.RunTest] and [kod.WithConfigFile] to run a test function with a configuration.
