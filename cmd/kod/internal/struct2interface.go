@@ -150,25 +150,21 @@ func parseStruct(src []byte) (structInfo structInfo, err error) {
 		}
 
 		if structName, fd := getReceiverTypeName(src, d); structName != "" {
-			// Main的启动方法，不需要生成interface
-			if fd.Name.Name == "Run" {
-				continue
-			}
 
-			// 私有方法
+			// skip private method
 			if !fd.Name.IsExported() {
 				continue
 			}
-			// 初始化方法
+			// skip Init method
 			if fd.Name.Name == "Init" {
 				continue
 			}
-			// 退出方法
+			// skip Shutdown method
 			if fd.Name.Name == "Shutdown" {
 				continue
 			}
-			// Hooks
-			if fd.Name.Name == "Hooks" || fd.Name.Name == "Interceptors" {
+			// skip Interceptors method
+			if fd.Name.Name == "Interceptors" {
 				continue
 			}
 
