@@ -103,9 +103,9 @@ type structInfo struct {
 	typeDoc           map[string]string
 }
 
-func parseStruct(src []byte) (structInfo structInfo, err error) {
+func parseStruct(name string, src []byte) (structInfo structInfo, err error) {
 	fset := token.NewFileSet()
-	a, err := parser.ParseFile(fset, "", src, parser.ParseComments)
+	a, err := parser.ParseFile(fset, name, src, parser.ParseComments)
 	if err != nil {
 		return
 	}
@@ -188,7 +188,10 @@ func parseStruct(src []byte) (structInfo structInfo, err error) {
 	}
 
 	structInfo.typeDoc = make(map[string]string)
-	for _, t := range doc.New(&ast.Package{Files: map[string]*ast.File{"": a}}, "", doc.AllDecls).Types {
+
+	pkg := lo.Must(doc.NewFromFiles(fset, []*ast.File{a}, name, doc.AllDecls))
+
+	for _, t := range pkg.Types {
 		structInfo.typeDoc[t.Name] = strings.TrimSuffix(t.Doc, "\n")
 	}
 
@@ -296,7 +299,7 @@ func makeFile(file string) (*makeInterfaceFile, error) {
 
 	src := lo.Must(os.ReadFile(file))
 
-	structInfo, err := parseStruct(src)
+	structInfo, err := parseStruct(file, src)
 	if err != nil {
 		return nil, fmt.Errorf("parseStruct error: %s", err.Error())
 	}
