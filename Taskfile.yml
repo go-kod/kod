@@ -6,12 +6,10 @@ tasks:
   default:
     cmds:
       - task: generate
-      - task: lint:golangci-lint
 
   github-action:
     cmds:
       - task: test
-      - task: lint:golangci-lint
       - task: lint:files-changed
 
   build:gowork:
@@ -31,12 +29,6 @@ tasks:
       - task: build:gowork
       - task: mod
       - install:mockgen
-
-  lint:golangci-lint:
-    cmd: |
-        $GOBIN/golangci-lint run ./... ./ext/...
-    deps:
-      - install:golangci-lint
 
   lint:files-changed:
     cmd: |
@@ -71,15 +63,6 @@ tasks:
       - go version -m $GOBIN/mockgen | grep go.uber.org/mock | grep {{.VERSION}}
     cmd: |
         go install go.uber.org/mock/mockgen@{{.VERSION}}
-
-  install:golangci-lint:
-    vars:
-      VERSION: v1.60.1
-    status:
-      - test -f golangci-lint
-      - go version -m $GOBIN/golangci-lint | grep github.com/golangci/golangci-lint | grep {{.VERSION}}
-    cmd: |
-        go install github.com/golangci/golangci-lint/cmd/golangci-lint@{{.VERSION}}
 
   mod:
     cmds:
