@@ -30,7 +30,7 @@ require (
 	go.uber.org/goleak v1.3.0
 	go.uber.org/mock v0.4.0
 	golang.org/x/tools v0.25.0
-	google.golang.org/grpc v1.66.1
+	google.golang.org/grpc v1.67.0
 )
 
 require (
