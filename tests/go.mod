@@ -7,7 +7,7 @@ toolchain go1.23.0
 replace github.com/go-kod/kod => ../
 
 require (
-	buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go v1.34.2-20240717164558-a6c49f84cc0f.2
+	buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go v1.34.2-20240920164238-5a7b106cbb87.2
 	github.com/avast/retry-go/v4 v4.6.0
 	github.com/gin-gonic/gin v1.10.0
 	github.com/go-kod/kod v0.0.0-00010101000000-000000000000
