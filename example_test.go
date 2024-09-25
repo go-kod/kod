@@ -11,6 +11,10 @@ import (
 	"github.com/go-kod/kod/interceptor/kmetric"
 	"github.com/go-kod/kod/interceptor/krecovery"
 	"github.com/go-kod/kod/interceptor/ktrace"
+	lognoop "go.opentelemetry.io/otel/log/noop"
+	metricnoop "go.opentelemetry.io/otel/metric/noop"
+	"go.opentelemetry.io/otel/propagation"
+	tracenoop "go.opentelemetry.io/otel/trace/noop"
 	"go.uber.org/mock/gomock"
 )
 
@@ -167,6 +171,25 @@ func Example_openTelemetryMetric() {
 
 	// Output:
 	// helloWorld init
+	// helloWorld shutdown
+}
+
+// This example demonstrates how to use OpenTelemetry with a custom OpenTelemetry provider.
+func Example_openTelemetryCustomProvider() {
+	kod.Run(context.Background(), func(ctx context.Context, app *helloworld.App) error {
+		app.HelloWorld.Get().SayHello(ctx)
+		return nil
+	},
+		kod.WithTracerProvider(tracenoop.NewTracerProvider()),
+		kod.WithMeterProvider(metricnoop.NewMeterProvider()),
+		kod.WithLogProvider(lognoop.NewLoggerProvider()),
+		kod.WithTextMapPropagator(propagation.NewCompositeTextMapPropagator(
+			propagation.TraceContext{}, propagation.Baggage{},
+		)),
+	)
+	// Output:
+	// helloWorld init
+	// Hello, World!
 	// helloWorld shutdown
 }
 

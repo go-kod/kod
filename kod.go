@@ -19,10 +19,11 @@ import (
 	"go.opentelemetry.io/contrib/instrumentation/host"
 	"go.opentelemetry.io/contrib/instrumentation/runtime"
 	"go.opentelemetry.io/otel"
+	"go.opentelemetry.io/otel/log"
 	"go.opentelemetry.io/otel/log/global"
 	"go.opentelemetry.io/otel/metric"
 	"go.opentelemetry.io/otel/propagation"
-	"go.opentelemetry.io/otel/sdk/log"
+	sdklog "go.opentelemetry.io/otel/sdk/log"
 	sdkmetric "go.opentelemetry.io/otel/sdk/metric"
 	sdkresource "go.opentelemetry.io/otel/sdk/resource"
 	sdktrace "go.opentelemetry.io/otel/sdk/trace"
@@ -249,6 +250,34 @@ func WithOpenTelemetryDisabled() func(*options) {
 	}
 }
 
+// WithTracerProvider is an option setter for specifying a custom tracer provider.
+func WithTracerProvider(provider trace.TracerProvider) func(*options) {
+	return func(opts *options) {
+		opts.traceProvider = provider
+	}
+}
+
+// WithMeterProvider is an option setter for specifying a custom meter provider.
+func WithMeterProvider(provider metric.MeterProvider) func(*options) {
+	return func(opts *options) {
+		opts.meterProvider = provider
+	}
+}
+
+// WithLogProvider is an option setter for specifying a custom log provider.
+func WithLogProvider(provider log.LoggerProvider) func(*options) {
+	return func(opts *options) {
+		opts.logProvider = provider
+	}
+}
+
+// WithTextMapPropagator is an option setter for specifying a custom text map propagator.
+func WithTextMapPropagator(propagator propagation.TextMapPropagator) func(*options) {
+	return func(opts *options) {
+		opts.textMapPropagator = propagator
+	}
+}
+
 // WithLogger is an option setter for specifying a slog logger.
 func WithLogger(logger *slog.Logger) func(*options) {
 	return func(opts *options) {
@@ -342,6 +371,10 @@ type Kod struct {
 // options defines the configuration options for Kod.
 type options struct {
 	enableOpenTelemetry bool
+	traceProvider       trace.TracerProvider
+	meterProvider       metric.MeterProvider
+	logProvider         log.LoggerProvider
+	textMapPropagator   propagation.TextMapPropagator
 	logger              *slog.Logger
 	configFilename      string
 	fakes               map[reflect.Type]any
@@ -478,9 +511,6 @@ func (k *Kod) parseConfig(filename string) error {
 
 // initOpenTelemetry initializes OpenTelemetry with the provided context.
 func (k *Kod) initOpenTelemetry(ctx context.Context) {
-	lo.Must0(host.Start())
-	lo.Must0(runtime.Start())
-
 	res := lo.Must(sdkresource.New(ctx,
 		sdkresource.WithFromEnv(),
 		sdkresource.WithTelemetrySDK(),
@@ -499,57 +529,79 @@ func (k *Kod) initOpenTelemetry(ctx context.Context) {
 
 // configureTrace configures the trace provider with the provided context and resource.
 func (k *Kod) configureTrace(ctx context.Context, res *sdkresource.Resource) {
-	spanExporter := lo.Must(autoexport.NewSpanExporter(ctx))
-	spanProvider := sdktrace.NewTracerProvider(
-		sdktrace.WithBatcher(spanExporter),
-		sdktrace.WithResource(res),
-	)
+	provider := k.opts.traceProvider
+	if provider == nil {
+		spanExporter := lo.Must(autoexport.NewSpanExporter(ctx))
+		spanProvider := sdktrace.NewTracerProvider(
+			sdktrace.WithBatcher(spanExporter),
+			sdktrace.WithResource(res),
+		)
 
-	otel.SetTextMapPropagator(
-		propagation.NewCompositeTextMapPropagator(
+		k.hooker.Add(hooks.HookFunc{
+			Name: "OpenTelemetry-Trace",
+			Fn:   spanProvider.Shutdown,
+		})
+
+		provider = spanProvider
+	}
+
+	otel.SetTracerProvider(provider)
+
+	propagator := k.opts.textMapPropagator
+	if propagator == nil {
+		propagator = propagation.NewCompositeTextMapPropagator(
 			propagation.TraceContext{}, propagation.Baggage{},
-		),
-	)
-	otel.SetTracerProvider(spanProvider)
+		)
+	}
 
-	k.hooker.Add(hooks.HookFunc{
-		Name: "OpenTelemetry-Trace",
-		Fn:   spanProvider.Shutdown,
-	})
+	otel.SetTextMapPropagator(propagator)
 }
 
 // configureMetric configures the metric provider with the provided context and resource.
 func (k *Kod) configureMetric(ctx context.Context, res *sdkresource.Resource) {
-	metricReader := lo.Must(autoexport.NewMetricReader(ctx))
-	metricProvider := sdkmetric.NewMeterProvider(
-		sdkmetric.WithReader(metricReader),
-		sdkmetric.WithResource(res),
-	)
+	lo.Must0(host.Start())
+	lo.Must0(runtime.Start())
 
-	otel.SetMeterProvider(metricProvider)
+	provider := k.opts.meterProvider
+	if provider == nil {
+		metricReader := lo.Must(autoexport.NewMetricReader(ctx))
+		metricProvider := sdkmetric.NewMeterProvider(
+			sdkmetric.WithReader(metricReader),
+			sdkmetric.WithResource(res),
+		)
 
-	k.hooker.Add(hooks.HookFunc{
-		Name: "OpenTelemetry-Metric",
-		Fn:   metricProvider.Shutdown,
-	})
+		k.hooker.Add(hooks.HookFunc{
+			Name: "OpenTelemetry-Metric",
+			Fn:   metricProvider.Shutdown,
+		})
+
+		provider = metricProvider
+	}
+
+	otel.SetMeterProvider(provider)
 }
 
 // configureLog configures the log provider with the provided context and resource.
 func (k *Kod) configureLog(ctx context.Context, res *sdkresource.Resource) {
-	logExporter := lo.Must(autoexport.NewLogExporter(ctx))
-	loggerProvider := log.NewLoggerProvider(
-		log.WithProcessor(
-			log.NewBatchProcessor(logExporter),
-		),
-		log.WithResource(res),
-	)
+	provider := k.opts.logProvider
+	if provider == nil {
+		logExporter := lo.Must(autoexport.NewLogExporter(ctx))
+		loggerProvider := sdklog.NewLoggerProvider(
+			sdklog.WithProcessor(
+				sdklog.NewBatchProcessor(logExporter),
+			),
+			sdklog.WithResource(res),
+		)
 
-	global.SetLoggerProvider(loggerProvider)
+		provider = loggerProvider
 
-	k.hooker.Add(hooks.HookFunc{
-		Name: "OpenTelemetry-Log",
-		Fn:   loggerProvider.Shutdown,
-	})
+		k.hooker.Add(hooks.HookFunc{
+			Name: "OpenTelemetry-Log",
+			Fn:   loggerProvider.Shutdown,
+		})
+	}
+
+	global.SetLoggerProvider(provider)
 
 	k.log = k.newSlog(otelslog.NewHandler(k.config.Name,
 		otelslog.WithSchemaURL(PkgPath),
