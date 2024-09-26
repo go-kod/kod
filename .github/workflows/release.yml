@@ -22,18 +22,20 @@ jobs:
         with:
           go-version: 'stable'
 
-      - name: Install Goreleaser
+      - name: Goreleaser Release (Snapshot)
+        if: github.event_name != 'push' || startsWith(github.ref, 'refs/heads/') # 触发条件为手动或非 tag 的 push
         uses: goreleaser/goreleaser-action@v4
         with:
           version: latest
-
-      - name: Release
+          args: release --snapshot --rm-dist  # 快照发布
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          if [[ $GITHUB_REF == refs/tags/* ]]; then
-            # Tag release
-            goreleaser release --clean --rm-dist
-          else
-            # Nightly release (use --snapshot for non-versioned release)
-            goreleaser release --snapshot --clean --rm-dist
+
+      - name: Goreleaser Release (Official)
+        if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')  # 触发条件为 tag 的 push
+        uses: goreleaser/goreleaser-action@v4
+        with:
+          version: latest
+          args: release --rm-dist  # 正式发布
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
