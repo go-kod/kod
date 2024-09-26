@@ -27,7 +27,27 @@ jobs:
         uses: goreleaser/goreleaser-action@v4
         with:
           version: latest
-          args: release --snapshot # 快照发布
+          args: release --snapshot -clean # 快照发布
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Delete existing prerelease
+        if: github.event_name != 'push' || startsWith(github.ref, 'refs/heads/') # 触发条件为手动或非 tag 的 push
+        run: |
+          RELEASE_ID=$(gh api -X GET repos/${{ github.repository }}/releases --jq '.[] | select(.prerelease) | .id' | head -n 1)
+          if [ -n "$RELEASE_ID" ]; then
+            gh api -X DELETE repos/${{ github.repository }}/releases/$RELEASE_ID
+          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Create new prerelease and upload artifacts
+        if: github.event_name != 'push' || startsWith(github.ref, 'refs/heads/') # 触发条件为手动或非 tag 的 push
+        run: |
+          TAG_NAME="prerelease-$(date +%Y%m%d%H%M%S)"
+          gh release create $TAG_NAME --prerelease --title "Nightly Build $(date +'%Y-%m-%d %H:%M:%S')" \
+            --notes "This is an automated nightly build." \
+            ./dist/*.tar.gz ./dist/*.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -36,6 +56,6 @@ jobs:
         uses: goreleaser/goreleaser-action@v4
         with:
           version: latest
-          args: release  # 正式发布
+          args: release -clean # 正式发布
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

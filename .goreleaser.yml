@@ -44,4 +44,8 @@ archives:
     files:
       - ./README.md
       - ./LICENSE
-      - ./config/*.yaml
+
+release:
+  github:
+    owner: go-kod
+    name: kod
