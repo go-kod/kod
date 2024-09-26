@@ -22,7 +22,7 @@ tasks:
 
   generate:
     cmds:
-      - PATH=$PATH:$GOBIN go run ./cmd/kod generate -s ./... ./tests/... ./ext/...
+      - PATH=$PATH:$GOBIN go run ./cmd/kod generate -s ./... ./tests/...
     sources:
       - "**/**.go"
     deps:
@@ -68,9 +68,3 @@ tasks:
     cmds:
       - go mod tidy
       - cd tests && go mod tidy
-      - cd ext && go mod tidy
-
-  release:
-    cmds:
-      - git tag {{.CLI_ARGS}}
-      - git tag ext/{{.CLI_ARGS}}
