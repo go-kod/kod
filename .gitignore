@@ -67,3 +67,4 @@ go.work.sum
 .task
 mockgen
 golangci-lint
+dist/
