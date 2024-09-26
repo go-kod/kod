@@ -47,7 +47,7 @@ jobs:
           TAG_NAME="prerelease-$(date +%Y%m%d%H%M%S)"
           gh release create $TAG_NAME --prerelease --title "Nightly Build $(date +'%Y-%m-%d %H:%M:%S')" \
             --notes "This is an automated nightly build." \
-            ./dist/*.tar.gz ./dist/*.zip
+            ./dist/*.tar.gz *_checksums.txt
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
