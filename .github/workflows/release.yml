@@ -27,7 +27,7 @@ jobs:
         uses: goreleaser/goreleaser-action@v4
         with:
           version: latest
-          args: release --snapshot --rm-dist  # 快照发布
+          args: release --snapshot # 快照发布
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -36,6 +36,6 @@ jobs:
         uses: goreleaser/goreleaser-action@v4
         with:
           version: latest
-          args: release --rm-dist  # 正式发布
+          args: release  # 正式发布
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
