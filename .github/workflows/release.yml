@@ -39,17 +39,31 @@ jobs:
       - name: Delete existing prerelease
         if: github.event_name != 'push' || startsWith(github.ref, 'refs/heads/') # 触发条件为手动或非 tag 的 push
         run: |
-          RELEASE_ID=$(gh api -X GET repos/${{ github.repository }}/releases --jq '.[] | select(.prerelease) | .id' | head -n 1)
+          TAG_NAME="prerelease-nightly"
+
+          # 删除已有的 Release
+          RELEASE_ID=$(gh api -X GET repos/${{ github.repository }}/releases --jq '.[] | select(.tag_name=="'"$TAG_NAME"'") | .id')
           if [ -n "$RELEASE_ID" ]; then
+            echo "Deleting existing release with ID $RELEASE_ID"
             gh api -X DELETE repos/${{ github.repository }}/releases/$RELEASE_ID
           fi
+
+          # 删除已有的 Tag
+          git push --delete origin "$TAG_NAME" || true
+          gh api -X DELETE repos/${{ github.repository }}/git/refs/tags/"$TAG_NAME" || true
+
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       
       - name: Create new prerelease and upload artifacts
         if: github.event_name != 'push' || startsWith(github.ref, 'refs/heads/') # 触发条件为手动或非 tag 的 push
         run: |
-          TAG_NAME="prerelease-$(date +%Y%m%d%H%M%S)"
+          TAG_NAME="prerelease-nightly"
+
+          # 创建新的 Tag 并推送到远程
+          git tag -a "$TAG_NAME" -m "Nightly Build $(date +'%Y-%m-%d %H:%M:%S')"
+          git push origin "$TAG_NAME"
+
           gh release create $TAG_NAME --prerelease --title "Nightly Build $(date +'%Y-%m-%d %H:%M:%S')" \
             --notes "This is an automated nightly build." \
             ./dist/*.tar.gz ./dist/*_checksums.txt
