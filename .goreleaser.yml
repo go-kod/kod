@@ -19,6 +19,7 @@ report_sizes: true
 git:
   ignore_tags:
     - ext/**
+    - prerelease-nightly
 
 metadata:
   mod_timestamp: "{{ .CommitTimestamp }}"
