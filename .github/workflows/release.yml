@@ -36,39 +36,34 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Delete existing prerelease
+      - name: Delete existing assets from release
         if: github.event_name != 'push' || startsWith(github.ref, 'refs/heads/') # 触发条件为手动或非 tag 的 push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # 或者使用 PAT_TOKEN
         run: |
-          TAG_NAME="prerelease-nightly"
-
-          # 删除已有的 Release
-          RELEASE_ID=$(gh api -X GET repos/${{ github.repository }}/releases --jq '.[] | select(.tag_name=="'"$TAG_NAME"'") | .id')
-          if [ -n "$RELEASE_ID" ]; then
-            echo "Deleting existing release with ID $RELEASE_ID"
-            gh api -X DELETE repos/${{ github.repository }}/releases/$RELEASE_ID
+          RELEASE_TAG="prerelease-nightly"
+          # 获取 Release ID
+          RELEASE_ID=$(gh api -X GET repos/${{ github.repository }}/releases --jq '.[] | select(.tag_name=="'"$RELEASE_TAG"'") | .id')
+          if [ -z "$RELEASE_ID" ]; then
+            echo "Release with tag $RELEASE_TAG does not exist. Exiting."
+            exit 1
           fi
+          # 获取所有资产（artifacts）
+          ASSET_IDS=$(gh api -X GET repos/${{ github.repository }}/releases/$RELEASE_ID/assets --jq '.[].id')
+          # 删除所有资产
+          for ASSET_ID in $ASSET_IDS; do
+            echo "Deleting asset with ID $ASSET_ID"
+            gh api -X DELETE repos/${{ github.repository }}/releases/assets/$ASSET_ID
+          done
 
-          # 删除已有的 Tag
-          git push --delete origin "$TAG_NAME" || true
-          gh api -X DELETE repos/${{ github.repository }}/git/refs/tags/"$TAG_NAME" || true
-
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      
-      - name: Create new prerelease and upload artifacts
+      - name: Upload new assets to release
         if: github.event_name != 'push' || startsWith(github.ref, 'refs/heads/') # 触发条件为手动或非 tag 的 push
-        run: |
-          TAG_NAME="prerelease-nightly"
-
-          # 创建新的 Tag 并推送到远程
-          git tag -a "$TAG_NAME" -m "Nightly Build $(date +'%Y-%m-%d %H:%M:%S')"
-          git push origin "$TAG_NAME"
-
-          gh release create $TAG_NAME --prerelease --title "Nightly Build $(date +'%Y-%m-%d %H:%M:%S')" \
-            --notes "This is an automated nightly build." \
-            ./dist/*.tar.gz ./dist/*_checksums.txt
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # 或者使用 PAT_TOKEN
+        run: |
+          RELEASE_TAG="prerelease-nightly"
+          # 上传新的构建产物
+          gh release upload "$RELEASE_TAG" ./dist/*.tar.gz ./dist/*_checksums.txt --clobber
 
       - name: Goreleaser Release (Official)
         if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')  # 触发条件为 tag 的 push
