@@ -11,7 +11,8 @@
 [**English**](./README.md) •
 [**简体中文**](./README_CN.md) |
 [**Examples**](./example_test.go) •
-[**Template**](https://github.com/go-kod/kod-mono)
+[**Template**](https://github.com/go-kod/kod-mono) •
+[**Extention**](https://github.com/go-kod/kod-ext)
 
 </div>
 
