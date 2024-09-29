@@ -8,10 +8,11 @@
 [![GitHub License](https://img.shields.io/github/license/go-kod/kod)](https://github.com/go-kod/kod/blob/main/LICENSE)
 [![Mentioned in Awesome Go](https://awesome.re/mentioned-badge.svg)](https://github.com/avelino/awesome-go)
 
-[**English**](./README.md) •
+[**英文**](./README.md) •
 [**简体中文**](./README_CN.md) |
-[**Examples**](./example_test.go) •
-[**Template**](https://github.com/go-kod/kod-mono)
+[**实例**](./example_test.go) •
+[**模版**](https://github.com/go-kod/kod-mono) •
+[**扩展**](https://github.com/go-kod/kod-ext)
 
 </div>
 
