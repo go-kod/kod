@@ -81,7 +81,7 @@ require (
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
 	github.com/valyala/fasttemplate v1.2.2 // indirect
 	github.com/yusufpapurcu/wmi v1.2.4 // indirect
-	go.opentelemetry.io/contrib/bridges/otelslog v0.5.0 // indirect
+	go.opentelemetry.io/contrib/bridges/otelslog v0.6.0 // indirect
 	go.opentelemetry.io/contrib/bridges/prometheus v0.55.0 // indirect
 	go.opentelemetry.io/contrib/exporters/autoexport v0.55.0 // indirect
 	go.opentelemetry.io/contrib/instrumentation/host v0.55.0 // indirect

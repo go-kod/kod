@@ -166,8 +166,8 @@ github.com/valyala/fasttemplate v1.2.2 h1:lxLXG0uE3Qnshl9QyaK6XJxMXlQZELvChBOCmQ
 github.com/valyala/fasttemplate v1.2.2/go.mod h1:KHLXt3tVN2HBp8eijSv/kGJopbvo7S+qRAEEKiv+SiQ=
 github.com/yusufpapurcu/wmi v1.2.4 h1:zFUKzehAFReQwLys1b/iSMl+JQGSCSjtVqQn9bBrPo0=
 github.com/yusufpapurcu/wmi v1.2.4/go.mod h1:SBZ9tNy3G9/m5Oi98Zks0QjeHVDvuK0qfxQmPyzfmi0=
-go.opentelemetry.io/contrib/bridges/otelslog v0.5.0 h1:lU3F57OSLK5mQ1PDBVAfDDaKCPv37MrEbCfTzsF4bz0=
-go.opentelemetry.io/contrib/bridges/otelslog v0.5.0/go.mod h1:I84u06zJFr8T5D73fslEUbnRBimVVSBhuVw8L8I92AU=
+go.opentelemetry.io/contrib/bridges/otelslog v0.6.0 h1:V/XtFJ8mMisAO2E0tXcgwi40wJUxbiz8I2/RtgaZ8AU=
+go.opentelemetry.io/contrib/bridges/otelslog v0.6.0/go.mod h1:g7kkoEznNXb0li+YvlwPWoqxTbpC3BtmZtZutB39G4M=
 go.opentelemetry.io/contrib/bridges/prometheus v0.55.0 h1:1oZYcP3wuazG3O1563m8cs5vc/pBMTymRwgG9yvxMm8=
 go.opentelemetry.io/contrib/bridges/prometheus v0.55.0/go.mod h1:sU48aWFqiqBXo2RBtq7KarczkW8uK6RdIU54y4VzpZs=
 go.opentelemetry.io/contrib/exporters/autoexport v0.55.0 h1:8kNP8SX9id5TY2feLB+79aFxE0kqzh3KvjF1nAfGxVM=
