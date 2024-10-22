@@ -92,7 +92,7 @@ type main_local_stub struct {
 	interceptor interceptor.Interceptor
 }
 
-// Check that main_local_stub implements the kod.Main interface.
+// Check that [main_local_stub] implements the [kod.Main] interface.
 var _ kod.Main = (*main_local_stub)(nil)
 
 // helloWorld_local_stub is a local stub implementation of [HelloWorld].
@@ -102,9 +102,10 @@ type helloWorld_local_stub struct {
 	interceptor interceptor.Interceptor
 }
 
-// Check that helloWorld_local_stub implements the HelloWorld interface.
+// Check that [helloWorld_local_stub] implements the [HelloWorld] interface.
 var _ HelloWorld = (*helloWorld_local_stub)(nil)
 
+// SayHello wraps the method [helloWorld.SayHello].
 func (s helloWorld_local_stub) SayHello(ctx context.Context) {
 
 	if s.interceptor == nil {
@@ -133,9 +134,10 @@ type helloWorldLazy_local_stub struct {
 	interceptor interceptor.Interceptor
 }
 
-// Check that helloWorldLazy_local_stub implements the HelloWorldLazy interface.
+// Check that [helloWorldLazy_local_stub] implements the [HelloWorldLazy] interface.
 var _ HelloWorldLazy = (*helloWorldLazy_local_stub)(nil)
 
+// SayHello wraps the method [lazyHelloWorld.SayHello].
 func (s helloWorldLazy_local_stub) SayHello(ctx context.Context) {
 
 	if s.interceptor == nil {
@@ -164,9 +166,10 @@ type helloWorldInterceptor_local_stub struct {
 	interceptor interceptor.Interceptor
 }
 
-// Check that helloWorldInterceptor_local_stub implements the HelloWorldInterceptor interface.
+// Check that [helloWorldInterceptor_local_stub] implements the [HelloWorldInterceptor] interface.
 var _ HelloWorldInterceptor = (*helloWorldInterceptor_local_stub)(nil)
 
+// SayHello wraps the method [helloWorldInterceptor.SayHello].
 func (s helloWorldInterceptor_local_stub) SayHello(ctx context.Context) {
 
 	if s.interceptor == nil {

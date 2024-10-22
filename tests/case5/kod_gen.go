@@ -55,7 +55,7 @@ type main_local_stub struct {
 	interceptor interceptor.Interceptor
 }
 
-// Check that main_local_stub implements the kod.Main interface.
+// Check that [main_local_stub] implements the [kod.Main] interface.
 var _ kod.Main = (*main_local_stub)(nil)
 
 // testRefStruct1_local_stub is a local stub implementation of [TestRefStruct1].
@@ -65,6 +65,6 @@ type testRefStruct1_local_stub struct {
 	interceptor interceptor.Interceptor
 }
 
-// Check that testRefStruct1_local_stub implements the TestRefStruct1 interface.
+// Check that [testRefStruct1_local_stub] implements the [TestRefStruct1] interface.
 var _ TestRefStruct1 = (*testRefStruct1_local_stub)(nil)
 

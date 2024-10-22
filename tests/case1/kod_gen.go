@@ -271,7 +271,7 @@ type test1Controller_local_stub struct {
 	interceptor interceptor.Interceptor
 }
 
-// Check that test1Controller_local_stub implements the test1Controller interface.
+// Check that [test1Controller_local_stub] implements the [test1Controller] interface.
 var _ test1Controller = (*test1Controller_local_stub)(nil)
 
 // testService_local_stub is a local stub implementation of [testService].
@@ -281,9 +281,10 @@ type testService_local_stub struct {
 	interceptor interceptor.Interceptor
 }
 
-// Check that testService_local_stub implements the testService interface.
+// Check that [testService_local_stub] implements the [testService] interface.
 var _ testService = (*testService_local_stub)(nil)
 
+// Foo wraps the method [serviceImpl.Foo].
 func (s testService_local_stub) Foo(ctx context.Context) (err error) {
 
 	if s.interceptor == nil {
@@ -313,9 +314,10 @@ type testRepository_local_stub struct {
 	interceptor interceptor.Interceptor
 }
 
-// Check that testRepository_local_stub implements the testRepository interface.
+// Check that [testRepository_local_stub] implements the [testRepository] interface.
 var _ testRepository = (*testRepository_local_stub)(nil)
 
+// Foo wraps the method [modelImpl.Foo].
 func (s testRepository_local_stub) Foo(ctx context.Context) (err error) {
 
 	if s.interceptor == nil {
@@ -345,9 +347,10 @@ type test1Component_local_stub struct {
 	interceptor interceptor.Interceptor
 }
 
-// Check that test1Component_local_stub implements the Test1Component interface.
+// Check that [test1Component_local_stub] implements the [Test1Component] interface.
 var _ Test1Component = (*test1Component_local_stub)(nil)
 
+// Foo wraps the method [test1Component.Foo].
 func (s test1Component_local_stub) Foo(ctx context.Context, a1 *FooReq) (r0 *FooRes, err error) {
 
 	if s.interceptor == nil {
@@ -378,9 +381,10 @@ type test2Component_local_stub struct {
 	interceptor interceptor.Interceptor
 }
 
-// Check that test2Component_local_stub implements the Test2Component interface.
+// Check that [test2Component_local_stub] implements the [Test2Component] interface.
 var _ Test2Component = (*test2Component_local_stub)(nil)
 
+// GetClient wraps the method [test2Component.GetClient].
 func (s test2Component_local_stub) GetClient() (r0 *http.Client) {
 	// Because the first argument is not context.Context, so interceptors are not supported.
 	r0 = s.impl.GetClient()
@@ -394,7 +398,7 @@ type main_local_stub struct {
 	interceptor interceptor.Interceptor
 }
 
-// Check that main_local_stub implements the kod.Main interface.
+// Check that [main_local_stub] implements the [kod.Main] interface.
 var _ kod.Main = (*main_local_stub)(nil)
 
 // ctxInterface_local_stub is a local stub implementation of [ctxInterface].
@@ -404,9 +408,10 @@ type ctxInterface_local_stub struct {
 	interceptor interceptor.Interceptor
 }
 
-// Check that ctxInterface_local_stub implements the ctxInterface interface.
+// Check that [ctxInterface_local_stub] implements the [ctxInterface] interface.
 var _ ctxInterface = (*ctxInterface_local_stub)(nil)
 
+// Foo wraps the method [ctxImpl.Foo].
 func (s ctxInterface_local_stub) Foo(ctx context.Context) {
 
 	if s.interceptor == nil {
@@ -435,15 +440,17 @@ type testEchoController_local_stub struct {
 	interceptor interceptor.Interceptor
 }
 
-// Check that testEchoController_local_stub implements the testEchoController interface.
+// Check that [testEchoController_local_stub] implements the [testEchoController] interface.
 var _ testEchoController = (*testEchoController_local_stub)(nil)
 
+// Error wraps the method [testEchoControllerImpl.Error].
 func (s testEchoController_local_stub) Error(a0 echo.Context) (err error) {
 	// Because the first argument is not context.Context, so interceptors are not supported.
 	err = s.impl.Error(a0)
 	return
 }
 
+// Hello wraps the method [testEchoControllerImpl.Hello].
 func (s testEchoController_local_stub) Hello(a0 echo.Context) (err error) {
 	// Because the first argument is not context.Context, so interceptors are not supported.
 	err = s.impl.Hello(a0)
@@ -457,9 +464,10 @@ type testGinController_local_stub struct {
 	interceptor interceptor.Interceptor
 }
 
-// Check that testGinController_local_stub implements the testGinController interface.
+// Check that [testGinController_local_stub] implements the [testGinController] interface.
 var _ testGinController = (*testGinController_local_stub)(nil)
 
+// Hello wraps the method [testGinControllerImpl.Hello].
 func (s testGinController_local_stub) Hello(a0 *gin.Context) {
 	// Because the first argument is not context.Context, so interceptors are not supported.
 	s.impl.Hello(a0)
@@ -473,9 +481,10 @@ type hTTPController_local_stub struct {
 	interceptor interceptor.Interceptor
 }
 
-// Check that hTTPController_local_stub implements the HTTPController interface.
+// Check that [hTTPController_local_stub] implements the [HTTPController] interface.
 var _ HTTPController = (*hTTPController_local_stub)(nil)
 
+// Foo wraps the method [httpControllerImpl.Foo].
 func (s hTTPController_local_stub) Foo(a0 http.ResponseWriter, a1 *http.Request) {
 	// Because the first argument is not context.Context, so interceptors are not supported.
 	s.impl.Foo(a0, a1)
@@ -489,9 +498,10 @@ type interceptorRetry_local_stub struct {
 	interceptor interceptor.Interceptor
 }
 
-// Check that interceptorRetry_local_stub implements the InterceptorRetry interface.
+// Check that [interceptorRetry_local_stub] implements the [InterceptorRetry] interface.
 var _ InterceptorRetry = (*interceptorRetry_local_stub)(nil)
 
+// TestError wraps the method [interceptorRetry.TestError].
 func (s interceptorRetry_local_stub) TestError(ctx context.Context) (err error) {
 
 	if s.interceptor == nil {
@@ -514,6 +524,7 @@ func (s interceptorRetry_local_stub) TestError(ctx context.Context) (err error) 
 	return
 }
 
+// TestNormal wraps the method [interceptorRetry.TestNormal].
 func (s interceptorRetry_local_stub) TestNormal(ctx context.Context) (err error) {
 
 	if s.interceptor == nil {
@@ -543,9 +554,10 @@ type lazyInitImpl_local_stub struct {
 	interceptor interceptor.Interceptor
 }
 
-// Check that lazyInitImpl_local_stub implements the LazyInitImpl interface.
+// Check that [lazyInitImpl_local_stub] implements the [LazyInitImpl] interface.
 var _ LazyInitImpl = (*lazyInitImpl_local_stub)(nil)
 
+// Try wraps the method [lazyInitImpl.Try].
 func (s lazyInitImpl_local_stub) Try(ctx context.Context) {
 
 	if s.interceptor == nil {
@@ -574,9 +586,10 @@ type lazyInitComponent_local_stub struct {
 	interceptor interceptor.Interceptor
 }
 
-// Check that lazyInitComponent_local_stub implements the LazyInitComponent interface.
+// Check that [lazyInitComponent_local_stub] implements the [LazyInitComponent] interface.
 var _ LazyInitComponent = (*lazyInitComponent_local_stub)(nil)
 
+// Try wraps the method [lazyInitComponent.Try].
 func (s lazyInitComponent_local_stub) Try(ctx context.Context) (err error) {
 
 	if s.interceptor == nil {
@@ -606,9 +619,10 @@ type panicCaseInterface_local_stub struct {
 	interceptor interceptor.Interceptor
 }
 
-// Check that panicCaseInterface_local_stub implements the panicCaseInterface interface.
+// Check that [panicCaseInterface_local_stub] implements the [panicCaseInterface] interface.
 var _ panicCaseInterface = (*panicCaseInterface_local_stub)(nil)
 
+// TestPanic wraps the method [panicCase.TestPanic].
 func (s panicCaseInterface_local_stub) TestPanic(ctx context.Context) {
 
 	if s.interceptor == nil {
@@ -637,9 +651,10 @@ type panicNoRecvoeryCaseInterface_local_stub struct {
 	interceptor interceptor.Interceptor
 }
 
-// Check that panicNoRecvoeryCaseInterface_local_stub implements the panicNoRecvoeryCaseInterface interface.
+// Check that [panicNoRecvoeryCaseInterface_local_stub] implements the [panicNoRecvoeryCaseInterface] interface.
 var _ panicNoRecvoeryCaseInterface = (*panicNoRecvoeryCaseInterface_local_stub)(nil)
 
+// TestPanic wraps the method [panicNoRecvoeryCase.TestPanic].
 func (s panicNoRecvoeryCaseInterface_local_stub) TestPanic(ctx context.Context) {
 
 	if s.interceptor == nil {

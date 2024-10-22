@@ -774,7 +774,7 @@ func (g *generator) generateLocalStubs(p printFn) {
 		p(`}`)
 
 		p(``)
-		p(`// Check that %s implements the %s interface.`, stub, g.tset.genTypeString(comp.intf))
+		p(`// Check that [%s] implements the [%s] interface.`, stub, g.tset.genTypeString(comp.intf))
 		p(`var _ %s = (*%s)(nil)`, g.tset.genTypeString(comp.intf), stub)
 		p(``)
 
@@ -788,6 +788,7 @@ func (g *generator) generateLocalStubs(p printFn) {
 			}
 
 			p(``)
+			p(`// %s wraps the method [%s.%s].`, m.Name(), comp.implName(), m.Name())
 			p(`func (s %s) %s(%s) (%s) {`, stub, m.Name(), g.args(mt), g.returns(mt))
 
 			// If the first argument is not context.Context, then we don't support interceptors.

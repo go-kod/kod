@@ -74,9 +74,10 @@ type test1Component_local_stub struct {
 	interceptor interceptor.Interceptor
 }
 
-// Check that test1Component_local_stub implements the Test1Component interface.
+// Check that [test1Component_local_stub] implements the [Test1Component] interface.
 var _ Test1Component = (*test1Component_local_stub)(nil)
 
+// Foo wraps the method [test1Component.Foo].
 func (s test1Component_local_stub) Foo(ctx context.Context, a1 *FooReq) (err error) {
 
 	if s.interceptor == nil {
@@ -106,9 +107,10 @@ type test2Component_local_stub struct {
 	interceptor interceptor.Interceptor
 }
 
-// Check that test2Component_local_stub implements the Test2Component interface.
+// Check that [test2Component_local_stub] implements the [Test2Component] interface.
 var _ Test2Component = (*test2Component_local_stub)(nil)
 
+// Foo wraps the method [test2Component.Foo].
 func (s test2Component_local_stub) Foo(ctx context.Context, a1 *FooReq) (err error) {
 
 	if s.interceptor == nil {
@@ -138,6 +140,6 @@ type main_local_stub struct {
 	interceptor interceptor.Interceptor
 }
 
-// Check that main_local_stub implements the kod.Main interface.
+// Check that [main_local_stub] implements the [kod.Main] interface.
 var _ kod.Main = (*main_local_stub)(nil)
 
