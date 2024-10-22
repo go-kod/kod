@@ -46,17 +46,11 @@ func init() {
 		},
 	})
 	kod.Register(&kod.Registration{
-		Name:      "github.com/go-kod/kod/Main",
-		Interface: reflect.TypeOf((*kod.Main)(nil)).Elem(),
-		Impl:      reflect.TypeOf(App{}),
-		Refs:      `⟦73dc6a0b:KoDeDgE:github.com/go-kod/kod/Main→github.com/go-kod/kod/tests/case2/Test1Component⟧`,
-		LocalStubFn: func(ctx context.Context, info *kod.LocalStubFnInfo) any {
-			return main_local_stub{
-				impl:        info.Impl.(kod.Main),
-				interceptor: info.Interceptor,
-				name:        info.Name,
-			}
-		},
+		Name:        "github.com/go-kod/kod/Main",
+		Interface:   reflect.TypeOf((*kod.Main)(nil)).Elem(),
+		Impl:        reflect.TypeOf(App{}),
+		Refs:        `⟦73dc6a0b:KoDeDgE:github.com/go-kod/kod/Main→github.com/go-kod/kod/tests/case2/Test1Component⟧`,
+		LocalStubFn: nil,
 	})
 }
 

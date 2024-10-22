@@ -720,7 +720,11 @@ func (g *generator) generateRegisteredComponents(p printFn) {
 		p(`		Interface: %s((*%s)(nil)).Elem(),`, reflect.qualify("TypeOf"), g.componentRef(comp))
 		p(`		Impl: %s(%s{}),`, reflect.qualify("TypeOf"), comp.implName())
 		p("		Refs: `%s`,", strings.Join(refNames, ",\n"))
-		p(`		LocalStubFn: %s,`, localStubFn)
+		if !comp.isMain {
+			p(`		LocalStubFn: %s,`, localStubFn)
+		} else {
+			p(`		LocalStubFn: nil,`)
+		}
 		p(`	})`)
 	}
 	p(`}`)

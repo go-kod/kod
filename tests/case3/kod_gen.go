@@ -66,13 +66,7 @@ func init() {
 		Impl:      reflect.TypeOf(App{}),
 		Refs: `⟦964a80ec:KoDeDgE:github.com/go-kod/kod/Main→github.com/go-kod/kod/tests/case3/Test1Component⟧,
 ⟦e679c332:KoDeDgE:github.com/go-kod/kod/Main→github.com/go-kod/kod/tests/case3/Test2Component⟧`,
-		LocalStubFn: func(ctx context.Context, info *kod.LocalStubFnInfo) any {
-			return main_local_stub{
-				impl:        info.Impl.(kod.Main),
-				interceptor: info.Interceptor,
-				name:        info.Name,
-			}
-		},
+		LocalStubFn: nil,
 	})
 }
 

@@ -28,13 +28,7 @@ func init() {
 		Refs: `⟦bda493e9:KoDeDgE:github.com/go-kod/kod/Main→github.com/go-kod/kod/examples/helloworld/HelloWorld⟧,
 ⟦b60b3708:KoDeDgE:github.com/go-kod/kod/Main→github.com/go-kod/kod/examples/helloworld/HelloWorldLazy⟧,
 ⟦c811f6f3:KoDeDgE:github.com/go-kod/kod/Main→github.com/go-kod/kod/examples/helloworld/HelloWorldInterceptor⟧`,
-		LocalStubFn: func(ctx context.Context, info *kod.LocalStubFnInfo) any {
-			return main_local_stub{
-				impl:        info.Impl.(kod.Main),
-				interceptor: info.Interceptor,
-				name:        info.Name,
-			}
-		},
+		LocalStubFn: nil,
 	})
 	kod.Register(&kod.Registration{
 		Name:      "github.com/go-kod/kod/examples/helloworld/HelloWorld",
