@@ -157,8 +157,9 @@ func newGenerator(opt Options, pkg *packages.Package, fset *token.FileSet) (*gen
 	// kod.AutoMarshal struct.
 	tset := newTypeSet(pkg)
 
-	// Find and process all components.
-	components := map[string]*component{}
+	// Find and process all seen.
+	seen := map[string]*component{}
+	components := []*component{}
 	for _, file := range pkg.Syntax {
 		filename := fset.Position(file.Package).Filename
 		if filepath.Base(filename) == generatedCodeFile {
@@ -179,25 +180,28 @@ func newGenerator(opt Options, pkg *packages.Package, fset *token.FileSet) (*gen
 			// This code relies on the fact that a component
 			// interface and component implementation have to be in the same
 			// package. If we lift this requirement, then this code will break.
-			if existing, ok := components[c.fullIntfName()]; ok {
+			if existing, ok := seen[c.fullIntfName()]; ok {
 				errs = append(errs, errorf(pkg.Fset, c.impl.Obj().Pos(),
 					"Duplicate implementation for component %s, other declaration: %v",
 					c.fullIntfName(), fset.Position(existing.impl.Obj().Pos())))
 				continue
 			}
-			components[c.fullIntfName()] = c
+			seen[c.fullIntfName()] = c
+			components = append(components, c)
 		}
 	}
 	if err := errors.Join(errs...); err != nil {
 		return nil, err
 	}
 
+	// slices.Reverse(components)
+
 	return &generator{
 		opt:        opt,
 		pkg:        pkg,
 		tset:       tset,
 		fileset:    fset,
-		components: lo.Values(components),
+		components: components,
 	}, nil
 }
 
@@ -393,6 +397,10 @@ func (c *component) intfName() string {
 	return c.intf.Obj().Name()
 }
 
+func (c *component) fullMethodNameVar(methodName string) string {
+	return fmt.Sprintf("%s_%s_FullMethodName", c.intfName(), methodName)
+}
+
 // implName returns the component implementation name.
 func (c *component) implName() string {
 	return c.impl.Obj().Name()
@@ -549,10 +557,10 @@ func (g *generator) generate() error {
 		return nil
 	}
 
-	// Process components in deterministic order.
-	sort.Slice(g.components, func(i, j int) bool {
-		return g.components[i].intfName() < g.components[j].intfName()
-	})
+	// // Process components in deterministic order.
+	// sort.Slice(g.components, func(i, j int) bool {
+	// 	return g.components[i].intfName() < g.components[j].intfName()
+	// })
 
 	// Generate the file body.
 	var body bytes.Buffer
@@ -574,7 +582,9 @@ func (g *generator) generate() error {
 		fn := func(format string, args ...interface{}) {
 			fmt.Fprintln(&header, fmt.Sprintf(format, args...))
 		}
+
 		g.generateImports(fn)
+		g.generateFullMethodNames(fn)
 	}
 
 	// Create a generated file.
@@ -638,6 +648,19 @@ func (g *generator) generateImports(p printFn) {
 			p(`	%s`, strconv.Quote(imp.path))
 		} else {
 			p(`	%s %s`, imp.alias, strconv.Quote(imp.path))
+		}
+	}
+	p(`)`)
+}
+
+func (g *generator) generateFullMethodNames(p printFn) {
+	p(``)
+	p(`// Full method names for components.`)
+	p(`const (`)
+	for _, comp := range g.components {
+		for _, m := range comp.methods() {
+			p(`// %s is the full name of the method [%s.%s].`, comp.fullMethodNameVar(m.Name()), comp.implName(), m.Name())
+			p(`%s = %q`, comp.fullMethodNameVar(m.Name()), comp.fullIntfName())
 		}
 	}
 	p(`)`)
@@ -798,10 +821,9 @@ func (g *generator) generateLocalStubs(p printFn) {
 			p(`info := interceptor.CallInfo {
 					Impl: s.impl,
 					Component:  s.name,
-					FullMethod: "%s.%s",
-					Method:    "%s",
+					FullMethod: %s,
 				}
-			`, comp.fullIntfName(), m.Name(), m.Name())
+			`, comp.fullMethodNameVar(m.Name()))
 
 			p(`%s = s.interceptor(ctx, info, []any{%s}, []any{%s}, call)`,
 				lo.If(haveError(mt), "err").Else("_"),

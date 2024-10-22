@@ -37,7 +37,7 @@ func Interceptor() interceptor.Interceptor {
 
 		as := attribute.NewSet(
 			attribute.String("component", info.Component),
-			attribute.String("method", info.Method),
+			attribute.String("method", info.FullMethod),
 		)
 
 		if err != nil {

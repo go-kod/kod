@@ -10,7 +10,39 @@ import (
 	"reflect"
 )
 
+// Full method names for components.
+const (
+	// HelloWorld_SayHello_FullMethodName is the full name of the method [helloWorld.SayHello].
+	HelloWorld_SayHello_FullMethodName = "github.com/go-kod/kod/examples/helloworld/HelloWorld"
+	// HelloWorldLazy_SayHello_FullMethodName is the full name of the method [lazyHelloWorld.SayHello].
+	HelloWorldLazy_SayHello_FullMethodName = "github.com/go-kod/kod/examples/helloworld/HelloWorldLazy"
+	// HelloWorldInterceptor_SayHello_FullMethodName is the full name of the method [helloWorldInterceptor.SayHello].
+	HelloWorldInterceptor_SayHello_FullMethodName = "github.com/go-kod/kod/examples/helloworld/HelloWorldInterceptor"
+)
+
 func init() {
+	kod.Register(&kod.Registration{
+		Name:      "github.com/go-kod/kod/Main",
+		Interface: reflect.TypeOf((*kod.Main)(nil)).Elem(),
+		Impl:      reflect.TypeOf(App{}),
+		Refs: `⟦bda493e9:KoDeDgE:github.com/go-kod/kod/Main→github.com/go-kod/kod/examples/helloworld/HelloWorld⟧,
+⟦b60b3708:KoDeDgE:github.com/go-kod/kod/Main→github.com/go-kod/kod/examples/helloworld/HelloWorldLazy⟧,
+⟦c811f6f3:KoDeDgE:github.com/go-kod/kod/Main→github.com/go-kod/kod/examples/helloworld/HelloWorldInterceptor⟧`,
+		LocalStubFn: func(ctx context.Context, info *kod.LocalStubFnInfo) any {
+			interceptors := info.Interceptors
+			if h, ok := info.Impl.(interface {
+				Interceptors() []interceptor.Interceptor
+			}); ok {
+				interceptors = append(interceptors, h.Interceptors()...)
+			}
+
+			return main_local_stub{
+				impl:        info.Impl.(kod.Main),
+				interceptor: interceptor.Chain(interceptors),
+				name:        info.Name,
+			}
+		},
+	})
 	kod.Register(&kod.Registration{
 		Name:      "github.com/go-kod/kod/examples/helloworld/HelloWorld",
 		Interface: reflect.TypeOf((*HelloWorld)(nil)).Elem(),
@@ -26,26 +58,6 @@ func init() {
 
 			return helloWorld_local_stub{
 				impl:        info.Impl.(HelloWorld),
-				interceptor: interceptor.Chain(interceptors),
-				name:        info.Name,
-			}
-		},
-	})
-	kod.Register(&kod.Registration{
-		Name:      "github.com/go-kod/kod/examples/helloworld/HelloWorldInterceptor",
-		Interface: reflect.TypeOf((*HelloWorldInterceptor)(nil)).Elem(),
-		Impl:      reflect.TypeOf(helloWorldInterceptor{}),
-		Refs:      ``,
-		LocalStubFn: func(ctx context.Context, info *kod.LocalStubFnInfo) any {
-			interceptors := info.Interceptors
-			if h, ok := info.Impl.(interface {
-				Interceptors() []interceptor.Interceptor
-			}); ok {
-				interceptors = append(interceptors, h.Interceptors()...)
-			}
-
-			return helloWorldInterceptor_local_stub{
-				impl:        info.Impl.(HelloWorldInterceptor),
 				interceptor: interceptor.Chain(interceptors),
 				name:        info.Name,
 			}
@@ -72,12 +84,10 @@ func init() {
 		},
 	})
 	kod.Register(&kod.Registration{
-		Name:      "github.com/go-kod/kod/Main",
-		Interface: reflect.TypeOf((*kod.Main)(nil)).Elem(),
-		Impl:      reflect.TypeOf(App{}),
-		Refs: `⟦bda493e9:KoDeDgE:github.com/go-kod/kod/Main→github.com/go-kod/kod/examples/helloworld/HelloWorld⟧,
-⟦b60b3708:KoDeDgE:github.com/go-kod/kod/Main→github.com/go-kod/kod/examples/helloworld/HelloWorldLazy⟧,
-⟦c811f6f3:KoDeDgE:github.com/go-kod/kod/Main→github.com/go-kod/kod/examples/helloworld/HelloWorldInterceptor⟧`,
+		Name:      "github.com/go-kod/kod/examples/helloworld/HelloWorldInterceptor",
+		Interface: reflect.TypeOf((*HelloWorldInterceptor)(nil)).Elem(),
+		Impl:      reflect.TypeOf(helloWorldInterceptor{}),
+		Refs:      ``,
 		LocalStubFn: func(ctx context.Context, info *kod.LocalStubFnInfo) any {
 			interceptors := info.Interceptors
 			if h, ok := info.Impl.(interface {
@@ -86,8 +96,8 @@ func init() {
 				interceptors = append(interceptors, h.Interceptors()...)
 			}
 
-			return main_local_stub{
-				impl:        info.Impl.(kod.Main),
+			return helloWorldInterceptor_local_stub{
+				impl:        info.Impl.(HelloWorldInterceptor),
 				interceptor: interceptor.Chain(interceptors),
 				name:        info.Name,
 			}
@@ -96,12 +106,22 @@ func init() {
 }
 
 // kod.InstanceOf checks.
-var _ kod.InstanceOf[HelloWorld] = (*helloWorld)(nil)
-var _ kod.InstanceOf[HelloWorldInterceptor] = (*helloWorldInterceptor)(nil)
-var _ kod.InstanceOf[HelloWorldLazy] = (*lazyHelloWorld)(nil)
 var _ kod.InstanceOf[kod.Main] = (*App)(nil)
+var _ kod.InstanceOf[HelloWorld] = (*helloWorld)(nil)
+var _ kod.InstanceOf[HelloWorldLazy] = (*lazyHelloWorld)(nil)
+var _ kod.InstanceOf[HelloWorldInterceptor] = (*helloWorldInterceptor)(nil)
 
 // Local stub implementations.
+
+// main_local_stub is a local stub implementation of [kod.Main].
+type main_local_stub struct {
+	impl        kod.Main
+	name        string
+	interceptor interceptor.Interceptor
+}
+
+// Check that main_local_stub implements the kod.Main interface.
+var _ kod.Main = (*main_local_stub)(nil)
 
 // helloWorld_local_stub is a local stub implementation of [HelloWorld].
 type helloWorld_local_stub struct {
@@ -128,40 +148,7 @@ func (s helloWorld_local_stub) SayHello(ctx context.Context) {
 	info := interceptor.CallInfo{
 		Impl:       s.impl,
 		Component:  s.name,
-		FullMethod: "github.com/go-kod/kod/examples/helloworld/HelloWorld.SayHello",
-		Method:     "SayHello",
-	}
-
-	_ = s.interceptor(ctx, info, []any{}, []any{}, call)
-}
-
-// helloWorldInterceptor_local_stub is a local stub implementation of [HelloWorldInterceptor].
-type helloWorldInterceptor_local_stub struct {
-	impl        HelloWorldInterceptor
-	name        string
-	interceptor interceptor.Interceptor
-}
-
-// Check that helloWorldInterceptor_local_stub implements the HelloWorldInterceptor interface.
-var _ HelloWorldInterceptor = (*helloWorldInterceptor_local_stub)(nil)
-
-func (s helloWorldInterceptor_local_stub) SayHello(ctx context.Context) {
-
-	if s.interceptor == nil {
-		s.impl.SayHello(ctx)
-		return
-	}
-
-	call := func(ctx context.Context, info interceptor.CallInfo, req, res []any) (err error) {
-		s.impl.SayHello(ctx)
-		return
-	}
-
-	info := interceptor.CallInfo{
-		Impl:       s.impl,
-		Component:  s.name,
-		FullMethod: "github.com/go-kod/kod/examples/helloworld/HelloWorldInterceptor.SayHello",
-		Method:     "SayHello",
+		FullMethod: HelloWorld_SayHello_FullMethodName,
 	}
 
 	_ = s.interceptor(ctx, info, []any{}, []any{}, call)
@@ -192,20 +179,39 @@ func (s helloWorldLazy_local_stub) SayHello(ctx context.Context) {
 	info := interceptor.CallInfo{
 		Impl:       s.impl,
 		Component:  s.name,
-		FullMethod: "github.com/go-kod/kod/examples/helloworld/HelloWorldLazy.SayHello",
-		Method:     "SayHello",
+		FullMethod: HelloWorldLazy_SayHello_FullMethodName,
 	}
 
 	_ = s.interceptor(ctx, info, []any{}, []any{}, call)
 }
 
-// main_local_stub is a local stub implementation of [kod.Main].
-type main_local_stub struct {
-	impl        kod.Main
+// helloWorldInterceptor_local_stub is a local stub implementation of [HelloWorldInterceptor].
+type helloWorldInterceptor_local_stub struct {
+	impl        HelloWorldInterceptor
 	name        string
 	interceptor interceptor.Interceptor
 }
 
-// Check that main_local_stub implements the kod.Main interface.
-var _ kod.Main = (*main_local_stub)(nil)
+// Check that helloWorldInterceptor_local_stub implements the HelloWorldInterceptor interface.
+var _ HelloWorldInterceptor = (*helloWorldInterceptor_local_stub)(nil)
 
+func (s helloWorldInterceptor_local_stub) SayHello(ctx context.Context) {
+
+	if s.interceptor == nil {
+		s.impl.SayHello(ctx)
+		return
+	}
+
+	call := func(ctx context.Context, info interceptor.CallInfo, req, res []any) (err error) {
+		s.impl.SayHello(ctx)
+		return
+	}
+
+	info := interceptor.CallInfo{
+		Impl:       s.impl,
+		Component:  s.name,
+		FullMethod: HelloWorldInterceptor_SayHello_FullMethodName,
+	}
+
+	_ = s.interceptor(ctx, info, []any{}, []any{}, call)
+}

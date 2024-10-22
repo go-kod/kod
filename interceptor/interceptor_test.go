@@ -272,7 +272,7 @@ func TestIsMethod(t *testing.T) {
 			name:   "Method matches",
 			method: "test",
 			info: CallInfo{
-				Method: "test",
+				FullMethod: "test",
 			},
 			expected: true,
 		},
@@ -280,7 +280,7 @@ func TestIsMethod(t *testing.T) {
 			name:   "Method does not match",
 			method: "test",
 			info: CallInfo{
-				Method: "other",
+				FullMethod: "other",
 			},
 			expected: false,
 		},

@@ -12,8 +12,6 @@ type CallInfo struct {
 	Component string
 	// The full name of the called method, in the format of "package/service.method".
 	FullMethod string
-	// The name of the method.
-	Method string
 }
 
 // HandleFunc is the type of the function invoked by Components.
@@ -102,6 +100,6 @@ func Not(condition Condition) Condition {
 // IsMethod returns a condition that checks if the method name matches the given method.
 func IsMethod(method string) Condition {
 	return func(_ context.Context, info CallInfo) bool {
-		return info.Method == method
+		return info.FullMethod == method
 	}
 }
