@@ -23,6 +23,7 @@ import (
 type Mocktest1Controller struct {
 	ctrl     *gomock.Controller
 	recorder *Mocktest1ControllerMockRecorder
+	isgomock struct{}
 }
 
 // Mocktest1ControllerMockRecorder is the mock recorder for Mocktest1Controller.
@@ -46,6 +47,7 @@ func (m *Mocktest1Controller) EXPECT() *Mocktest1ControllerMockRecorder {
 type MocktestService struct {
 	ctrl     *gomock.Controller
 	recorder *MocktestServiceMockRecorder
+	isgomock struct{}
 }
 
 // MocktestServiceMockRecorder is the mock recorder for MocktestService.
@@ -107,6 +109,7 @@ func (c *MocktestServiceFooCall) DoAndReturn(f func(context.Context) error) *Moc
 type MocktestRepository struct {
 	ctrl     *gomock.Controller
 	recorder *MocktestRepositoryMockRecorder
+	isgomock struct{}
 }
 
 // MocktestRepositoryMockRecorder is the mock recorder for MocktestRepository.
@@ -168,6 +171,7 @@ func (c *MocktestRepositoryFooCall) DoAndReturn(f func(context.Context) error) *
 type MockTest1Component struct {
 	ctrl     *gomock.Controller
 	recorder *MockTest1ComponentMockRecorder
+	isgomock struct{}
 }
 
 // MockTest1ComponentMockRecorder is the mock recorder for MockTest1Component.
@@ -230,6 +234,7 @@ func (c *MockTest1ComponentFooCall) DoAndReturn(f func(context.Context, *FooReq)
 type MockTest2Component struct {
 	ctrl     *gomock.Controller
 	recorder *MockTest2ComponentMockRecorder
+	isgomock struct{}
 }
 
 // MockTest2ComponentMockRecorder is the mock recorder for MockTest2Component.
@@ -291,6 +296,7 @@ func (c *MockTest2ComponentGetClientCall) DoAndReturn(f func() *http.Client) *Mo
 type MockctxInterface struct {
 	ctrl     *gomock.Controller
 	recorder *MockctxInterfaceMockRecorder
+	isgomock struct{}
 }
 
 // MockctxInterfaceMockRecorder is the mock recorder for MockctxInterface.
@@ -350,6 +356,7 @@ func (c *MockctxInterfaceFooCall) DoAndReturn(f func(context.Context)) *MockctxI
 type MocktestEchoController struct {
 	ctrl     *gomock.Controller
 	recorder *MocktestEchoControllerMockRecorder
+	isgomock struct{}
 }
 
 // MocktestEchoControllerMockRecorder is the mock recorder for MocktestEchoController.
@@ -449,6 +456,7 @@ func (c_2 *MocktestEchoControllerHelloCall) DoAndReturn(f func(echo.Context) err
 type MocktestGinController struct {
 	ctrl     *gomock.Controller
 	recorder *MocktestGinControllerMockRecorder
+	isgomock struct{}
 }
 
 // MocktestGinControllerMockRecorder is the mock recorder for MocktestGinController.
@@ -508,6 +516,7 @@ func (c_2 *MocktestGinControllerHelloCall) DoAndReturn(f func(*gin.Context)) *Mo
 type MockHTTPController struct {
 	ctrl     *gomock.Controller
 	recorder *MockHTTPControllerMockRecorder
+	isgomock struct{}
 }
 
 // MockHTTPControllerMockRecorder is the mock recorder for MockHTTPController.
@@ -567,6 +576,7 @@ func (c *MockHTTPControllerFooCall) DoAndReturn(f func(http.ResponseWriter, *htt
 type MockInterceptorRetry struct {
 	ctrl     *gomock.Controller
 	recorder *MockInterceptorRetryMockRecorder
+	isgomock struct{}
 }
 
 // MockInterceptorRetryMockRecorder is the mock recorder for MockInterceptorRetry.
@@ -666,6 +676,7 @@ func (c *MockInterceptorRetryTestNormalCall) DoAndReturn(f func(context.Context)
 type MockLazyInitImpl struct {
 	ctrl     *gomock.Controller
 	recorder *MockLazyInitImplMockRecorder
+	isgomock struct{}
 }
 
 // MockLazyInitImplMockRecorder is the mock recorder for MockLazyInitImpl.
@@ -725,6 +736,7 @@ func (c *MockLazyInitImplTryCall) DoAndReturn(f func(context.Context)) *MockLazy
 type MockLazyInitComponent struct {
 	ctrl     *gomock.Controller
 	recorder *MockLazyInitComponentMockRecorder
+	isgomock struct{}
 }
 
 // MockLazyInitComponentMockRecorder is the mock recorder for MockLazyInitComponent.
@@ -786,6 +798,7 @@ func (c *MockLazyInitComponentTryCall) DoAndReturn(f func(context.Context) error
 type MockpanicCaseInterface struct {
 	ctrl     *gomock.Controller
 	recorder *MockpanicCaseInterfaceMockRecorder
+	isgomock struct{}
 }
 
 // MockpanicCaseInterfaceMockRecorder is the mock recorder for MockpanicCaseInterface.
@@ -845,6 +858,7 @@ func (c *MockpanicCaseInterfaceTestPanicCall) DoAndReturn(f func(context.Context
 type MockpanicNoRecvoeryCaseInterface struct {
 	ctrl     *gomock.Controller
 	recorder *MockpanicNoRecvoeryCaseInterfaceMockRecorder
+	isgomock struct{}
 }
 
 // MockpanicNoRecvoeryCaseInterfaceMockRecorder is the mock recorder for MockpanicNoRecvoeryCaseInterface.

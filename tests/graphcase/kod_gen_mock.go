@@ -22,6 +22,7 @@ import (
 type Mocktest1Controller struct {
 	ctrl     *gomock.Controller
 	recorder *Mocktest1ControllerMockRecorder
+	isgomock struct{}
 }
 
 // Mocktest1ControllerMockRecorder is the mock recorder for Mocktest1Controller.
@@ -81,6 +82,7 @@ func (c *Mocktest1ControllerFooCall) DoAndReturn(f func(*gin.Context)) *Mocktest
 type MockHTTPController struct {
 	ctrl     *gomock.Controller
 	recorder *MockHTTPControllerMockRecorder
+	isgomock struct{}
 }
 
 // MockHTTPControllerMockRecorder is the mock recorder for MockHTTPController.
@@ -140,6 +142,7 @@ func (c *MockHTTPControllerFooCall) DoAndReturn(f func(http.ResponseWriter, http
 type MocktestService struct {
 	ctrl     *gomock.Controller
 	recorder *MocktestServiceMockRecorder
+	isgomock struct{}
 }
 
 // MocktestServiceMockRecorder is the mock recorder for MocktestService.
@@ -201,6 +204,7 @@ func (c *MocktestServiceFooCall) DoAndReturn(f func(context.Context) error) *Moc
 type MocktestModel struct {
 	ctrl     *gomock.Controller
 	recorder *MocktestModelMockRecorder
+	isgomock struct{}
 }
 
 // MocktestModelMockRecorder is the mock recorder for MocktestModel.
@@ -262,6 +266,7 @@ func (c *MocktestModelFooCall) DoAndReturn(f func(context.Context) error) *Mockt
 type MockTest1Component struct {
 	ctrl     *gomock.Controller
 	recorder *MockTest1ComponentMockRecorder
+	isgomock struct{}
 }
 
 // MockTest1ComponentMockRecorder is the mock recorder for MockTest1Component.

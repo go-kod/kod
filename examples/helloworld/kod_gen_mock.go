@@ -20,6 +20,7 @@ import (
 type MockHelloWorld struct {
 	ctrl     *gomock.Controller
 	recorder *MockHelloWorldMockRecorder
+	isgomock struct{}
 }
 
 // MockHelloWorldMockRecorder is the mock recorder for MockHelloWorld.
@@ -79,6 +80,7 @@ func (c *MockHelloWorldSayHelloCall) DoAndReturn(f func(context.Context)) *MockH
 type MockHelloWorldLazy struct {
 	ctrl     *gomock.Controller
 	recorder *MockHelloWorldLazyMockRecorder
+	isgomock struct{}
 }
 
 // MockHelloWorldLazyMockRecorder is the mock recorder for MockHelloWorldLazy.
@@ -138,6 +140,7 @@ func (c *MockHelloWorldLazySayHelloCall) DoAndReturn(f func(context.Context)) *M
 type MockHelloWorldInterceptor struct {
 	ctrl     *gomock.Controller
 	recorder *MockHelloWorldInterceptorMockRecorder
+	isgomock struct{}
 }
 
 // MockHelloWorldInterceptorMockRecorder is the mock recorder for MockHelloWorldInterceptor.
