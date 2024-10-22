@@ -20,6 +20,7 @@ import (
 type MockTest1Component struct {
 	ctrl     *gomock.Controller
 	recorder *MockTest1ComponentMockRecorder
+	isgomock struct{}
 }
 
 // MockTest1ComponentMockRecorder is the mock recorder for MockTest1Component.
@@ -81,6 +82,7 @@ func (c *MockTest1ComponentFooCall) DoAndReturn(f func(context.Context, *FooReq)
 type MockTest2Component struct {
 	ctrl     *gomock.Controller
 	recorder *MockTest2ComponentMockRecorder
+	isgomock struct{}
 }
 
 // MockTest2ComponentMockRecorder is the mock recorder for MockTest2Component.
