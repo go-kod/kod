@@ -19,7 +19,7 @@ func Interceptor() interceptor.Interceptor {
 		attrs := []slog.Attr{
 			slog.Any("req", req),
 			slog.Any("reply", reply),
-			slog.String("method", info.Method),
+			slog.String("method", info.FullMethod),
 			slog.Int64("cost", time.Since(now).Milliseconds()),
 		}
 

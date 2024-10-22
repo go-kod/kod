@@ -10,6 +10,9 @@ import (
 	"reflect"
 )
 
+// Full method names for components.
+const ()
+
 func init() {
 	kod.Register(&kod.Registration{
 		Name:      "github.com/go-kod/kod/Main",
