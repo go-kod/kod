@@ -20,16 +20,9 @@ func init() {
 		Impl:      reflect.TypeOf(refStructImpl{}),
 		Refs:      `⟦b915993d:KoDeDgE:github.com/go-kod/kod/Main→github.com/go-kod/kod/tests/case5/testRefStruct1⟧`,
 		LocalStubFn: func(ctx context.Context, info *kod.LocalStubFnInfo) any {
-			interceptors := info.Interceptors
-			if h, ok := info.Impl.(interface {
-				Interceptors() []interceptor.Interceptor
-			}); ok {
-				interceptors = append(interceptors, h.Interceptors()...)
-			}
-
 			return main_local_stub{
 				impl:        info.Impl.(kod.Main),
-				interceptor: interceptor.Chain(interceptors),
+				interceptor: info.Interceptor,
 				name:        info.Name,
 			}
 		},
@@ -40,16 +33,9 @@ func init() {
 		Impl:      reflect.TypeOf(testRefStruct1{}),
 		Refs:      ``,
 		LocalStubFn: func(ctx context.Context, info *kod.LocalStubFnInfo) any {
-			interceptors := info.Interceptors
-			if h, ok := info.Impl.(interface {
-				Interceptors() []interceptor.Interceptor
-			}); ok {
-				interceptors = append(interceptors, h.Interceptors()...)
-			}
-
 			return testRefStruct1_local_stub{
 				impl:        info.Impl.(TestRefStruct1),
-				interceptor: interceptor.Chain(interceptors),
+				interceptor: info.Interceptor,
 				name:        info.Name,
 			}
 		},

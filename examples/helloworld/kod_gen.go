@@ -13,11 +13,11 @@ import (
 // Full method names for components.
 const (
 	// HelloWorld_SayHello_FullMethodName is the full name of the method [helloWorld.SayHello].
-	HelloWorld_SayHello_FullMethodName = "github.com/go-kod/kod/examples/helloworld/HelloWorld"
+	HelloWorld_SayHello_FullMethodName = "github.com/go-kod/kod/examples/helloworld/HelloWorld.SayHello"
 	// HelloWorldLazy_SayHello_FullMethodName is the full name of the method [lazyHelloWorld.SayHello].
-	HelloWorldLazy_SayHello_FullMethodName = "github.com/go-kod/kod/examples/helloworld/HelloWorldLazy"
+	HelloWorldLazy_SayHello_FullMethodName = "github.com/go-kod/kod/examples/helloworld/HelloWorldLazy.SayHello"
 	// HelloWorldInterceptor_SayHello_FullMethodName is the full name of the method [helloWorldInterceptor.SayHello].
-	HelloWorldInterceptor_SayHello_FullMethodName = "github.com/go-kod/kod/examples/helloworld/HelloWorldInterceptor"
+	HelloWorldInterceptor_SayHello_FullMethodName = "github.com/go-kod/kod/examples/helloworld/HelloWorldInterceptor.SayHello"
 )
 
 func init() {
@@ -29,16 +29,9 @@ func init() {
 ⟦b60b3708:KoDeDgE:github.com/go-kod/kod/Main→github.com/go-kod/kod/examples/helloworld/HelloWorldLazy⟧,
 ⟦c811f6f3:KoDeDgE:github.com/go-kod/kod/Main→github.com/go-kod/kod/examples/helloworld/HelloWorldInterceptor⟧`,
 		LocalStubFn: func(ctx context.Context, info *kod.LocalStubFnInfo) any {
-			interceptors := info.Interceptors
-			if h, ok := info.Impl.(interface {
-				Interceptors() []interceptor.Interceptor
-			}); ok {
-				interceptors = append(interceptors, h.Interceptors()...)
-			}
-
 			return main_local_stub{
 				impl:        info.Impl.(kod.Main),
-				interceptor: interceptor.Chain(interceptors),
+				interceptor: info.Interceptor,
 				name:        info.Name,
 			}
 		},
@@ -49,16 +42,9 @@ func init() {
 		Impl:      reflect.TypeOf(helloWorld{}),
 		Refs:      ``,
 		LocalStubFn: func(ctx context.Context, info *kod.LocalStubFnInfo) any {
-			interceptors := info.Interceptors
-			if h, ok := info.Impl.(interface {
-				Interceptors() []interceptor.Interceptor
-			}); ok {
-				interceptors = append(interceptors, h.Interceptors()...)
-			}
-
 			return helloWorld_local_stub{
 				impl:        info.Impl.(HelloWorld),
-				interceptor: interceptor.Chain(interceptors),
+				interceptor: info.Interceptor,
 				name:        info.Name,
 			}
 		},
@@ -69,16 +55,9 @@ func init() {
 		Impl:      reflect.TypeOf(lazyHelloWorld{}),
 		Refs:      ``,
 		LocalStubFn: func(ctx context.Context, info *kod.LocalStubFnInfo) any {
-			interceptors := info.Interceptors
-			if h, ok := info.Impl.(interface {
-				Interceptors() []interceptor.Interceptor
-			}); ok {
-				interceptors = append(interceptors, h.Interceptors()...)
-			}
-
 			return helloWorldLazy_local_stub{
 				impl:        info.Impl.(HelloWorldLazy),
-				interceptor: interceptor.Chain(interceptors),
+				interceptor: info.Interceptor,
 				name:        info.Name,
 			}
 		},
@@ -89,16 +68,9 @@ func init() {
 		Impl:      reflect.TypeOf(helloWorldInterceptor{}),
 		Refs:      ``,
 		LocalStubFn: func(ctx context.Context, info *kod.LocalStubFnInfo) any {
-			interceptors := info.Interceptors
-			if h, ok := info.Impl.(interface {
-				Interceptors() []interceptor.Interceptor
-			}); ok {
-				interceptors = append(interceptors, h.Interceptors()...)
-			}
-
 			return helloWorldInterceptor_local_stub{
 				impl:        info.Impl.(HelloWorldInterceptor),
-				interceptor: interceptor.Chain(interceptors),
+				interceptor: info.Interceptor,
 				name:        info.Name,
 			}
 		},

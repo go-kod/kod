@@ -9,6 +9,7 @@ import (
 
 	"github.com/dominikbraun/graph"
 
+	"github.com/go-kod/kod/interceptor"
 	"github.com/go-kod/kod/internal/callgraph"
 	"github.com/go-kod/kod/internal/hooks"
 	"github.com/go-kod/kod/internal/registry"
@@ -53,11 +54,20 @@ func (k *Kod) getIntf(ctx context.Context, t reflect.Type) (any, error) {
 		return nil, err
 	}
 
-	intf = reg.LocalStubFn(ctx, &LocalStubFnInfo{
-		Name:         reg.Name,
-		Impl:         comp,
-		Interceptors: k.opts.interceptors,
-	})
+	interceptors := k.opts.interceptors
+	if h, ok := comp.(interface {
+		Interceptors() []interceptor.Interceptor
+	}); ok {
+		interceptors = append(interceptors, h.Interceptors()...)
+	}
+
+	info := &LocalStubFnInfo{
+		Name:        reg.Name,
+		Impl:        comp,
+		Interceptor: interceptor.Chain(interceptors),
+	}
+
+	intf = reg.LocalStubFn(ctx, info)
 
 	k.components[reg.Name] = intf
 

@@ -15,15 +15,15 @@ import (
 // Full method names for components.
 const (
 	// test1Controller_Foo_FullMethodName is the full name of the method [test1ControllerImpl.Foo].
-	test1Controller_Foo_FullMethodName = "github.com/go-kod/kod/tests/graphcase/test1Controller"
+	test1Controller_Foo_FullMethodName = "github.com/go-kod/kod/tests/graphcase/test1Controller.Foo"
 	// HTTPController_Foo_FullMethodName is the full name of the method [httpControllerImpl.Foo].
-	HTTPController_Foo_FullMethodName = "github.com/go-kod/kod/tests/graphcase/HTTPController"
+	HTTPController_Foo_FullMethodName = "github.com/go-kod/kod/tests/graphcase/HTTPController.Foo"
 	// testService_Foo_FullMethodName is the full name of the method [serviceImpl.Foo].
-	testService_Foo_FullMethodName = "github.com/go-kod/kod/tests/graphcase/testService"
+	testService_Foo_FullMethodName = "github.com/go-kod/kod/tests/graphcase/testService.Foo"
 	// testModel_Foo_FullMethodName is the full name of the method [modelImpl.Foo].
-	testModel_Foo_FullMethodName = "github.com/go-kod/kod/tests/graphcase/testModel"
+	testModel_Foo_FullMethodName = "github.com/go-kod/kod/tests/graphcase/testModel.Foo"
 	// Test1Component_Foo_FullMethodName is the full name of the method [test1Component.Foo].
-	Test1Component_Foo_FullMethodName = "github.com/go-kod/kod/tests/graphcase/Test1Component"
+	Test1Component_Foo_FullMethodName = "github.com/go-kod/kod/tests/graphcase/Test1Component.Foo"
 )
 
 func init() {
@@ -34,16 +34,9 @@ func init() {
 		Refs: `⟦54c533d5:KoDeDgE:github.com/go-kod/kod/tests/graphcase/test1Controller→github.com/go-kod/kod/tests/graphcase/HTTPController⟧,
 ⟦f932c69a:KoDeDgE:github.com/go-kod/kod/tests/graphcase/test1Controller→github.com/go-kod/kod/tests/graphcase/Test1Component⟧`,
 		LocalStubFn: func(ctx context.Context, info *kod.LocalStubFnInfo) any {
-			interceptors := info.Interceptors
-			if h, ok := info.Impl.(interface {
-				Interceptors() []interceptor.Interceptor
-			}); ok {
-				interceptors = append(interceptors, h.Interceptors()...)
-			}
-
 			return test1Controller_local_stub{
 				impl:        info.Impl.(test1Controller),
-				interceptor: interceptor.Chain(interceptors),
+				interceptor: info.Interceptor,
 				name:        info.Name,
 			}
 		},
@@ -54,16 +47,9 @@ func init() {
 		Impl:      reflect.TypeOf(httpControllerImpl{}),
 		Refs:      `⟦38b48264:KoDeDgE:github.com/go-kod/kod/tests/graphcase/HTTPController→github.com/go-kod/kod/tests/graphcase/testService⟧`,
 		LocalStubFn: func(ctx context.Context, info *kod.LocalStubFnInfo) any {
-			interceptors := info.Interceptors
-			if h, ok := info.Impl.(interface {
-				Interceptors() []interceptor.Interceptor
-			}); ok {
-				interceptors = append(interceptors, h.Interceptors()...)
-			}
-
 			return hTTPController_local_stub{
 				impl:        info.Impl.(HTTPController),
-				interceptor: interceptor.Chain(interceptors),
+				interceptor: info.Interceptor,
 				name:        info.Name,
 			}
 		},
@@ -74,16 +60,9 @@ func init() {
 		Impl:      reflect.TypeOf(serviceImpl{}),
 		Refs:      `⟦e691e13e:KoDeDgE:github.com/go-kod/kod/tests/graphcase/testService→github.com/go-kod/kod/tests/graphcase/testModel⟧`,
 		LocalStubFn: func(ctx context.Context, info *kod.LocalStubFnInfo) any {
-			interceptors := info.Interceptors
-			if h, ok := info.Impl.(interface {
-				Interceptors() []interceptor.Interceptor
-			}); ok {
-				interceptors = append(interceptors, h.Interceptors()...)
-			}
-
 			return testService_local_stub{
 				impl:        info.Impl.(testService),
-				interceptor: interceptor.Chain(interceptors),
+				interceptor: info.Interceptor,
 				name:        info.Name,
 			}
 		},
@@ -94,16 +73,9 @@ func init() {
 		Impl:      reflect.TypeOf(modelImpl{}),
 		Refs:      ``,
 		LocalStubFn: func(ctx context.Context, info *kod.LocalStubFnInfo) any {
-			interceptors := info.Interceptors
-			if h, ok := info.Impl.(interface {
-				Interceptors() []interceptor.Interceptor
-			}); ok {
-				interceptors = append(interceptors, h.Interceptors()...)
-			}
-
 			return testModel_local_stub{
 				impl:        info.Impl.(testModel),
-				interceptor: interceptor.Chain(interceptors),
+				interceptor: info.Interceptor,
 				name:        info.Name,
 			}
 		},
@@ -114,16 +86,9 @@ func init() {
 		Impl:      reflect.TypeOf(test1Component{}),
 		Refs:      ``,
 		LocalStubFn: func(ctx context.Context, info *kod.LocalStubFnInfo) any {
-			interceptors := info.Interceptors
-			if h, ok := info.Impl.(interface {
-				Interceptors() []interceptor.Interceptor
-			}); ok {
-				interceptors = append(interceptors, h.Interceptors()...)
-			}
-
 			return test1Component_local_stub{
 				impl:        info.Impl.(Test1Component),
-				interceptor: interceptor.Chain(interceptors),
+				interceptor: info.Interceptor,
 				name:        info.Name,
 			}
 		},
@@ -135,16 +100,9 @@ func init() {
 		Refs: `⟦b628eb85:KoDeDgE:github.com/go-kod/kod/Main→github.com/go-kod/kod/tests/graphcase/test1Controller⟧,
 ⟦75680c21:KoDeDgE:github.com/go-kod/kod/Main→github.com/go-kod/kod/tests/graphcase/Test1Component⟧`,
 		LocalStubFn: func(ctx context.Context, info *kod.LocalStubFnInfo) any {
-			interceptors := info.Interceptors
-			if h, ok := info.Impl.(interface {
-				Interceptors() []interceptor.Interceptor
-			}); ok {
-				interceptors = append(interceptors, h.Interceptors()...)
-			}
-
 			return main_local_stub{
 				impl:        info.Impl.(kod.Main),
-				interceptor: interceptor.Chain(interceptors),
+				interceptor: info.Interceptor,
 				name:        info.Name,
 			}
 		},

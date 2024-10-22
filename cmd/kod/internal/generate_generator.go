@@ -411,6 +411,11 @@ func (c *component) fullIntfName() string {
 	return fullName(c.intf)
 }
 
+// fullIntfName returns the full package-prefixed component interface name.
+func (c *component) fullFullMethodName(methodName string) string {
+	return c.fullIntfName() + "." + methodName
+}
+
 // methods returns the component interface's methods.
 func (c *component) methods() []*types.Func {
 	underlying := c.intf.Underlying().(*types.Interface)
@@ -660,7 +665,7 @@ func (g *generator) generateFullMethodNames(p printFn) {
 	for _, comp := range g.components {
 		for _, m := range comp.methods() {
 			p(`// %s is the full name of the method [%s.%s].`, comp.fullMethodNameVar(m.Name()), comp.implName(), m.Name())
-			p(`%s = %q`, comp.fullMethodNameVar(m.Name()), comp.fullIntfName())
+			p(`%s = %q`, comp.fullMethodNameVar(m.Name()), comp.fullFullMethodName(m.Name()))
 		}
 	}
 	p(`)`)
@@ -692,24 +697,15 @@ func (g *generator) generateRegisteredComponents(p printFn) {
 	for _, comp := range g.components {
 		name := comp.intfName()
 		myName := comp.fullIntfName()
-		var inits strings.Builder
-
-		inits.Reset()
 
 		g.interceptor()
 		localStubFn := fmt.Sprintf(`func(ctx context.Context, info *kod.LocalStubFnInfo) any {
-			interceptors := info.Interceptors
-			if h, ok := info.Impl.(interface{ Interceptors() []interceptor.Interceptor }); ok {
-				interceptors = append(interceptors, h.Interceptors()...)
-			}
-
-			%s
 			return %s_local_stub{
 				impl: info.Impl.(%s),
-				interceptor: interceptor.Chain(interceptors),
+				interceptor: info.Interceptor,
 				name: info.Name,
 			} }`,
-			inits.String(), notExported(name), g.componentRef(comp))
+			notExported(name), g.componentRef(comp))
 		refNames := make([]string, 0, len(comp.refs))
 		for _, ref := range comp.refs {
 			refNames = append(refNames, callgraph.MakeEdgeString(comp.fullIntfName(), fullName(ref)))
