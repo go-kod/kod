@@ -57,7 +57,6 @@ func init() {
 			return test1Controller_local_stub{
 				impl:        info.Impl.(test1Controller),
 				interceptor: info.Interceptor,
-				name:        info.Name,
 			}
 		},
 	})
@@ -70,7 +69,6 @@ func init() {
 			return testService_local_stub{
 				impl:        info.Impl.(testService),
 				interceptor: info.Interceptor,
-				name:        info.Name,
 			}
 		},
 	})
@@ -83,7 +81,6 @@ func init() {
 			return testRepository_local_stub{
 				impl:        info.Impl.(testRepository),
 				interceptor: info.Interceptor,
-				name:        info.Name,
 			}
 		},
 	})
@@ -96,7 +93,6 @@ func init() {
 			return test1Component_local_stub{
 				impl:        info.Impl.(Test1Component),
 				interceptor: info.Interceptor,
-				name:        info.Name,
 			}
 		},
 	})
@@ -109,7 +105,6 @@ func init() {
 			return test2Component_local_stub{
 				impl:        info.Impl.(Test2Component),
 				interceptor: info.Interceptor,
-				name:        info.Name,
 			}
 		},
 	})
@@ -129,7 +124,6 @@ func init() {
 			return ctxInterface_local_stub{
 				impl:        info.Impl.(ctxInterface),
 				interceptor: info.Interceptor,
-				name:        info.Name,
 			}
 		},
 	})
@@ -142,7 +136,6 @@ func init() {
 			return testEchoController_local_stub{
 				impl:        info.Impl.(testEchoController),
 				interceptor: info.Interceptor,
-				name:        info.Name,
 			}
 		},
 	})
@@ -155,7 +148,6 @@ func init() {
 			return testGinController_local_stub{
 				impl:        info.Impl.(testGinController),
 				interceptor: info.Interceptor,
-				name:        info.Name,
 			}
 		},
 	})
@@ -168,7 +160,6 @@ func init() {
 			return hTTPController_local_stub{
 				impl:        info.Impl.(HTTPController),
 				interceptor: info.Interceptor,
-				name:        info.Name,
 			}
 		},
 	})
@@ -181,7 +172,6 @@ func init() {
 			return interceptorRetry_local_stub{
 				impl:        info.Impl.(InterceptorRetry),
 				interceptor: info.Interceptor,
-				name:        info.Name,
 			}
 		},
 	})
@@ -194,7 +184,6 @@ func init() {
 			return lazyInitImpl_local_stub{
 				impl:        info.Impl.(LazyInitImpl),
 				interceptor: info.Interceptor,
-				name:        info.Name,
 			}
 		},
 	})
@@ -207,7 +196,6 @@ func init() {
 			return lazyInitComponent_local_stub{
 				impl:        info.Impl.(LazyInitComponent),
 				interceptor: info.Interceptor,
-				name:        info.Name,
 			}
 		},
 	})
@@ -220,7 +208,6 @@ func init() {
 			return panicCaseInterface_local_stub{
 				impl:        info.Impl.(panicCaseInterface),
 				interceptor: info.Interceptor,
-				name:        info.Name,
 			}
 		},
 	})
@@ -233,7 +220,6 @@ func init() {
 			return panicNoRecvoeryCaseInterface_local_stub{
 				impl:        info.Impl.(panicNoRecvoeryCaseInterface),
 				interceptor: info.Interceptor,
-				name:        info.Name,
 			}
 		},
 	})
@@ -261,7 +247,6 @@ var _ kod.InstanceOf[panicNoRecvoeryCaseInterface] = (*panicNoRecvoeryCase)(nil)
 // test1Controller_local_stub is a local stub implementation of [test1Controller].
 type test1Controller_local_stub struct {
 	impl        test1Controller
-	name        string
 	interceptor interceptor.Interceptor
 }
 
@@ -271,7 +256,6 @@ var _ test1Controller = (*test1Controller_local_stub)(nil)
 // testService_local_stub is a local stub implementation of [testService].
 type testService_local_stub struct {
 	impl        testService
-	name        string
 	interceptor interceptor.Interceptor
 }
 
@@ -293,7 +277,6 @@ func (s testService_local_stub) Foo(ctx context.Context) (err error) {
 
 	info := interceptor.CallInfo{
 		Impl:       s.impl,
-		Component:  s.name,
 		FullMethod: testService_Foo_FullMethodName,
 	}
 
@@ -304,7 +287,6 @@ func (s testService_local_stub) Foo(ctx context.Context) (err error) {
 // testRepository_local_stub is a local stub implementation of [testRepository].
 type testRepository_local_stub struct {
 	impl        testRepository
-	name        string
 	interceptor interceptor.Interceptor
 }
 
@@ -326,7 +308,6 @@ func (s testRepository_local_stub) Foo(ctx context.Context) (err error) {
 
 	info := interceptor.CallInfo{
 		Impl:       s.impl,
-		Component:  s.name,
 		FullMethod: testRepository_Foo_FullMethodName,
 	}
 
@@ -337,7 +318,6 @@ func (s testRepository_local_stub) Foo(ctx context.Context) (err error) {
 // test1Component_local_stub is a local stub implementation of [Test1Component].
 type test1Component_local_stub struct {
 	impl        Test1Component
-	name        string
 	interceptor interceptor.Interceptor
 }
 
@@ -360,7 +340,6 @@ func (s test1Component_local_stub) Foo(ctx context.Context, a1 *FooReq) (r0 *Foo
 
 	info := interceptor.CallInfo{
 		Impl:       s.impl,
-		Component:  s.name,
 		FullMethod: Test1Component_Foo_FullMethodName,
 	}
 
@@ -371,7 +350,6 @@ func (s test1Component_local_stub) Foo(ctx context.Context, a1 *FooReq) (r0 *Foo
 // test2Component_local_stub is a local stub implementation of [Test2Component].
 type test2Component_local_stub struct {
 	impl        Test2Component
-	name        string
 	interceptor interceptor.Interceptor
 }
 
@@ -385,20 +363,9 @@ func (s test2Component_local_stub) GetClient() (r0 *http.Client) {
 	return
 }
 
-// main_local_stub is a local stub implementation of [kod.Main].
-type main_local_stub struct {
-	impl        kod.Main
-	name        string
-	interceptor interceptor.Interceptor
-}
-
-// Check that [main_local_stub] implements the [kod.Main] interface.
-var _ kod.Main = (*main_local_stub)(nil)
-
 // ctxInterface_local_stub is a local stub implementation of [ctxInterface].
 type ctxInterface_local_stub struct {
 	impl        ctxInterface
-	name        string
 	interceptor interceptor.Interceptor
 }
 
@@ -420,7 +387,6 @@ func (s ctxInterface_local_stub) Foo(ctx context.Context) {
 
 	info := interceptor.CallInfo{
 		Impl:       s.impl,
-		Component:  s.name,
 		FullMethod: ctxInterface_Foo_FullMethodName,
 	}
 
@@ -430,7 +396,6 @@ func (s ctxInterface_local_stub) Foo(ctx context.Context) {
 // testEchoController_local_stub is a local stub implementation of [testEchoController].
 type testEchoController_local_stub struct {
 	impl        testEchoController
-	name        string
 	interceptor interceptor.Interceptor
 }
 
@@ -454,7 +419,6 @@ func (s testEchoController_local_stub) Hello(a0 echo.Context) (err error) {
 // testGinController_local_stub is a local stub implementation of [testGinController].
 type testGinController_local_stub struct {
 	impl        testGinController
-	name        string
 	interceptor interceptor.Interceptor
 }
 
@@ -471,7 +435,6 @@ func (s testGinController_local_stub) Hello(a0 *gin.Context) {
 // hTTPController_local_stub is a local stub implementation of [HTTPController].
 type hTTPController_local_stub struct {
 	impl        HTTPController
-	name        string
 	interceptor interceptor.Interceptor
 }
 
@@ -488,7 +451,6 @@ func (s hTTPController_local_stub) Foo(a0 http.ResponseWriter, a1 *http.Request)
 // interceptorRetry_local_stub is a local stub implementation of [InterceptorRetry].
 type interceptorRetry_local_stub struct {
 	impl        InterceptorRetry
-	name        string
 	interceptor interceptor.Interceptor
 }
 
@@ -510,7 +472,6 @@ func (s interceptorRetry_local_stub) TestError(ctx context.Context) (err error) 
 
 	info := interceptor.CallInfo{
 		Impl:       s.impl,
-		Component:  s.name,
 		FullMethod: InterceptorRetry_TestError_FullMethodName,
 	}
 
@@ -533,7 +494,6 @@ func (s interceptorRetry_local_stub) TestNormal(ctx context.Context) (err error)
 
 	info := interceptor.CallInfo{
 		Impl:       s.impl,
-		Component:  s.name,
 		FullMethod: InterceptorRetry_TestNormal_FullMethodName,
 	}
 
@@ -544,7 +504,6 @@ func (s interceptorRetry_local_stub) TestNormal(ctx context.Context) (err error)
 // lazyInitImpl_local_stub is a local stub implementation of [LazyInitImpl].
 type lazyInitImpl_local_stub struct {
 	impl        LazyInitImpl
-	name        string
 	interceptor interceptor.Interceptor
 }
 
@@ -566,7 +525,6 @@ func (s lazyInitImpl_local_stub) Try(ctx context.Context) {
 
 	info := interceptor.CallInfo{
 		Impl:       s.impl,
-		Component:  s.name,
 		FullMethod: LazyInitImpl_Try_FullMethodName,
 	}
 
@@ -576,7 +534,6 @@ func (s lazyInitImpl_local_stub) Try(ctx context.Context) {
 // lazyInitComponent_local_stub is a local stub implementation of [LazyInitComponent].
 type lazyInitComponent_local_stub struct {
 	impl        LazyInitComponent
-	name        string
 	interceptor interceptor.Interceptor
 }
 
@@ -598,7 +555,6 @@ func (s lazyInitComponent_local_stub) Try(ctx context.Context) (err error) {
 
 	info := interceptor.CallInfo{
 		Impl:       s.impl,
-		Component:  s.name,
 		FullMethod: LazyInitComponent_Try_FullMethodName,
 	}
 
@@ -609,7 +565,6 @@ func (s lazyInitComponent_local_stub) Try(ctx context.Context) (err error) {
 // panicCaseInterface_local_stub is a local stub implementation of [panicCaseInterface].
 type panicCaseInterface_local_stub struct {
 	impl        panicCaseInterface
-	name        string
 	interceptor interceptor.Interceptor
 }
 
@@ -631,7 +586,6 @@ func (s panicCaseInterface_local_stub) TestPanic(ctx context.Context) {
 
 	info := interceptor.CallInfo{
 		Impl:       s.impl,
-		Component:  s.name,
 		FullMethod: panicCaseInterface_TestPanic_FullMethodName,
 	}
 
@@ -641,7 +595,6 @@ func (s panicCaseInterface_local_stub) TestPanic(ctx context.Context) {
 // panicNoRecvoeryCaseInterface_local_stub is a local stub implementation of [panicNoRecvoeryCaseInterface].
 type panicNoRecvoeryCaseInterface_local_stub struct {
 	impl        panicNoRecvoeryCaseInterface
-	name        string
 	interceptor interceptor.Interceptor
 }
 
@@ -663,7 +616,6 @@ func (s panicNoRecvoeryCaseInterface_local_stub) TestPanic(ctx context.Context) 
 
 	info := interceptor.CallInfo{
 		Impl:       s.impl,
-		Component:  s.name,
 		FullMethod: panicNoRecvoeryCaseInterface_TestPanic_FullMethodName,
 	}
 

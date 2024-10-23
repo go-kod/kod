@@ -8,8 +8,6 @@ import (
 type CallInfo struct {
 	// The impl of the called component.
 	Impl any
-	// The component name of the called method.
-	Component string
 	// The full name of the called method, in the format of "package/service.method".
 	FullMethod string
 }

@@ -39,7 +39,6 @@ func init() {
 			return helloWorld_local_stub{
 				impl:        info.Impl.(HelloWorld),
 				interceptor: info.Interceptor,
-				name:        info.Name,
 			}
 		},
 	})
@@ -52,7 +51,6 @@ func init() {
 			return helloWorldLazy_local_stub{
 				impl:        info.Impl.(HelloWorldLazy),
 				interceptor: info.Interceptor,
-				name:        info.Name,
 			}
 		},
 	})
@@ -65,7 +63,6 @@ func init() {
 			return helloWorldInterceptor_local_stub{
 				impl:        info.Impl.(HelloWorldInterceptor),
 				interceptor: info.Interceptor,
-				name:        info.Name,
 			}
 		},
 	})
@@ -79,20 +76,9 @@ var _ kod.InstanceOf[HelloWorldInterceptor] = (*helloWorldInterceptor)(nil)
 
 // Local stub implementations.
 
-// main_local_stub is a local stub implementation of [kod.Main].
-type main_local_stub struct {
-	impl        kod.Main
-	name        string
-	interceptor interceptor.Interceptor
-}
-
-// Check that [main_local_stub] implements the [kod.Main] interface.
-var _ kod.Main = (*main_local_stub)(nil)
-
 // helloWorld_local_stub is a local stub implementation of [HelloWorld].
 type helloWorld_local_stub struct {
 	impl        HelloWorld
-	name        string
 	interceptor interceptor.Interceptor
 }
 
@@ -114,7 +100,6 @@ func (s helloWorld_local_stub) SayHello(ctx context.Context) {
 
 	info := interceptor.CallInfo{
 		Impl:       s.impl,
-		Component:  s.name,
 		FullMethod: HelloWorld_SayHello_FullMethodName,
 	}
 
@@ -124,7 +109,6 @@ func (s helloWorld_local_stub) SayHello(ctx context.Context) {
 // helloWorldLazy_local_stub is a local stub implementation of [HelloWorldLazy].
 type helloWorldLazy_local_stub struct {
 	impl        HelloWorldLazy
-	name        string
 	interceptor interceptor.Interceptor
 }
 
@@ -146,7 +130,6 @@ func (s helloWorldLazy_local_stub) SayHello(ctx context.Context) {
 
 	info := interceptor.CallInfo{
 		Impl:       s.impl,
-		Component:  s.name,
 		FullMethod: HelloWorldLazy_SayHello_FullMethodName,
 	}
 
@@ -156,7 +139,6 @@ func (s helloWorldLazy_local_stub) SayHello(ctx context.Context) {
 // helloWorldInterceptor_local_stub is a local stub implementation of [HelloWorldInterceptor].
 type helloWorldInterceptor_local_stub struct {
 	impl        HelloWorldInterceptor
-	name        string
 	interceptor interceptor.Interceptor
 }
 
@@ -178,7 +160,6 @@ func (s helloWorldInterceptor_local_stub) SayHello(ctx context.Context) {
 
 	info := interceptor.CallInfo{
 		Impl:       s.impl,
-		Component:  s.name,
 		FullMethod: HelloWorldInterceptor_SayHello_FullMethodName,
 	}
 

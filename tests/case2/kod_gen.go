@@ -28,7 +28,6 @@ func init() {
 			return test1Component_local_stub{
 				impl:        info.Impl.(Test1Component),
 				interceptor: info.Interceptor,
-				name:        info.Name,
 			}
 		},
 	})
@@ -41,7 +40,6 @@ func init() {
 			return test2Component_local_stub{
 				impl:        info.Impl.(Test2Component),
 				interceptor: info.Interceptor,
-				name:        info.Name,
 			}
 		},
 	})
@@ -64,7 +62,6 @@ var _ kod.InstanceOf[kod.Main] = (*App)(nil)
 // test1Component_local_stub is a local stub implementation of [Test1Component].
 type test1Component_local_stub struct {
 	impl        Test1Component
-	name        string
 	interceptor interceptor.Interceptor
 }
 
@@ -86,7 +83,6 @@ func (s test1Component_local_stub) Foo(ctx context.Context, a1 *FooReq) (err err
 
 	info := interceptor.CallInfo{
 		Impl:       s.impl,
-		Component:  s.name,
 		FullMethod: Test1Component_Foo_FullMethodName,
 	}
 
@@ -97,7 +93,6 @@ func (s test1Component_local_stub) Foo(ctx context.Context, a1 *FooReq) (err err
 // test2Component_local_stub is a local stub implementation of [Test2Component].
 type test2Component_local_stub struct {
 	impl        Test2Component
-	name        string
 	interceptor interceptor.Interceptor
 }
 
@@ -119,21 +114,9 @@ func (s test2Component_local_stub) Foo(ctx context.Context, a1 *FooReq) (err err
 
 	info := interceptor.CallInfo{
 		Impl:       s.impl,
-		Component:  s.name,
 		FullMethod: Test2Component_Foo_FullMethodName,
 	}
 
 	err = s.interceptor(ctx, info, []any{a1}, []any{}, call)
 	return
 }
-
-// main_local_stub is a local stub implementation of [kod.Main].
-type main_local_stub struct {
-	impl        kod.Main
-	name        string
-	interceptor interceptor.Interceptor
-}
-
-// Check that [main_local_stub] implements the [kod.Main] interface.
-var _ kod.Main = (*main_local_stub)(nil)
-

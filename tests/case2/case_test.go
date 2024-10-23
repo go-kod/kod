@@ -25,24 +25,11 @@ func TestRun(t *testing.T) {
 			return t.Run(ctx)
 		}, kod.WithRegistrations(
 			&kod.Registration{
-				Name:      "github.com/go-kod/kod/Main",
-				Interface: reflect.TypeOf((*kod.Main)(nil)).Elem(),
-				Impl:      reflect.TypeOf(App{}),
-				Refs:      `⟦73dc6a0b:KoDeDgE:github.com/go-kod/kod/Main→github.com/go-kod/kod/tests/case2/Test1Component⟧`,
-				LocalStubFn: func(ctx context.Context, info *kod.LocalStubFnInfo) any {
-					var interceptors []interceptor.Interceptor
-					if h, ok := info.Impl.(interface {
-						Interceptors() []interceptor.Interceptor
-					}); ok {
-						interceptors = h.Interceptors()
-					}
-
-					return main_local_stub{
-						impl:        info.Impl.(kod.Main),
-						interceptor: interceptor.Chain(interceptors),
-						name:        info.Name,
-					}
-				},
+				Name:        "github.com/go-kod/kod/Main",
+				Interface:   reflect.TypeOf((*kod.Main)(nil)).Elem(),
+				Impl:        reflect.TypeOf(App{}),
+				Refs:        `⟦73dc6a0b:KoDeDgE:github.com/go-kod/kod/Main→github.com/go-kod/kod/tests/case2/Test1Component⟧`,
+				LocalStubFn: nil,
 			},
 			&kod.Registration{
 				Name:      "github.com/go-kod/kod/tests/case2/Test1Component",
@@ -60,7 +47,6 @@ func TestRun(t *testing.T) {
 					return test1Component_local_stub{
 						impl:        info.Impl.(Test1Component),
 						interceptor: interceptor.Chain(interceptors),
-						name:        info.Name,
 					}
 				},
 			},
@@ -80,7 +66,6 @@ func TestRun(t *testing.T) {
 					return test2Component_local_stub{
 						impl:        info.Impl.(Test2Component),
 						interceptor: interceptor.Chain(interceptors),
-						name:        info.Name,
 					}
 				},
 			},

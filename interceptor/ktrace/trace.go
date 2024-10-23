@@ -22,7 +22,7 @@ func Interceptor() interceptor.Interceptor {
 				info.FullMethod,
 				trace.WithSpanKind(trace.SpanKindInternal),
 				trace.WithAttributes(
-					attribute.String("component", info.Component),
+					attribute.String("method", info.FullMethod),
 				),
 			)
 		}

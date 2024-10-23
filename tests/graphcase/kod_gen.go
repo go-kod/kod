@@ -37,7 +37,6 @@ func init() {
 			return test1Controller_local_stub{
 				impl:        info.Impl.(test1Controller),
 				interceptor: info.Interceptor,
-				name:        info.Name,
 			}
 		},
 	})
@@ -50,7 +49,6 @@ func init() {
 			return hTTPController_local_stub{
 				impl:        info.Impl.(HTTPController),
 				interceptor: info.Interceptor,
-				name:        info.Name,
 			}
 		},
 	})
@@ -63,7 +61,6 @@ func init() {
 			return testService_local_stub{
 				impl:        info.Impl.(testService),
 				interceptor: info.Interceptor,
-				name:        info.Name,
 			}
 		},
 	})
@@ -76,7 +73,6 @@ func init() {
 			return testModel_local_stub{
 				impl:        info.Impl.(testModel),
 				interceptor: info.Interceptor,
-				name:        info.Name,
 			}
 		},
 	})
@@ -89,7 +85,6 @@ func init() {
 			return test1Component_local_stub{
 				impl:        info.Impl.(Test1Component),
 				interceptor: info.Interceptor,
-				name:        info.Name,
 			}
 		},
 	})
@@ -116,7 +111,6 @@ var _ kod.InstanceOf[kod.Main] = (*App)(nil)
 // test1Controller_local_stub is a local stub implementation of [test1Controller].
 type test1Controller_local_stub struct {
 	impl        test1Controller
-	name        string
 	interceptor interceptor.Interceptor
 }
 
@@ -133,7 +127,6 @@ func (s test1Controller_local_stub) Foo(a0 *gin.Context) {
 // hTTPController_local_stub is a local stub implementation of [HTTPController].
 type hTTPController_local_stub struct {
 	impl        HTTPController
-	name        string
 	interceptor interceptor.Interceptor
 }
 
@@ -150,7 +143,6 @@ func (s hTTPController_local_stub) Foo(a0 http.ResponseWriter, a1 http.Request) 
 // testService_local_stub is a local stub implementation of [testService].
 type testService_local_stub struct {
 	impl        testService
-	name        string
 	interceptor interceptor.Interceptor
 }
 
@@ -172,7 +164,6 @@ func (s testService_local_stub) Foo(ctx context.Context) (err error) {
 
 	info := interceptor.CallInfo{
 		Impl:       s.impl,
-		Component:  s.name,
 		FullMethod: testService_Foo_FullMethodName,
 	}
 
@@ -183,7 +174,6 @@ func (s testService_local_stub) Foo(ctx context.Context) (err error) {
 // testModel_local_stub is a local stub implementation of [testModel].
 type testModel_local_stub struct {
 	impl        testModel
-	name        string
 	interceptor interceptor.Interceptor
 }
 
@@ -205,7 +195,6 @@ func (s testModel_local_stub) Foo(ctx context.Context) (err error) {
 
 	info := interceptor.CallInfo{
 		Impl:       s.impl,
-		Component:  s.name,
 		FullMethod: testModel_Foo_FullMethodName,
 	}
 
@@ -216,7 +205,6 @@ func (s testModel_local_stub) Foo(ctx context.Context) (err error) {
 // test1Component_local_stub is a local stub implementation of [Test1Component].
 type test1Component_local_stub struct {
 	impl        Test1Component
-	name        string
 	interceptor interceptor.Interceptor
 }
 
@@ -238,21 +226,9 @@ func (s test1Component_local_stub) Foo(ctx context.Context, a1 *FooReq) (err err
 
 	info := interceptor.CallInfo{
 		Impl:       s.impl,
-		Component:  s.name,
 		FullMethod: Test1Component_Foo_FullMethodName,
 	}
 
 	err = s.interceptor(ctx, info, []any{a1}, []any{}, call)
 	return
 }
-
-// main_local_stub is a local stub implementation of [kod.Main].
-type main_local_stub struct {
-	impl        kod.Main
-	name        string
-	interceptor interceptor.Interceptor
-}
-
-// Check that [main_local_stub] implements the [kod.Main] interface.
-var _ kod.Main = (*main_local_stub)(nil)
-

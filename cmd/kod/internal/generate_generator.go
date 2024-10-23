@@ -703,7 +703,6 @@ func (g *generator) generateRegisteredComponents(p printFn) {
 			return %s_local_stub{
 				impl: info.Impl.(%s),
 				interceptor: info.Interceptor,
-				name: info.Name,
 			} }`,
 			notExported(name), g.componentRef(comp))
 		refNames := make([]string, 0, len(comp.refs))
@@ -768,12 +767,14 @@ func (g *generator) generateLocalStubs(p printFn) {
 
 	var b strings.Builder
 	for _, comp := range g.components {
+		if comp.isMain {
+			continue
+		}
 
 		stub := notExported(comp.intfName()) + "_local_stub"
 		p(`// %s is a local stub implementation of [%s].`, stub, g.tset.genTypeString(comp.intf))
 		p(`type %s struct{`, stub)
 		p(`	impl %s`, g.componentRef(comp))
-		p(`	name   string`)
 		p(`	interceptor interceptor.Interceptor`)
 		p(`}`)
 
@@ -821,7 +822,6 @@ func (g *generator) generateLocalStubs(p printFn) {
 
 			p(`info := interceptor.CallInfo {
 					Impl: s.impl,
-					Component:  s.name,
 					FullMethod: %s,
 				}
 			`, comp.fullMethodNameVar(m.Name()))
