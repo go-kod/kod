@@ -10,7 +10,6 @@ import (
 // LocalStubFnInfo is the information passed to LocalStubFn.
 type LocalStubFnInfo struct {
 	Impl        any
-	Name        string
 	Interceptor interceptor.Interceptor
 }
 

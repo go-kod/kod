@@ -49,21 +49,20 @@ func (k *Kod) getIntf(ctx context.Context, t reflect.Type) (any, error) {
 		return intf, nil
 	}
 
-	comp, err := k.get(ctx, reg)
+	impl, err := k.get(ctx, reg)
 	if err != nil {
 		return nil, err
 	}
 
 	interceptors := k.opts.interceptors
-	if h, ok := comp.(interface {
+	if h, ok := impl.(interface {
 		Interceptors() []interceptor.Interceptor
 	}); ok {
 		interceptors = append(interceptors, h.Interceptors()...)
 	}
 
 	info := &LocalStubFnInfo{
-		Name:        reg.Name,
-		Impl:        comp,
+		Impl:        impl,
 		Interceptor: interceptor.Chain(interceptors),
 	}
 
