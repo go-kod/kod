@@ -7,7 +7,7 @@ toolchain go1.23.0
 require (
 	github.com/avast/retry-go/v4 v4.6.0
 	github.com/dominikbraun/graph v0.23.0
-	github.com/fatih/color v1.17.0
+	github.com/fatih/color v1.18.0
 	github.com/fsnotify/fsnotify v1.7.0
 	github.com/go-playground/validator/v10 v10.22.1
 	github.com/samber/lo v1.47.0
