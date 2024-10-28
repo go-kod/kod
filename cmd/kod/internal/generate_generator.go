@@ -659,6 +659,9 @@ func (g *generator) generateImports(p printFn) {
 }
 
 func (g *generator) generateFullMethodNames(p printFn) {
+	if len(g.components) == 0 {
+		return
+	}
 	p(``)
 	p(`// Full method names for components.`)
 	p(`const (`)
