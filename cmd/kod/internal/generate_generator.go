@@ -701,7 +701,6 @@ func (g *generator) generateRegisteredComponents(p printFn) {
 		name := comp.intfName()
 		myName := comp.fullIntfName()
 
-		g.interceptor()
 		localStubFn := fmt.Sprintf(`func(ctx context.Context, info *kod.LocalStubFnInfo) any {
 			return %s_local_stub{
 				impl: info.Impl.(%s),
@@ -765,14 +764,15 @@ func (g *generator) generateLocalStubs(p printFn) {
 	p(``)
 	p(``)
 	p(`// Local stub implementations.`)
-	p(``)
-	g.tset.importPackage("context", "context")
 
 	var b strings.Builder
 	for _, comp := range g.components {
 		if comp.isMain {
 			continue
 		}
+
+		g.tset.importPackage("context", "context")
+		g.interceptor()
 
 		stub := notExported(comp.intfName()) + "_local_stub"
 		p(`// %s is a local stub implementation of [%s].`, stub, g.tset.genTypeString(comp.intf))
