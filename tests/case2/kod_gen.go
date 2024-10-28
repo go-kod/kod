@@ -58,7 +58,6 @@ var _ kod.InstanceOf[Test2Component] = (*test2Component)(nil)
 var _ kod.InstanceOf[kod.Main] = (*App)(nil)
 
 // Local stub implementations.
-
 // test1Component_local_stub is a local stub implementation of [Test1Component].
 type test1Component_local_stub struct {
 	impl        Test1Component

@@ -40,7 +40,6 @@ var _ kod.InstanceOf[kod.Main] = (*refStructImpl)(nil)
 var _ kod.InstanceOf[TestRefStruct1] = (*testRefStruct1)(nil)
 
 // Local stub implementations.
-
 // testRefStruct1_local_stub is a local stub implementation of [TestRefStruct1].
 type testRefStruct1_local_stub struct {
 	impl        TestRefStruct1

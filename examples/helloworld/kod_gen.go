@@ -75,7 +75,6 @@ var _ kod.InstanceOf[HelloWorldLazy] = (*lazyHelloWorld)(nil)
 var _ kod.InstanceOf[HelloWorldInterceptor] = (*helloWorldInterceptor)(nil)
 
 // Local stub implementations.
-
 // helloWorld_local_stub is a local stub implementation of [HelloWorld].
 type helloWorld_local_stub struct {
 	impl        HelloWorld

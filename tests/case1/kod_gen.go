@@ -243,7 +243,6 @@ var _ kod.InstanceOf[panicCaseInterface] = (*panicCase)(nil)
 var _ kod.InstanceOf[panicNoRecvoeryCaseInterface] = (*panicNoRecvoeryCase)(nil)
 
 // Local stub implementations.
-
 // test1Controller_local_stub is a local stub implementation of [test1Controller].
 type test1Controller_local_stub struct {
 	impl        test1Controller
