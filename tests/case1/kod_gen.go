@@ -21,18 +21,8 @@ const (
 	testRepository_Foo_FullMethodName = "github.com/go-kod/kod/tests/case1/testRepository.Foo"
 	// Test1Component_Foo_FullMethodName is the full name of the method [test1Component.Foo].
 	Test1Component_Foo_FullMethodName = "github.com/go-kod/kod/tests/case1/Test1Component.Foo"
-	// Test2Component_GetClient_FullMethodName is the full name of the method [test2Component.GetClient].
-	Test2Component_GetClient_FullMethodName = "github.com/go-kod/kod/tests/case1/Test2Component.GetClient"
 	// ctxInterface_Foo_FullMethodName is the full name of the method [ctxImpl.Foo].
 	ctxInterface_Foo_FullMethodName = "github.com/go-kod/kod/tests/case1/ctxInterface.Foo"
-	// testEchoController_Error_FullMethodName is the full name of the method [testEchoControllerImpl.Error].
-	testEchoController_Error_FullMethodName = "github.com/go-kod/kod/tests/case1/testEchoController.Error"
-	// testEchoController_Hello_FullMethodName is the full name of the method [testEchoControllerImpl.Hello].
-	testEchoController_Hello_FullMethodName = "github.com/go-kod/kod/tests/case1/testEchoController.Hello"
-	// testGinController_Hello_FullMethodName is the full name of the method [testGinControllerImpl.Hello].
-	testGinController_Hello_FullMethodName = "github.com/go-kod/kod/tests/case1/testGinController.Hello"
-	// HTTPController_Foo_FullMethodName is the full name of the method [httpControllerImpl.Foo].
-	HTTPController_Foo_FullMethodName = "github.com/go-kod/kod/tests/case1/HTTPController.Foo"
 	// InterceptorRetry_TestError_FullMethodName is the full name of the method [interceptorRetry.TestError].
 	InterceptorRetry_TestError_FullMethodName = "github.com/go-kod/kod/tests/case1/InterceptorRetry.TestError"
 	// InterceptorRetry_TestNormal_FullMethodName is the full name of the method [interceptorRetry.TestNormal].

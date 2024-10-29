@@ -265,7 +265,8 @@ func createFile(c *cobra.Command, objs map[string]*makeInterfaceFile) error {
 		}
 
 		if commandExists("mockgen") {
-			cmd := exec.Command("mockgen", "-source", fileName, "-destination", filepath.Join(obj.DirPath, "kod_gen_mock.go"), "-package", pkgName, "-typed")
+			cmd := exec.Command("mockgen", "-source", fileName, "-destination", filepath.Join(obj.DirPath, "kod_gen_mock.go"),
+				"-package", pkgName, "-typed", "-build_constraint", "!ignoreKodGen")
 			cmd.Stderr = os.Stderr
 			cmd.Stdout = os.Stdout
 

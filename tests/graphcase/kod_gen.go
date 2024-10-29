@@ -14,10 +14,6 @@ import (
 
 // Full method names for components.
 const (
-	// test1Controller_Foo_FullMethodName is the full name of the method [test1ControllerImpl.Foo].
-	test1Controller_Foo_FullMethodName = "github.com/go-kod/kod/tests/graphcase/test1Controller.Foo"
-	// HTTPController_Foo_FullMethodName is the full name of the method [httpControllerImpl.Foo].
-	HTTPController_Foo_FullMethodName = "github.com/go-kod/kod/tests/graphcase/HTTPController.Foo"
 	// testService_Foo_FullMethodName is the full name of the method [serviceImpl.Foo].
 	testService_Foo_FullMethodName = "github.com/go-kod/kod/tests/graphcase/testService.Foo"
 	// testModel_Foo_FullMethodName is the full name of the method [modelImpl.Foo].

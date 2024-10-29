@@ -667,6 +667,10 @@ func (g *generator) generateFullMethodNames(p printFn) {
 	p(`const (`)
 	for _, comp := range g.components {
 		for _, m := range comp.methods() {
+			if g.getFirstArgTypeString(m) != "context.Context" {
+				continue
+			}
+
 			p(`// %s is the full name of the method [%s.%s].`, comp.fullMethodNameVar(m.Name()), comp.implName(), m.Name())
 			p(`%s = %q`, comp.fullMethodNameVar(m.Name()), comp.fullFullMethodName(m.Name()))
 		}
@@ -790,10 +794,7 @@ func (g *generator) generateLocalStubs(p printFn) {
 
 			mt := m.Type().(*types.Signature)
 
-			firstArgTypeString := ""
-			if mt.Params().Len() > 0 {
-				firstArgTypeString = g.tset.genTypeString(mt.Params().At(0).Type())
-			}
+			firstArgTypeString := g.getFirstArgTypeString(m)
 
 			p(``)
 			p(`// %s wraps the method [%s.%s].`, m.Name(), comp.implName(), m.Name())
@@ -842,6 +843,15 @@ func (g *generator) generateLocalStubs(p printFn) {
 			p(`}`)
 		}
 	}
+}
+
+func (g *generator) getFirstArgTypeString(m *types.Func) string {
+	mt := m.Type().(*types.Signature)
+
+	if mt.Params().Len() > 0 {
+		return g.tset.genTypeString(mt.Params().At(0).Type())
+	}
+	return ""
 }
 
 func (g *generator) setReturnsList(sig *types.Signature) string {
