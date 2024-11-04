@@ -354,6 +354,54 @@ func (c *MockctxInterfaceFooCall) DoAndReturn(f func(context.Context)) *MockctxI
 	return c
 }
 
+// Mocktest1ComponentDefaultError is a mock of test1ComponentDefaultError interface.
+type Mocktest1ComponentDefaultError struct {
+	ctrl     *gomock.Controller
+	recorder *Mocktest1ComponentDefaultErrorMockRecorder
+	isgomock struct{}
+}
+
+// Mocktest1ComponentDefaultErrorMockRecorder is the mock recorder for Mocktest1ComponentDefaultError.
+type Mocktest1ComponentDefaultErrorMockRecorder struct {
+	mock *Mocktest1ComponentDefaultError
+}
+
+// NewMocktest1ComponentDefaultError creates a new mock instance.
+func NewMocktest1ComponentDefaultError(ctrl *gomock.Controller) *Mocktest1ComponentDefaultError {
+	mock := &Mocktest1ComponentDefaultError{ctrl: ctrl}
+	mock.recorder = &Mocktest1ComponentDefaultErrorMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *Mocktest1ComponentDefaultError) EXPECT() *Mocktest1ComponentDefaultErrorMockRecorder {
+	return m.recorder
+}
+
+// Mocktest1ComponentGlobalDefaultError is a mock of test1ComponentGlobalDefaultError interface.
+type Mocktest1ComponentGlobalDefaultError struct {
+	ctrl     *gomock.Controller
+	recorder *Mocktest1ComponentGlobalDefaultErrorMockRecorder
+	isgomock struct{}
+}
+
+// Mocktest1ComponentGlobalDefaultErrorMockRecorder is the mock recorder for Mocktest1ComponentGlobalDefaultError.
+type Mocktest1ComponentGlobalDefaultErrorMockRecorder struct {
+	mock *Mocktest1ComponentGlobalDefaultError
+}
+
+// NewMocktest1ComponentGlobalDefaultError creates a new mock instance.
+func NewMocktest1ComponentGlobalDefaultError(ctrl *gomock.Controller) *Mocktest1ComponentGlobalDefaultError {
+	mock := &Mocktest1ComponentGlobalDefaultError{ctrl: ctrl}
+	mock.recorder = &Mocktest1ComponentGlobalDefaultErrorMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *Mocktest1ComponentGlobalDefaultError) EXPECT() *Mocktest1ComponentGlobalDefaultErrorMockRecorder {
+	return m.recorder
+}
+
 // MocktestEchoController is a mock of testEchoController interface.
 type MocktestEchoController struct {
 	ctrl     *gomock.Controller

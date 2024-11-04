@@ -159,7 +159,7 @@ func TestConfigNotFound(t *testing.T) {
 	kod.RunTest(t, func(ctx context.Context, k *test1Component) {
 		_, err := k.Foo(ctx, &FooReq{})
 		fmt.Println(err)
-		require.Equal(t, "test1:", err.Error())
+		require.Equal(t, "test1:a", err.Error())
 	}, kod.WithConfigFile("kod-notfound.toml"))
 }
 

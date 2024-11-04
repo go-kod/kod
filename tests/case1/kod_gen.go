@@ -118,6 +118,30 @@ func init() {
 		},
 	})
 	kod.Register(&kod.Registration{
+		Name:      "github.com/go-kod/kod/tests/case1/test1ComponentDefaultError",
+		Interface: reflect.TypeOf((*test1ComponentDefaultError)(nil)).Elem(),
+		Impl:      reflect.TypeOf(test1ComponentDefaultErrorImpl{}),
+		Refs:      ``,
+		LocalStubFn: func(ctx context.Context, info *kod.LocalStubFnInfo) any {
+			return test1ComponentDefaultError_local_stub{
+				impl:        info.Impl.(test1ComponentDefaultError),
+				interceptor: info.Interceptor,
+			}
+		},
+	})
+	kod.Register(&kod.Registration{
+		Name:      "github.com/go-kod/kod/tests/case1/test1ComponentGlobalDefaultError",
+		Interface: reflect.TypeOf((*test1ComponentGlobalDefaultError)(nil)).Elem(),
+		Impl:      reflect.TypeOf(test1ComponentGlobalDefaultErrorImpl{}),
+		Refs:      ``,
+		LocalStubFn: func(ctx context.Context, info *kod.LocalStubFnInfo) any {
+			return test1ComponentGlobalDefaultError_local_stub{
+				impl:        info.Impl.(test1ComponentGlobalDefaultError),
+				interceptor: info.Interceptor,
+			}
+		},
+	})
+	kod.Register(&kod.Registration{
 		Name:      "github.com/go-kod/kod/tests/case1/testEchoController",
 		Interface: reflect.TypeOf((*testEchoController)(nil)).Elem(),
 		Impl:      reflect.TypeOf(testEchoControllerImpl{}),
@@ -223,6 +247,8 @@ var _ kod.InstanceOf[Test1Component] = (*test1Component)(nil)
 var _ kod.InstanceOf[Test2Component] = (*test2Component)(nil)
 var _ kod.InstanceOf[kod.Main] = (*App)(nil)
 var _ kod.InstanceOf[ctxInterface] = (*ctxImpl)(nil)
+var _ kod.InstanceOf[test1ComponentDefaultError] = (*test1ComponentDefaultErrorImpl)(nil)
+var _ kod.InstanceOf[test1ComponentGlobalDefaultError] = (*test1ComponentGlobalDefaultErrorImpl)(nil)
 var _ kod.InstanceOf[testEchoController] = (*testEchoControllerImpl)(nil)
 var _ kod.InstanceOf[testGinController] = (*testGinControllerImpl)(nil)
 var _ kod.InstanceOf[HTTPController] = (*httpControllerImpl)(nil)
@@ -381,6 +407,24 @@ func (s ctxInterface_local_stub) Foo(ctx context.Context) {
 
 	_ = s.interceptor(ctx, info, []any{}, []any{}, call)
 }
+
+// test1ComponentDefaultError_local_stub is a local stub implementation of [test1ComponentDefaultError].
+type test1ComponentDefaultError_local_stub struct {
+	impl        test1ComponentDefaultError
+	interceptor interceptor.Interceptor
+}
+
+// Check that [test1ComponentDefaultError_local_stub] implements the [test1ComponentDefaultError] interface.
+var _ test1ComponentDefaultError = (*test1ComponentDefaultError_local_stub)(nil)
+
+// test1ComponentGlobalDefaultError_local_stub is a local stub implementation of [test1ComponentGlobalDefaultError].
+type test1ComponentGlobalDefaultError_local_stub struct {
+	impl        test1ComponentGlobalDefaultError
+	interceptor interceptor.Interceptor
+}
+
+// Check that [test1ComponentGlobalDefaultError_local_stub] implements the [test1ComponentGlobalDefaultError] interface.
+var _ test1ComponentGlobalDefaultError = (*test1ComponentGlobalDefaultError_local_stub)(nil)
 
 // testEchoController_local_stub is a local stub implementation of [testEchoController].
 type testEchoController_local_stub struct {

@@ -52,6 +52,16 @@ type ctxInterface interface {
 	Foo(ctx context.Context)
 }
 
+// test1ComponentDefaultError is implemented by [test1ComponentDefaultErrorImpl],
+// which can be mocked with [NewMocktest1ComponentDefaultError].
+type test1ComponentDefaultError interface {
+}
+
+// test1ComponentGlobalDefaultError is implemented by [test1ComponentGlobalDefaultErrorImpl],
+// which can be mocked with [NewMocktest1ComponentGlobalDefaultError].
+type test1ComponentGlobalDefaultError interface {
+}
+
 // testEchoController is implemented by [testEchoControllerImpl],
 // which can be mocked with [NewMocktestEchoController].
 type testEchoController interface {

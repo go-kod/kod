@@ -93,12 +93,7 @@ func (k *Kod) get(ctx context.Context, reg *Registration) (any, error) {
 	// Fill global config.
 	if c, ok := obj.(interface{ getGlobalConfig() any }); ok {
 		if cfg := c.getGlobalConfig(); cfg != nil {
-			err := defaults.Set(cfg)
-			if err != nil {
-				return nil, err
-			}
-
-			err = k.viper.Unmarshal(cfg)
+			err := k.setConfig("", cfg)
 			if err != nil {
 				return nil, err
 			}
@@ -108,12 +103,7 @@ func (k *Kod) get(ctx context.Context, reg *Registration) (any, error) {
 	// Fill config.
 	if c, ok := obj.(interface{ getConfig() any }); ok {
 		if cfg := c.getConfig(); cfg != nil {
-			err := defaults.Set(cfg)
-			if err != nil {
-				return nil, err
-			}
-
-			err = k.viper.UnmarshalKey(reg.Name, cfg)
+			err := k.setConfig(reg.Name, cfg)
 			if err != nil {
 				return nil, err
 			}
@@ -153,6 +143,15 @@ func (k *Kod) get(ctx context.Context, reg *Registration) (any, error) {
 	k.components[reg.Name] = obj
 
 	return obj, nil
+}
+
+func (k *Kod) setConfig(name string, cfg any) error {
+	err := defaults.Set(cfg)
+	if err != nil {
+		return err
+	}
+
+	return k.viper.UnmarshalKey(name, cfg)
 }
 
 func fillLog(name string, obj any, log *slog.Logger) error {

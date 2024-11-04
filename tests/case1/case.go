@@ -24,10 +24,10 @@ import (
 )
 
 type test1Config struct {
-	A     string
+	A     string `default:"a"`
 	Redis struct {
-		Addr    string
-		Timeout time.Duration
+		Addr    string        `default:"localhost:6379"`
+		Timeout time.Duration `default:"1s"`
 	}
 }
 
