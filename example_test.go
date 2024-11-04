@@ -279,6 +279,19 @@ func Example_testWithConfig() {
 	// helloWorld shutdown
 }
 
+// This example demonstrates how to use kod.WithGlobalConfig with default configuration.
+func Example_testWithDefaultConfig() {
+	kod.RunTest(&testing.T{}, func(ctx context.Context, app *helloworld.App) {
+		fmt.Println(app.Config().Name)
+		app.HelloWorld.Get().SayHello(ctx)
+	})
+	// Output:
+	// helloWorld init
+	// kod
+	// Hello, World!
+	// helloWorld shutdown
+}
+
 // This example demonstrates how to use [kod.RunTest], [kod.NewTestLogger] and [kod.WithLogger] to run a test function with a custom logger.
 func Example_testWithLogObserver() {
 	logger, observer := kod.NewTestLogger()

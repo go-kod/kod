@@ -7,6 +7,7 @@ import (
 	"log/slog"
 	"reflect"
 
+	"github.com/creasty/defaults"
 	"github.com/dominikbraun/graph"
 
 	"github.com/go-kod/kod/interceptor"
@@ -92,7 +93,12 @@ func (k *Kod) get(ctx context.Context, reg *Registration) (any, error) {
 	// Fill global config.
 	if c, ok := obj.(interface{ getGlobalConfig() any }); ok {
 		if cfg := c.getGlobalConfig(); cfg != nil {
-			err := k.viper.Unmarshal(cfg)
+			err := defaults.Set(cfg)
+			if err != nil {
+				return nil, err
+			}
+
+			err = k.viper.Unmarshal(cfg)
 			if err != nil {
 				return nil, err
 			}
@@ -102,7 +108,12 @@ func (k *Kod) get(ctx context.Context, reg *Registration) (any, error) {
 	// Fill config.
 	if c, ok := obj.(interface{ getConfig() any }); ok {
 		if cfg := c.getConfig(); cfg != nil {
-			err := k.viper.UnmarshalKey(reg.Name, cfg)
+			err := defaults.Set(cfg)
+			if err != nil {
+				return nil, err
+			}
+
+			err = k.viper.UnmarshalKey(reg.Name, cfg)
 			if err != nil {
 				return nil, err
 			}

@@ -18,11 +18,11 @@ type App struct {
 }
 
 type GlobalConfig struct {
-	Name string
+	Name string `default:"kod"`
 }
 
 type Config struct {
-	Name string
+	Name string `default:"-"`
 }
 
 // HelloWorld ...
