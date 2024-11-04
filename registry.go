@@ -151,6 +151,10 @@ func (k *Kod) setConfig(name string, cfg any) error {
 		return err
 	}
 
+	if name == "" {
+		return k.viper.Unmarshal(cfg)
+	}
+
 	return k.viper.UnmarshalKey(name, cfg)
 }
 
