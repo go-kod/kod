@@ -1,6 +1,7 @@
 module github.com/go-kod/kod
 
-go 1.22.0
+go 1.22.7
+
 toolchain go1.23.0
 
 require (
