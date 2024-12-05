@@ -3,6 +3,8 @@ package version
 import (
 	"fmt"
 	"runtime/debug"
+
+	"github.com/samber/lo"
 )
 
 const (
@@ -31,10 +33,6 @@ func (v SemVer) String() string {
 
 // SelfVersion returns the version of the running tool binary.
 func SelfVersion() string {
-	info, ok := debug.ReadBuildInfo()
-	if !ok {
-		// Should never happen.
-		panic("tool binary must be built from a module")
-	}
+	info := lo.Must(debug.ReadBuildInfo())
 	return info.Main.Version
 }
