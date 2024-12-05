@@ -563,11 +563,6 @@ func (g *generator) generate() error {
 		return nil
 	}
 
-	// // Process components in deterministic order.
-	// sort.Slice(g.components, func(i, j int) bool {
-	// 	return g.components[i].intfName() < g.components[j].intfName()
-	// })
-
 	// Generate the file body.
 	var body bytes.Buffer
 	{
@@ -575,10 +570,7 @@ func (g *generator) generate() error {
 			fmt.Fprintln(&body, fmt.Sprintf(format, args...))
 		}
 		g.generateRegisteredComponents(fn)
-		err := g.generateVersionCheck(fn)
-		if err != nil {
-			return err
-		}
+		g.generateVersionCheck(fn)
 		g.generateInstanceChecks(fn)
 		g.generateLocalStubs(fn)
 
@@ -682,11 +674,8 @@ func (g *generator) generateFullMethodNames(p printFn) {
 	p(`)`)
 }
 
-func (g *generator) generateVersionCheck(p printFn) error {
-	selfVersion, err := version.SelfVersion()
-	if err != nil {
-		return fmt.Errorf("read self version: %w", err)
-	}
+func (g *generator) generateVersionCheck(p printFn) {
+	selfVersion := version.SelfVersion()
 
 	p(``)
 	p(`// CodeGen version check.`)
@@ -709,8 +698,6 @@ running the following.
 Then, re-run 'kod generate' and re-build your code. If the problem persists,
 please file an issue at https://github.com/go-kod/kod/issues.
 `+"`", selfVersion, version.CodeGenSemVersion))
-
-	return nil
 }
 
 // generateInstanceChecks generates code that checks that every component

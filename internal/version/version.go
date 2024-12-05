@@ -17,22 +17,24 @@ const (
 // CodeGenSemVersion is the version of the generated code.
 var CodeGenSemVersion = SemVer{Major: CodeGenMajor, Minor: CodeGenMinor, Patch: codeGenPatch}
 
+// SemVer represents a semantic version.
 type SemVer struct {
 	Major int
 	Minor int
 	Patch int
 }
 
+// String returns the string representation of the semantic version.
 func (v SemVer) String() string {
 	return fmt.Sprintf("v%d.%d.%d", v.Major, v.Minor, v.Patch)
 }
 
 // SelfVersion returns the version of the running tool binary.
-func SelfVersion() (string, error) {
+func SelfVersion() string {
 	info, ok := debug.ReadBuildInfo()
 	if !ok {
 		// Should never happen.
-		return "", fmt.Errorf("tool binary must be built from a module")
+		panic("tool binary must be built from a module")
 	}
-	return info.Main.Version, nil
+	return info.Main.Version
 }
