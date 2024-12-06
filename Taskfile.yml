@@ -40,7 +40,7 @@ tasks:
         -covermode=atomic ./... ./tests/... \
         -coverpkg .,./cmd/...,./internal/...,./interceptor/...
       git checkout tests/case1/kod_gen_mock.go
-      git checkout tests/case1/kod_gen.go
+      git checkout tests/graphcase/kod_gen.go
     sources:
       - "**/**.go"
     generates:
