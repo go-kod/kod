@@ -22,6 +22,7 @@ import (
 	"golang.org/x/tools/go/packages"
 
 	"github.com/go-kod/kod/internal/callgraph"
+	"github.com/go-kod/kod/internal/version"
 )
 
 const (
@@ -562,19 +563,14 @@ func (g *generator) generate() error {
 		return nil
 	}
 
-	// // Process components in deterministic order.
-	// sort.Slice(g.components, func(i, j int) bool {
-	// 	return g.components[i].intfName() < g.components[j].intfName()
-	// })
-
 	// Generate the file body.
 	var body bytes.Buffer
 	{
 		fn := func(format string, args ...interface{}) {
 			fmt.Fprintln(&body, fmt.Sprintf(format, args...))
 		}
-		// g.generateVersionCheck(fn)
 		g.generateRegisteredComponents(fn)
+		g.generateVersionCheck(fn)
 		g.generateInstanceChecks(fn)
 		g.generateLocalStubs(fn)
 
@@ -676,6 +672,32 @@ func (g *generator) generateFullMethodNames(p printFn) {
 		}
 	}
 	p(`)`)
+}
+
+func (g *generator) generateVersionCheck(p printFn) {
+	selfVersion := version.SelfVersion()
+
+	p(``)
+	p(`// CodeGen version check.`)
+	p("var _ kod.CodeGenLatestVersion = kod.CodeGenVersion[[%d][%d]struct{}](%s)",
+		version.CodeGenMajor, version.CodeGenMinor,
+		fmt.Sprintf("`"+`
+ERROR: You generated this file with 'kod generate' %s (codegen
+version %s). The generated code is incompatible with the version of the
+github.com/go-kod/kod module that you're using. The kod module
+version can be found in your go.mod file or by running the following command.
+
+    go list -m github.com/go-kod/kod
+
+We recommend updating the kod module and the 'kod generate' command by
+running the following.
+
+    go get github.com/go-kod/kod@latest
+    go install github.com/go-kod/kod/cmd/kod@latest
+
+Then, re-run 'kod generate' and re-build your code. If the problem persists,
+please file an issue at https://github.com/go-kod/kod/issues.
+`+"`", selfVersion, version.CodeGenSemVersion))
 }
 
 // generateInstanceChecks generates code that checks that every component
