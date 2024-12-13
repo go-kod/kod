@@ -1,0 +1,10 @@
+kod:
+  name: testapp
+  trace:
+    debug: true
+
+github.com/go-kod/kod/tests/case1/Test1Component:
+  A: "B"
+  redis:
+    addr: localhost:6379
+    timeout: 2s

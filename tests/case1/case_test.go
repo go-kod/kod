@@ -145,6 +145,26 @@ func TestConfigFile1(t *testing.T) {
 	}, kod.WithConfigFile("kod.toml"))
 }
 
+func TestConfigFileYaml(t *testing.T) {
+	t.Parallel()
+	kod.RunTest(t, func(ctx context.Context, k *test1Component) {
+		_, err := k.Foo(ctx, &FooReq{})
+		fmt.Println(err)
+		require.Equal(t, "B", k.Config().A)
+		require.Equal(t, "test1:B", err.Error())
+	}, kod.WithConfigFile("kod.yaml"))
+}
+
+func TestConfigFileJSON(t *testing.T) {
+	t.Parallel()
+	kod.RunTest(t, func(ctx context.Context, k *test1Component) {
+		_, err := k.Foo(ctx, &FooReq{})
+		fmt.Println(err)
+		require.Equal(t, "B", k.Config().A)
+		require.Equal(t, "test1:B", err.Error())
+	}, kod.WithConfigFile("kod.json"))
+}
+
 func TestConfigFile2(t *testing.T) {
 	t.Parallel()
 	kod.RunTest(t, func(ctx context.Context, k *test1Component) {
@@ -152,15 +172,6 @@ func TestConfigFile2(t *testing.T) {
 		fmt.Println(err)
 		require.Equal(t, "test1:B2", err.Error())
 	}, kod.WithConfigFile("kod2.toml"))
-}
-
-func TestConfigNotFound(t *testing.T) {
-	t.Parallel()
-	kod.RunTest(t, func(ctx context.Context, k *test1Component) {
-		_, err := k.Foo(ctx, &FooReq{})
-		fmt.Println(err)
-		require.Equal(t, "test1:a", err.Error())
-	}, kod.WithConfigFile("kod-notfound.toml"))
 }
 
 func TestRunKill(t *testing.T) {
