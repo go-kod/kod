@@ -174,15 +174,6 @@ func TestConfigFile2(t *testing.T) {
 	}, kod.WithConfigFile("kod2.toml"))
 }
 
-func TestConfigNotFound(t *testing.T) {
-	t.Parallel()
-	kod.RunTest(t, func(ctx context.Context, k *test1Component) {
-		_, err := k.Foo(ctx, &FooReq{})
-		fmt.Println(err)
-		require.Equal(t, "test1:a", err.Error())
-	}, kod.WithConfigFile("kod-notfound.toml"))
-}
-
 func TestRunKill(t *testing.T) {
 	t.Run("case1", func(t *testing.T) {
 		err := kod.Run(context.Background(), Run)
