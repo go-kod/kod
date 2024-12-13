@@ -25,6 +25,13 @@ func TestConfigNoSuffix(t *testing.T) {
 	assert.EqualError(t, k.parseConfig("nosuffix"), "read config file: Unsupported Config Type \"\"")
 }
 
+func TestConfigNoFile(t *testing.T) {
+	k, err := newKod(context.Background())
+	assert.Nil(t, err)
+
+	assert.EqualError(t, k.parseConfig("notfound.yaml"), "read config file: open notfound.yaml: no such file or directory")
+}
+
 func TestConfigEnv(t *testing.T) {
 	k, err := newKod(context.Background())
 	assert.Nil(t, err)

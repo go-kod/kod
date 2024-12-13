@@ -499,8 +499,10 @@ func (k *Kod) parseConfig(filename string) error {
 	if err != nil {
 		switch err.(type) {
 		case *fs.PathError:
-			if !noConfigProvided {
+			if noConfigProvided {
 				fmt.Fprintln(os.Stderr, "failed to load config file, use default config")
+			} else {
+				return fmt.Errorf("read config file: %w", err)
 			}
 		default:
 			return fmt.Errorf("read config file: %w", err)
