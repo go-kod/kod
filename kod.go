@@ -12,8 +12,13 @@ import (
 	"sync"
 	"time"
 
+	"github.com/knadh/koanf/parsers/json"
+	"github.com/knadh/koanf/parsers/toml"
+	"github.com/knadh/koanf/parsers/yaml"
+	"github.com/knadh/koanf/providers/env"
+	"github.com/knadh/koanf/providers/file"
+	"github.com/knadh/koanf/v2"
 	"github.com/samber/lo"
-	"github.com/spf13/viper"
 	"go.opentelemetry.io/contrib/bridges/otelslog"
 	"go.opentelemetry.io/contrib/exporters/autoexport"
 	"go.opentelemetry.io/contrib/instrumentation/host"
@@ -353,8 +358,8 @@ type Kod struct {
 
 	config kodConfig
 
-	viper *viper.Viper
-	log   *slog.Logger
+	cfg *koanf.Koanf
+	log *slog.Logger
 
 	hooker *hooks.Hooker
 
@@ -470,16 +475,30 @@ func (k *Kod) parseConfig(filename string) error {
 		}
 	}
 
-	vip := viper.New()
-	vip.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
-	vip.AutomaticEnv()
-	vip.SetConfigFile(filename)
-	vip.AddConfigPath(".")
+	c := koanf.New(".")
+	err := c.Load(env.Provider("KOD_", ".", func(s string) string {
+		return strings.Replace(strings.ToLower(s), "_", ".", -1)
+	}), nil)
+	if err != nil {
+		return fmt.Errorf("load env config: %w", err)
+	}
 
-	err := vip.ReadInConfig()
+	// get ext
+	ext := filepath.Ext(filename)
+	switch ext {
+	case ".toml":
+		err = c.Load(file.Provider(filename), toml.Parser())
+	case ".yaml":
+		err = c.Load(file.Provider(filename), yaml.Parser())
+	case ".json":
+		err = c.Load(file.Provider(filename), json.Parser())
+	default:
+		return fmt.Errorf("read config file: Unsupported Config Type %q", ext)
+	}
+
 	if err != nil {
 		switch err.(type) {
-		case viper.ConfigFileNotFoundError, *fs.PathError:
+		case *fs.PathError:
 			if !noConfigProvided {
 				fmt.Fprintln(os.Stderr, "failed to load config file, use default config")
 			}
@@ -488,22 +507,10 @@ func (k *Kod) parseConfig(filename string) error {
 		}
 	}
 
-	k.viper = vip
-
-	if vip.Get("kod.name") != nil {
-		k.config.Name = vip.GetString("kod.name")
-	}
-
-	if vip.Get("kod.version") != nil {
-		k.config.Version = vip.GetString("kod.version")
-	}
-
-	if vip.Get("kod.env") != nil {
-		k.config.Env = vip.GetString("kod.env")
-	}
-
-	if vip.Get("kod.log_level") != nil {
-		lo.Must0(k.config.LogLevel.UnmarshalText([]byte(vip.GetString("kod.log_level"))))
+	k.cfg = c
+	err = c.Unmarshal("kod", &k.config)
+	if err != nil {
+		return fmt.Errorf("unmarshal config: %w", err)
 	}
 
 	return nil

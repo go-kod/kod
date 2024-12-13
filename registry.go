@@ -151,11 +151,7 @@ func (k *Kod) setConfig(name string, cfg any) error {
 		return err
 	}
 
-	if name == "" {
-		return k.viper.Unmarshal(cfg)
-	}
-
-	return k.viper.UnmarshalKey(name, cfg)
+	return k.cfg.Unmarshal(name, cfg)
 }
 
 func fillLog(name string, obj any, log *slog.Logger) error {

@@ -2,7 +2,6 @@ package kod
 
 import (
 	"context"
-	"os"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -34,9 +33,9 @@ func TestConfigEnv(t *testing.T) {
 	assert.Equal(t, k.config.Version, "")
 	assert.Equal(t, k.config.Env, "local")
 
-	os.Setenv("KOD_NAME", "test")
-	os.Setenv("KOD_VERSION", "1.0.0")
-	os.Setenv("KOD_ENV", "dev")
+	t.Setenv("KOD_NAME", "test")
+	t.Setenv("KOD_VERSION", "1.0.0")
+	t.Setenv("KOD_ENV", "dev")
 
 	k, err = newKod(context.Background())
 	assert.Nil(t, err)
