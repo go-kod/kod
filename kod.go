@@ -374,8 +374,8 @@ func (k *Kod) Config() kodConfig {
 	return k.config
 }
 
-// Unmarshal parses the configuration into the provided struct.
-func (k *Kod) Unmarshal(key string, out interface{}) error {
+// setConfig sets the configuration for the Kod instance.
+func (k *Kod) setConfig(key string, out interface{}) error {
 	err := defaults.Set(out)
 	if err != nil {
 		return fmt.Errorf("set defaults: %w", err)
