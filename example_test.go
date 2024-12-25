@@ -13,6 +13,9 @@ import (
 	"github.com/go-kod/kod/interceptor/krecovery"
 	"github.com/go-kod/kod/interceptor/ktrace"
 	"github.com/knadh/koanf/v2"
+	"go.opentelemetry.io/otel"
+	"go.opentelemetry.io/otel/sdk/trace"
+	"go.opentelemetry.io/otel/sdk/trace/tracetest"
 	"go.uber.org/mock/gomock"
 )
 
@@ -129,6 +132,39 @@ func Example_openTelemetryLog() {
 	// {"component":"github.com/go-kod/kod/Main","level":"INFO","msg":"Hello, World!"}
 	// {"component":"github.com/go-kod/kod/Main","level":"WARN","msg":"Hello, World!"}
 	// {"component":"github.com/go-kod/kod/Main","level":"ERROR","msg":"Hello, World!"}
+	// {"component":"github.com/go-kod/kod/examples/helloworld/HelloWorld","level":"INFO","msg":"Hello, World!"}
+}
+
+// This example demonstrates how to use tracing with OpenTelemetry.
+func Example_openTelemetryTrace() {
+	logger, observer := kod.NewTestLogger()
+	slog.SetDefault(logger)
+
+	// create otel test exporter
+	spanRecorder := tracetest.NewSpanRecorder()
+	tracerProvider := trace.NewTracerProvider(trace.WithSpanProcessor(spanRecorder))
+	otel.SetTracerProvider(tracerProvider)
+
+	kod.Run(context.Background(), func(ctx context.Context, app *helloworld.App) error {
+		ctx, span := app.Tracer().Start(ctx, "example")
+		defer span.End()
+		app.L(ctx).Info("Hello, World!")
+		app.L(ctx).WarnContext(ctx, "Hello, World!")
+
+		app.HelloWorld.Get().SayHello(ctx)
+		return nil
+	}, kod.WithInterceptors(ktrace.Interceptor()))
+
+	fmt.Println(observer.Filter(func(m map[string]any) bool {
+		return m["trace_id"] != nil && m["span_id"] != nil
+	}).RemoveKeys("trace_id", "span_id", "time"))
+
+	// Output:
+	// helloWorld init
+	// Hello, World!
+	// helloWorld shutdown
+	// {"component":"github.com/go-kod/kod/Main","level":"INFO","msg":"Hello, World!"}
+	// {"component":"github.com/go-kod/kod/Main","level":"WARN","msg":"Hello, World!"}
 	// {"component":"github.com/go-kod/kod/examples/helloworld/HelloWorld","level":"INFO","msg":"Hello, World!"}
 }
 
