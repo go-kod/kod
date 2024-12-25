@@ -208,6 +208,7 @@ func (wc *WithGlobalConfig[T]) getGlobalConfig() any {
 	return &wc.config
 }
 
+// Core is initialized by the Kod instance.
 type Core interface {
 	Init(context.Context, *Kod) error
 }
