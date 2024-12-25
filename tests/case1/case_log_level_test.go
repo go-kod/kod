@@ -11,6 +11,7 @@ import (
 
 func TestLogLevel(t *testing.T) {
 	log, observer := kod.NewTestLogger()
+	slog.SetDefault(log)
 
 	kod.RunTest(t, func(ctx context.Context, k *test1Component) {
 		observer.Clean()
@@ -22,7 +23,7 @@ func TestLogLevel(t *testing.T) {
 		assert.Equal(t, 0, observer.Filter(func(r map[string]any) bool {
 			return r["level"] == slog.LevelDebug.String()
 		}).Len())
-	}, kod.WithLogger(log))
+	})
 
 	t.Setenv("KOD_LOG_LEVEL", "debug")
 
@@ -36,5 +37,5 @@ func TestLogLevel(t *testing.T) {
 		assert.Equal(t, 0, observer.Filter(func(r map[string]any) bool {
 			return r["level"] == slog.LevelDebug.String()
 		}).Len())
-	}, kod.WithLogger(log))
+	})
 }

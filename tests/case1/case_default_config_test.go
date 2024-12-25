@@ -2,6 +2,7 @@ package case1
 
 import (
 	"context"
+	"log/slog"
 	"testing"
 
 	"github.com/go-kod/kod"
@@ -11,6 +12,7 @@ import (
 
 func TestDefaultConfig(t *testing.T) {
 	log, observer := kod.NewTestLogger()
+	slog.SetDefault(log)
 
 	kod.RunTest(t, func(ctx context.Context, k *test1Component) {
 		observer.Clean()
@@ -20,11 +22,12 @@ func TestDefaultConfig(t *testing.T) {
 		assert.Equal(t, 1, observer.Len())
 		assert.Equal(t, "{\"component\":\"github.com/go-kod/kod/tests/case1/Test1Component\",\"config\":{\"A\":\"B\",\"Redis\":{\"Addr\":\"localhost:6379\",\"Timeout\":2000000000}},\"level\":\"INFO\",\"msg\":\"hello\"}\n",
 			observer.RemoveKeys("time").String())
-	}, kod.WithLogger(log))
+	})
 }
 
 func TestDefaultConfig2(t *testing.T) {
 	log, observer := kod.NewTestLogger()
+	slog.SetDefault(log)
 
 	kod.RunTest(t, func(ctx context.Context, k *test1Component) {
 		observer.Clean()
@@ -34,7 +37,7 @@ func TestDefaultConfig2(t *testing.T) {
 		assert.Equal(t, 1, observer.Len())
 		assert.Equal(t, "{\"component\":\"github.com/go-kod/kod/tests/case1/Test1Component\",\"config\":{\"A\":\"B2\",\"Redis\":{\"Addr\":\"localhost:6379\",\"Timeout\":1000000000}},\"level\":\"INFO\",\"msg\":\"hello\"}\n",
 			observer.RemoveKeys("time").String())
-	}, kod.WithLogger(log), kod.WithConfigFile("./kod2.toml"))
+	}, kod.WithConfigFile("./kod2.toml"))
 }
 
 func TestDefaultConfigError(t *testing.T) {

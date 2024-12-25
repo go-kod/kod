@@ -271,7 +271,7 @@ func Example_testWithDefaultConfig() {
 	// helloWorld shutdown
 }
 
-// This example demonstrates how to use [kod.RunTest], [kod.NewTestLogger] and [kod.WithLogger] to run a test function with a custom logger.
+// This example demonstrates how to use [kod.RunTest], [kod.NewTestLogger] to run a test function with a custom logger.
 func Example_testWithLogObserver() {
 	logger, observer := kod.NewTestLogger()
 	slog.SetDefault(logger)
