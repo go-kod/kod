@@ -24,6 +24,7 @@ func TestMain(m *testing.M) {
 		goleak.IgnoreAnyFunction("go.opentelemetry.io/otel/sdk/trace.(*batchSpanProcessor).processQueue"),
 		goleak.IgnoreAnyFunction("go.opentelemetry.io/otel/sdk/log.exportSync.func1"),
 		goleak.IgnoreAnyFunction("go.opentelemetry.io/otel/sdk/log.(*BatchProcessor).poll.func1"),
+		goleak.IgnoreAnyFunction("github.com/go-kod/kod/internal/signals.Shutdown.func1"),
 	)
 }
 
