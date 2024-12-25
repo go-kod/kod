@@ -310,10 +310,9 @@ func Run[T any, _ PointerToMain[T]](ctx context.Context, run func(context.Contex
 
 // kodConfig defines the overall configuration for the Kod application.
 type kodConfig struct {
-	Name     string
-	Env      string
-	Version  string
-	LogLevel slog.Level
+	Name    string
+	Env     string
+	Version string
 
 	ShutdownTimeout time.Duration
 }
@@ -384,7 +383,6 @@ func newKod(_ context.Context, opts ...func(*options)) (*Kod, error) {
 		config: kodConfig{
 			Name:            filepath.Base(lo.Must(os.Executable())),
 			Env:             "local",
-			LogLevel:        slog.LevelInfo,
 			ShutdownTimeout: 5 * time.Second,
 		},
 		hooker:              hooks.New(),
@@ -429,11 +427,6 @@ func (k *Kod) Unmarshal(key string, out interface{}) error {
 	}
 
 	return k.cfg.Unmarshal(key, out)
-}
-
-// L() returns the logger of the Kod instance.
-func (k *Kod) L(ctx context.Context) *slog.Logger {
-	return kslog.LogWithContext(ctx, slog.Default())
 }
 
 // register adds the given implementations to the Kod instance.
