@@ -3,6 +3,7 @@ package kod_test
 import (
 	"context"
 	"fmt"
+	"log/slog"
 	"testing"
 
 	"github.com/go-kod/kod"
@@ -108,6 +109,7 @@ func Example_configGlobal() {
 // This example demonstrates how to use logging with OpenTelemetry.
 func Example_openTelemetryLog() {
 	logger, observer := kod.NewTestLogger()
+	slog.SetDefault(logger)
 
 	kod.RunTest(&testing.T{}, func(ctx context.Context, app *helloworld.App) {
 		app.L(ctx).Debug("Hello, World!")
@@ -115,7 +117,7 @@ func Example_openTelemetryLog() {
 		app.L(ctx).Warn("Hello, World!")
 		app.L(ctx).Error("Hello, World!")
 		app.HelloWorld.Get().SayHello(ctx)
-	}, kod.WithLogger(logger))
+	})
 
 	fmt.Println(observer.RemoveKeys("trace_id", "span_id", "time"))
 
@@ -272,6 +274,7 @@ func Example_testWithDefaultConfig() {
 // This example demonstrates how to use [kod.RunTest], [kod.NewTestLogger] and [kod.WithLogger] to run a test function with a custom logger.
 func Example_testWithLogObserver() {
 	logger, observer := kod.NewTestLogger()
+	slog.SetDefault(logger)
 
 	t := &testing.T{}
 	kod.RunTest(t, func(ctx context.Context, app *helloworld.App) {
@@ -279,7 +282,7 @@ func Example_testWithLogObserver() {
 		app.L(ctx).Info("Hello, World!")
 		app.L(ctx).Warn("Hello, World!")
 		app.L(ctx).Error("Hello, World!")
-	}, kod.WithLogger(logger))
+	})
 
 	fmt.Println(observer.Len())
 	fmt.Println(observer.ErrorCount())

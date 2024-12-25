@@ -208,6 +208,10 @@ func (wc *WithGlobalConfig[T]) getGlobalConfig() any {
 	return &wc.config
 }
 
+type Core interface {
+	Init(context.Context, *Kod) error
+}
+
 // WithConfigFile is an option setter for specifying a configuration file.
 func WithConfigFile(filename string) func(*options) {
 	return func(opts *options) {
@@ -236,17 +240,10 @@ func WithInterceptors(interceptors ...interceptor.Interceptor) func(*options) {
 	}
 }
 
-// WithLogger is an option setter for specifying a slog logger.
-func WithLogger(logger *slog.Logger) func(*options) {
+// WithCores is an option setter for specifying initialization functions.
+func WithCores(cores ...Core) func(*options) {
 	return func(opts *options) {
-		opts.logger = logger
-	}
-}
-
-// WithInits is an option setter for specifying initialization functions.
-func WithInits(inits ...func(context.Context, *Kod) error) func(*options) {
-	return func(opts *options) {
-		opts.inits = inits
+		opts.cores = cores
 	}
 }
 
@@ -334,12 +331,11 @@ type Kod struct {
 
 // options defines the configuration options for Kod.
 type options struct {
-	logger         *slog.Logger
 	configFilename string
 	fakes          map[reflect.Type]any
 	registrations  []*Registration
 	interceptors   []interceptor.Interceptor
-	inits          []func(context.Context, *Kod) error
+	cores          []Core
 }
 
 // newKod creates a new instance of Kod with the provided registrations and options.
@@ -373,8 +369,8 @@ func newKod(ctx context.Context, opts ...func(*options)) (*Kod, error) {
 		return nil, err
 	}
 
-	for _, init := range kod.opts.inits {
-		if err := init(ctx, kod); err != nil {
+	for _, core := range kod.opts.cores {
+		if err := core.Init(ctx, kod); err != nil {
 			return nil, fmt.Errorf("init: %w", err)
 		}
 	}
@@ -399,7 +395,7 @@ func (k *Kod) Config() kodConfig {
 // Defer adds a deferred function to the Kod instance.
 func (k *Kod) Defer(name string, fn func(context.Context) error) {
 	k.hooker.Add(hooks.HookFunc{
-		Name: "Defer",
+		Name: name,
 		Fn:   fn,
 	})
 }
