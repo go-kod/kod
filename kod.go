@@ -313,7 +313,8 @@ type kodConfig struct {
 
 // Kod represents the core structure of the application, holding configuration and component registrations.
 type Kod struct {
-	mu *sync.Mutex
+	mu  *sync.Mutex
+	cfg *koanf.Koanf
 
 	config kodConfig
 
@@ -392,7 +393,7 @@ func (k *Kod) unmarshalConfig(key string, out interface{}) error {
 		return fmt.Errorf("set defaults: %w", err)
 	}
 
-	return k.opts.koanf.Unmarshal(key, out)
+	return k.cfg.Unmarshal(key, out)
 }
 
 // register adds the given implementations to the Kod instance.
@@ -410,7 +411,8 @@ func (k *Kod) register(regs []*Registration) {
 
 // parseConfig parses the config file.
 func (k *Kod) parseConfig(filename string) error {
-	if k.opts.koanf == nil {
+	k.cfg = k.opts.koanf
+	if k.cfg == nil {
 		err := k.loadConfig(filename)
 		if err != nil {
 			return err
@@ -465,7 +467,7 @@ func (k *Kod) loadConfig(filename string) error {
 		}
 	}
 
-	k.opts.koanf = c
+	k.cfg = c
 
 	return nil
 }
