@@ -269,22 +269,23 @@ func Example_testWithLogObserver() {
 	// 0
 }
 
-type testCore struct{}
+type testCore struct {
+	kod.BaseCore
+}
 
 func (c testCore) Init(ctx context.Context, k *kod.Kod) error {
 	fmt.Println("core init")
+	return nil
+}
 
-	k.Defer("testCore", func(context.Context) error {
-		fmt.Println("core shutdown")
-		return nil
-	})
-
+func (c testCore) Shutdown(ctx context.Context) error {
+	fmt.Println("core shutdown")
 	return nil
 }
 
 func Example_testWithCore() {
 	kod.RunTest(&testing.T{}, func(ctx context.Context, app *helloworld.App) {
-	}, kod.WithCores(testCore{}))
+	}, kod.WithCores(testCore{kod.NewBaseCore("testScore")}))
 	// Output:
 	// core init
 	// helloWorld init

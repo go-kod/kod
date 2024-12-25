@@ -208,11 +208,6 @@ func (wc *WithGlobalConfig[T]) getGlobalConfig() any {
 	return &wc.config
 }
 
-// Core is initialized by the Kod instance.
-type Core interface {
-	Init(context.Context, *Kod) error
-}
-
 // WithConfigFile is an option setter for specifying a configuration file.
 func WithConfigFile(filename string) func(*options) {
 	return func(opts *options) {
@@ -310,6 +305,32 @@ type kodConfig struct {
 	ShutdownTimeout time.Duration
 }
 
+// Core is initialized by the Kod instance.
+type Core interface {
+	// Name returns the unique name of this core
+	Name() string
+	// Init initializes the core with provided Kod instance
+	Init(context.Context, *Kod) error
+	// Shutdown cleanups resources when application exits
+	Shutdown(context.Context) error
+}
+
+// BaseCore provides default implementation for Core interface
+type BaseCore struct {
+	name string
+}
+
+// NewBaseCore creates a new BaseCore with given name
+func NewBaseCore(name string) BaseCore {
+	return BaseCore{
+		name: name,
+	}
+}
+
+func (b BaseCore) Name() string                     { return b.name }
+func (b BaseCore) Init(context.Context, *Kod) error { return nil }
+func (b BaseCore) Shutdown(context.Context) error   { return nil }
+
 // Kod represents the core structure of the application, holding configuration and component registrations.
 type Kod struct {
 	mu *sync.Mutex
@@ -319,6 +340,8 @@ type Kod struct {
 	cfg *koanf.Koanf
 
 	hooker *hooks.Hooker
+
+	cores []Core // 直接存储cores列表
 
 	regs                []*Registration
 	registryByName      map[string]*Registration
@@ -361,6 +384,7 @@ func newKod(ctx context.Context, opts ...func(*options)) (*Kod, error) {
 		registryByImpl:      make(map[reflect.Type]*Registration),
 		components:          make(map[string]any),
 		opts:                opt,
+		cores:               opt.cores, // 直接使用opts中的cores
 	}
 
 	kod.register(opt.registrations)
@@ -370,10 +394,16 @@ func newKod(ctx context.Context, opts ...func(*options)) (*Kod, error) {
 		return nil, err
 	}
 
-	for _, core := range kod.opts.cores {
+	// 初始化所有cores
+	for _, core := range kod.cores {
 		if err := core.Init(ctx, kod); err != nil {
-			return nil, fmt.Errorf("init: %w", err)
+			return nil, fmt.Errorf("failed to init core %s: %w", core.Name(), err)
 		}
+
+		kod.hooker.Add(hooks.HookFunc{
+			Name: core.Name(),
+			Fn:   core.Shutdown,
+		})
 	}
 
 	kod.lazyInitComponents, err = processRegistrations(kod.regs)
@@ -391,14 +421,6 @@ func newKod(ctx context.Context, opts ...func(*options)) (*Kod, error) {
 // Config returns the current configuration of the Kod instance.
 func (k *Kod) Config() kodConfig {
 	return k.config
-}
-
-// Defer adds a deferred function to the Kod instance.
-func (k *Kod) Defer(name string, fn func(context.Context) error) {
-	k.hooker.Add(hooks.HookFunc{
-		Name: name,
-		Fn:   fn,
-	})
 }
 
 // L() returns the logger of the Kod instance.
