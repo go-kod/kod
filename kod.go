@@ -342,9 +342,7 @@ type options struct {
 
 // newKod creates a new instance of Kod with the provided registrations and options.
 func newKod(_ context.Context, opts ...func(*options)) (*Kod, error) {
-	opt := &options{
-		koanf: koanf.New("."),
-	}
+	opt := &options{}
 	for _, o := range opts {
 		o(opt)
 	}
@@ -412,8 +410,7 @@ func (k *Kod) register(regs []*Registration) {
 	}
 }
 
-// parseConfig parses the config file.
-func (k *Kod) parseConfig(filename string) error {
+func (k *Kod) loadConfig(filename string) error {
 	noConfigProvided := false
 	if filename == "" {
 		filename = os.Getenv("KOD_CONFIG")
@@ -423,7 +420,7 @@ func (k *Kod) parseConfig(filename string) error {
 		}
 	}
 
-	c := k.opts.koanf
+	c := koanf.New(".")
 	err := c.Load(env.Provider("KOD_", ".", func(s string) string {
 		return strings.Replace(strings.ToLower(s), "_", ".", -1)
 	}), nil)
@@ -458,7 +455,22 @@ func (k *Kod) parseConfig(filename string) error {
 	}
 
 	k.cfg = c
-	err = c.Unmarshal("kod", &k.config)
+
+	return nil
+}
+
+// parseConfig parses the config file.
+func (k *Kod) parseConfig(filename string) error {
+	if k.opts.koanf == nil {
+		err := k.loadConfig(filename)
+		if err != nil {
+			return err
+		}
+	} else {
+		k.cfg = k.opts.koanf
+	}
+
+	err := k.cfg.Unmarshal("kod", &k.config)
 	if err != nil {
 		return fmt.Errorf("unmarshal config: %w", err)
 	}
