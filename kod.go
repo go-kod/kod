@@ -237,13 +237,6 @@ func WithInterceptors(interceptors ...interceptor.Interceptor) func(*options) {
 	}
 }
 
-// WithCores is an option setter for specifying initialization functions.
-func WithCores(cores ...Core) func(*options) {
-	return func(opts *options) {
-		opts.cores = cores
-	}
-}
-
 // MustRun is a helper function to run the application with the provided main component and options.
 // It panics if an error occurs during the execution.
 func MustRun[T any, P PointerToMain[T]](ctx context.Context, run func(context.Context, *T) error, opts ...func(*options)) {
@@ -262,18 +255,6 @@ func Run[T any, _ PointerToMain[T]](ctx context.Context, run func(context.Contex
 	ctx = newContext(ctx, kod)
 	ctx, cancel := context.WithCancel(ctx)
 	defer cancel()
-
-	// Initialize cores in registration order
-	for _, core := range kod.cores {
-		if err := core.Init(ctx); err != nil {
-			return fmt.Errorf("init core %s: %w", core.Name(), err)
-		}
-
-		kod.hooker.Add(hooks.HookFunc{
-			Name: core.Name(),
-			Fn:   core.Shutdown,
-		})
-	}
 
 	// get the main component implementation
 	main, err := kod.getImpl(ctx, reflect.TypeFor[T]())
@@ -317,29 +298,6 @@ type kodConfig struct {
 	ShutdownTimeout time.Duration
 }
 
-// Core represents an extension point for the framework.
-type Core interface {
-	// Name returns the unique name
-	Name() string
-	// Init is called during framework startup
-	Init(context.Context) error
-	// Shutdown is called during framework shutdown
-	Shutdown(context.Context) error
-}
-
-// BaseCore provides a default implementation of Core
-type BaseCore struct {
-	name string
-}
-
-func NewBaseCore(name string) BaseCore {
-	return BaseCore{name: name}
-}
-
-func (b BaseCore) Name() string                   { return b.name }
-func (b BaseCore) Init(context.Context) error     { return nil }
-func (b BaseCore) Shutdown(context.Context) error { return nil }
-
 // Kod represents the core structure of the application, holding configuration and component registrations.
 type Kod struct {
 	mu *sync.Mutex
@@ -349,8 +307,6 @@ type Kod struct {
 	cfg *koanf.Koanf
 
 	hooker *hooks.Hooker
-
-	cores []Core // Store cores directly in Kod
 
 	regs                []*Registration
 	registryByName      map[string]*Registration
@@ -368,7 +324,6 @@ type options struct {
 	fakes          map[reflect.Type]any
 	registrations  []*Registration
 	interceptors   []interceptor.Interceptor
-	cores          []Core
 }
 
 // newKod creates a new instance of Kod with the provided registrations and options.
@@ -392,7 +347,6 @@ func newKod(_ context.Context, opts ...func(*options)) (*Kod, error) {
 		registryByImpl:      make(map[reflect.Type]*Registration),
 		components:          make(map[string]any),
 		opts:                opt,
-		cores:               opt.cores,
 	}
 
 	kod.register(opt.registrations)
