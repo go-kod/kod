@@ -2,27 +2,12 @@ package kslog
 
 import (
 	"bytes"
-	"context"
 	"encoding/json"
 	"log/slog"
 	"strings"
 
 	"github.com/samber/lo"
-	"go.opentelemetry.io/otel/trace"
 )
-
-// LogWithContext returns a logger with trace information.
-func LogWithContext(ctx context.Context, logger *slog.Logger) *slog.Logger {
-	s := trace.SpanContextFromContext(ctx)
-	if s.HasTraceID() {
-		logger = logger.With(slog.String("trace_id", s.TraceID().String()))
-	}
-	if s.HasSpanID() {
-		logger = logger.With(slog.String("span_id", s.SpanID().String()))
-	}
-
-	return logger
-}
 
 // NewTestLogger returns a new test logger.
 func NewTestLogger() (*slog.Logger, *observer) {

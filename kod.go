@@ -12,6 +12,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/creasty/defaults"
 	"github.com/knadh/koanf/parsers/json"
 	"github.com/knadh/koanf/parsers/toml/v2"
 	"github.com/knadh/koanf/parsers/yaml"
@@ -19,25 +20,12 @@ import (
 	"github.com/knadh/koanf/providers/file"
 	"github.com/knadh/koanf/v2"
 	"github.com/samber/lo"
-	"go.opentelemetry.io/contrib/bridges/otelslog"
-	"go.opentelemetry.io/contrib/exporters/autoexport"
-	"go.opentelemetry.io/contrib/instrumentation/host"
-	"go.opentelemetry.io/contrib/instrumentation/runtime"
 	"go.opentelemetry.io/otel"
-	"go.opentelemetry.io/otel/log"
-	"go.opentelemetry.io/otel/log/global"
 	"go.opentelemetry.io/otel/metric"
-	"go.opentelemetry.io/otel/propagation"
-	sdklog "go.opentelemetry.io/otel/sdk/log"
-	sdkmetric "go.opentelemetry.io/otel/sdk/metric"
-	sdkresource "go.opentelemetry.io/otel/sdk/resource"
-	sdktrace "go.opentelemetry.io/otel/sdk/trace"
-	semconv "go.opentelemetry.io/otel/semconv/v1.25.0"
 	"go.opentelemetry.io/otel/trace"
 
 	"github.com/go-kod/kod/interceptor"
 	"github.com/go-kod/kod/internal/hooks"
-	"github.com/go-kod/kod/internal/kslog"
 	"github.com/go-kod/kod/internal/registry"
 	"github.com/go-kod/kod/internal/signals"
 )
@@ -50,14 +38,22 @@ const (
 // with logging/tracing/metrics capabilities and a reference to the component's interface.
 type Implements[T any] struct {
 	name string
-	log  *slog.Logger
 	//nolint
 	component_interface_type T
 }
 
 // L returns the associated logger.
 func (i *Implements[T]) L(ctx context.Context) *slog.Logger {
-	return kslog.LogWithContext(ctx, i.log)
+	s := trace.SpanContextFromContext(ctx)
+	if s.IsValid() {
+		return slog.Default().With(
+			slog.String("component", i.name),
+			slog.String("span_id", s.SpanID().String()),
+			slog.String("trace_id", s.TraceID().String()),
+		)
+	}
+
+	return slog.Default().With(slog.String("component", i.name))
 }
 
 // Tracer return the associated tracer.
@@ -70,11 +66,10 @@ func (i *Implements[T]) Meter(opts ...metric.MeterOption) metric.Meter {
 	return otel.Meter(i.name, opts...)
 }
 
-// setLogger sets the logger for the component.
+// setName sets the name for the component.
 // nolint
-func (i *Implements[T]) setLogger(name string, log *slog.Logger) {
+func (i *Implements[T]) setName(name string) {
 	i.name = name
-	i.log = log.With(slog.String("component", name))
 }
 
 // implements is a marker method to assert implementation of an interface.
@@ -248,45 +243,10 @@ func WithInterceptors(interceptors ...interceptor.Interceptor) func(*options) {
 	}
 }
 
-// WithOpenTelemetryDisabled is an option setter for disabling OpenTelemetry.
-func WithOpenTelemetryDisabled() func(*options) {
+// WithKoanf is an option setter for specifying a custom Koanf instance.
+func WithKoanf(cfg *koanf.Koanf) func(*options) {
 	return func(opts *options) {
-		opts.enableOpenTelemetry = false
-	}
-}
-
-// WithTracerProvider is an option setter for specifying a custom tracer provider.
-func WithTracerProvider(provider trace.TracerProvider) func(*options) {
-	return func(opts *options) {
-		opts.traceProvider = provider
-	}
-}
-
-// WithMeterProvider is an option setter for specifying a custom meter provider.
-func WithMeterProvider(provider metric.MeterProvider) func(*options) {
-	return func(opts *options) {
-		opts.meterProvider = provider
-	}
-}
-
-// WithLogProvider is an option setter for specifying a custom log provider.
-func WithLogProvider(provider log.LoggerProvider) func(*options) {
-	return func(opts *options) {
-		opts.logProvider = provider
-	}
-}
-
-// WithTextMapPropagator is an option setter for specifying a custom text map propagator.
-func WithTextMapPropagator(propagator propagation.TextMapPropagator) func(*options) {
-	return func(opts *options) {
-		opts.textMapPropagator = propagator
-	}
-}
-
-// WithLogger is an option setter for specifying a slog logger.
-func WithLogger(logger *slog.Logger) func(*options) {
-	return func(opts *options) {
-		opts.logger = logger
+		opts.koanf = cfg
 	}
 }
 
@@ -344,22 +304,19 @@ func Run[T any, _ PointerToMain[T]](ctx context.Context, run func(context.Contex
 
 // kodConfig defines the overall configuration for the Kod application.
 type kodConfig struct {
-	Name     string
-	Env      string
-	Version  string
-	LogLevel slog.Level
+	Name    string
+	Env     string
+	Version string
 
 	ShutdownTimeout time.Duration
 }
 
 // Kod represents the core structure of the application, holding configuration and component registrations.
 type Kod struct {
-	mu *sync.Mutex
+	mu  *sync.Mutex
+	cfg *koanf.Koanf
 
 	config kodConfig
-
-	cfg *koanf.Koanf
-	log *slog.Logger
 
 	hooker *hooks.Hooker
 
@@ -375,23 +332,16 @@ type Kod struct {
 
 // options defines the configuration options for Kod.
 type options struct {
-	enableOpenTelemetry bool
-	traceProvider       trace.TracerProvider
-	meterProvider       metric.MeterProvider
-	logProvider         log.LoggerProvider
-	textMapPropagator   propagation.TextMapPropagator
-	logger              *slog.Logger
-	configFilename      string
-	fakes               map[reflect.Type]any
-	registrations       []*Registration
-	interceptors        []interceptor.Interceptor
+	configFilename string
+	fakes          map[reflect.Type]any
+	registrations  []*Registration
+	interceptors   []interceptor.Interceptor
+	koanf          *koanf.Koanf
 }
 
 // newKod creates a new instance of Kod with the provided registrations and options.
-func newKod(ctx context.Context, opts ...func(*options)) (*Kod, error) {
-	opt := &options{
-		enableOpenTelemetry: true,
-	}
+func newKod(_ context.Context, opts ...func(*options)) (*Kod, error) {
+	opt := &options{}
 	for _, o := range opts {
 		o(opt)
 	}
@@ -401,7 +351,6 @@ func newKod(ctx context.Context, opts ...func(*options)) (*Kod, error) {
 		config: kodConfig{
 			Name:            filepath.Base(lo.Must(os.Executable())),
 			Env:             "local",
-			LogLevel:        slog.LevelInfo,
 			ShutdownTimeout: 5 * time.Second,
 		},
 		hooker:              hooks.New(),
@@ -429,15 +378,6 @@ func newKod(ctx context.Context, opts ...func(*options)) (*Kod, error) {
 		return nil, err
 	}
 
-	if opt.enableOpenTelemetry && os.Getenv("OTEL_SDK_DISABLED") != "true" {
-		kod.initOpenTelemetry(ctx)
-	} else {
-		kod.log = kod.newSlog(slog.NewTextHandler(
-			os.Stdout,
-			&slog.HandlerOptions{},
-		))
-	}
-
 	return kod, nil
 }
 
@@ -446,9 +386,14 @@ func (k *Kod) Config() kodConfig {
 	return k.config
 }
 
-// L() returns the logger of the Kod instance.
-func (k *Kod) L(ctx context.Context) *slog.Logger {
-	return kslog.LogWithContext(ctx, k.log)
+// unmarshalConfig sets the configuration for the Kod instance.
+func (k *Kod) unmarshalConfig(key string, out interface{}) error {
+	err := defaults.Set(out)
+	if err != nil {
+		return fmt.Errorf("set defaults: %w", err)
+	}
+
+	return k.cfg.Unmarshal(key, out)
 }
 
 // register adds the given implementations to the Kod instance.
@@ -466,6 +411,19 @@ func (k *Kod) register(regs []*Registration) {
 
 // parseConfig parses the config file.
 func (k *Kod) parseConfig(filename string) error {
+	k.cfg = k.opts.koanf
+	if k.cfg == nil {
+		err := k.loadConfig(filename)
+		if err != nil {
+			return err
+		}
+	}
+
+	return k.unmarshalConfig("kod", &k.config)
+}
+
+// loadConfig loads the configuration from the specified file.
+func (k *Kod) loadConfig(filename string) error {
 	noConfigProvided := false
 	if filename == "" {
 		filename = os.Getenv("KOD_CONFIG")
@@ -510,126 +468,6 @@ func (k *Kod) parseConfig(filename string) error {
 	}
 
 	k.cfg = c
-	err = c.Unmarshal("kod", &k.config)
-	if err != nil {
-		return fmt.Errorf("unmarshal config: %w", err)
-	}
 
 	return nil
-}
-
-// initOpenTelemetry initializes OpenTelemetry with the provided context.
-func (k *Kod) initOpenTelemetry(ctx context.Context) {
-	res := lo.Must(sdkresource.New(ctx,
-		sdkresource.WithFromEnv(),
-		sdkresource.WithTelemetrySDK(),
-		sdkresource.WithHost(),
-		sdkresource.WithAttributes(
-			semconv.ServiceNameKey.String(k.config.Name),
-			semconv.ServiceVersionKey.String(k.config.Version),
-			semconv.DeploymentEnvironmentKey.String(k.config.Env),
-		)),
-	)
-
-	k.configureTrace(ctx, res)
-	k.configureMetric(ctx, res)
-	k.configureLog(ctx, res)
-}
-
-// configureTrace configures the trace provider with the provided context and resource.
-func (k *Kod) configureTrace(ctx context.Context, res *sdkresource.Resource) {
-	provider := k.opts.traceProvider
-	if provider == nil {
-		spanExporter := lo.Must(autoexport.NewSpanExporter(ctx))
-		spanProvider := sdktrace.NewTracerProvider(
-			sdktrace.WithBatcher(spanExporter),
-			sdktrace.WithResource(res),
-		)
-
-		k.hooker.Add(hooks.HookFunc{
-			Name: "OpenTelemetry-Trace",
-			Fn:   spanProvider.Shutdown,
-		})
-
-		provider = spanProvider
-	}
-
-	otel.SetTracerProvider(provider)
-
-	propagator := k.opts.textMapPropagator
-	if propagator == nil {
-		propagator = propagation.NewCompositeTextMapPropagator(
-			propagation.TraceContext{}, propagation.Baggage{},
-		)
-	}
-
-	otel.SetTextMapPropagator(propagator)
-}
-
-// configureMetric configures the metric provider with the provided context and resource.
-func (k *Kod) configureMetric(ctx context.Context, res *sdkresource.Resource) {
-	lo.Must0(host.Start())
-	lo.Must0(runtime.Start())
-
-	provider := k.opts.meterProvider
-	if provider == nil {
-		metricReader := lo.Must(autoexport.NewMetricReader(ctx))
-		metricProvider := sdkmetric.NewMeterProvider(
-			sdkmetric.WithReader(metricReader),
-			sdkmetric.WithResource(res),
-		)
-
-		k.hooker.Add(hooks.HookFunc{
-			Name: "OpenTelemetry-Metric",
-			Fn:   metricProvider.Shutdown,
-		})
-
-		provider = metricProvider
-	}
-
-	otel.SetMeterProvider(provider)
-}
-
-// configureLog configures the log provider with the provided context and resource.
-func (k *Kod) configureLog(ctx context.Context, res *sdkresource.Resource) {
-	provider := k.opts.logProvider
-	if provider == nil {
-		logExporter := lo.Must(autoexport.NewLogExporter(ctx))
-		loggerProvider := sdklog.NewLoggerProvider(
-			sdklog.WithProcessor(
-				sdklog.NewBatchProcessor(logExporter),
-			),
-			sdklog.WithResource(res),
-		)
-
-		provider = loggerProvider
-
-		k.hooker.Add(hooks.HookFunc{
-			Name: "OpenTelemetry-Log",
-			Fn:   loggerProvider.Shutdown,
-		})
-	}
-
-	global.SetLoggerProvider(provider)
-
-	k.log = k.newSlog(otelslog.NewHandler(k.config.Name,
-		otelslog.WithSchemaURL(PkgPath),
-		otelslog.WithVersion(k.config.Version),
-	))
-}
-
-// newSlog creates a new slog logger with the provided handler.
-func (k *Kod) newSlog(handler slog.Handler) *slog.Logger {
-	var logger *slog.Logger
-
-	if k.opts.logger != nil {
-		logger = k.opts.logger
-	} else {
-		handler = kslog.NewLevelHandler(k.config.LogLevel)(handler)
-		logger = slog.New(handler)
-	}
-
-	slog.SetDefault(logger)
-
-	return logger
 }

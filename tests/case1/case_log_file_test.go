@@ -14,6 +14,7 @@ import (
 
 func TestLogFile(t *testing.T) {
 	log, observer := kod.NewTestLogger()
+	slog.SetDefault(log)
 
 	kod.RunTest(t, func(ctx context.Context, k Test1Component) {
 		_, err := k.Foo(ctx, &FooReq{Id: 1})
@@ -27,5 +28,5 @@ func TestLogFile(t *testing.T) {
 		slog.Info("test")
 		require.Equal(t, 1, observer.Len())
 		os.Remove("./testapp.json")
-	}, kod.WithLogger(log), kod.WithConfigFile("./kod-logfile.toml"))
+	}, kod.WithConfigFile("./kod-logfile.toml"))
 }

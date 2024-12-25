@@ -3,6 +3,7 @@ package kod_test
 import (
 	"context"
 	"fmt"
+	"log/slog"
 	"testing"
 
 	"github.com/go-kod/kod"
@@ -11,10 +12,10 @@ import (
 	"github.com/go-kod/kod/interceptor/kmetric"
 	"github.com/go-kod/kod/interceptor/krecovery"
 	"github.com/go-kod/kod/interceptor/ktrace"
-	lognoop "go.opentelemetry.io/otel/log/noop"
-	metricnoop "go.opentelemetry.io/otel/metric/noop"
-	"go.opentelemetry.io/otel/propagation"
-	tracenoop "go.opentelemetry.io/otel/trace/noop"
+	"github.com/knadh/koanf/v2"
+	"go.opentelemetry.io/otel"
+	"go.opentelemetry.io/otel/sdk/trace"
+	"go.opentelemetry.io/otel/sdk/trace/tracetest"
 	"go.uber.org/mock/gomock"
 )
 
@@ -112,6 +113,7 @@ func Example_configGlobal() {
 // This example demonstrates how to use logging with OpenTelemetry.
 func Example_openTelemetryLog() {
 	logger, observer := kod.NewTestLogger()
+	slog.SetDefault(logger)
 
 	kod.RunTest(&testing.T{}, func(ctx context.Context, app *helloworld.App) {
 		app.L(ctx).Debug("Hello, World!")
@@ -119,7 +121,7 @@ func Example_openTelemetryLog() {
 		app.L(ctx).Warn("Hello, World!")
 		app.L(ctx).Error("Hello, World!")
 		app.HelloWorld.Get().SayHello(ctx)
-	}, kod.WithLogger(logger))
+	})
 
 	fmt.Println(observer.RemoveKeys("trace_id", "span_id", "time"))
 
@@ -136,6 +138,12 @@ func Example_openTelemetryLog() {
 // This example demonstrates how to use tracing with OpenTelemetry.
 func Example_openTelemetryTrace() {
 	logger, observer := kod.NewTestLogger()
+	slog.SetDefault(logger)
+
+	// create otel test exporter
+	spanRecorder := tracetest.NewSpanRecorder()
+	tracerProvider := trace.NewTracerProvider(trace.WithSpanProcessor(spanRecorder))
+	otel.SetTracerProvider(tracerProvider)
 
 	kod.Run(context.Background(), func(ctx context.Context, app *helloworld.App) error {
 		ctx, span := app.Tracer().Start(ctx, "example")
@@ -145,7 +153,7 @@ func Example_openTelemetryTrace() {
 
 		app.HelloWorld.Get().SayHello(ctx)
 		return nil
-	}, kod.WithInterceptors(ktrace.Interceptor()), kod.WithLogger(logger))
+	}, kod.WithInterceptors(ktrace.Interceptor()))
 
 	fmt.Println(observer.Filter(func(m map[string]any) bool {
 		return m["trace_id"] != nil && m["span_id"] != nil
@@ -171,25 +179,6 @@ func Example_openTelemetryMetric() {
 
 	// Output:
 	// helloWorld init
-	// helloWorld shutdown
-}
-
-// This example demonstrates how to use OpenTelemetry with a custom OpenTelemetry provider.
-func Example_openTelemetryCustomProvider() {
-	kod.Run(context.Background(), func(ctx context.Context, app *helloworld.App) error {
-		app.HelloWorld.Get().SayHello(ctx)
-		return nil
-	},
-		kod.WithTracerProvider(tracenoop.NewTracerProvider()),
-		kod.WithMeterProvider(metricnoop.NewMeterProvider()),
-		kod.WithLogProvider(lognoop.NewLoggerProvider()),
-		kod.WithTextMapPropagator(propagation.NewCompositeTextMapPropagator(
-			propagation.TraceContext{}, propagation.Baggage{},
-		)),
-	)
-	// Output:
-	// helloWorld init
-	// Hello, World!
 	// helloWorld shutdown
 }
 
@@ -292,9 +281,10 @@ func Example_testWithDefaultConfig() {
 	// helloWorld shutdown
 }
 
-// This example demonstrates how to use [kod.RunTest], [kod.NewTestLogger] and [kod.WithLogger] to run a test function with a custom logger.
+// This example demonstrates how to use [kod.RunTest], [kod.NewTestLogger] to run a test function with a custom logger.
 func Example_testWithLogObserver() {
 	logger, observer := kod.NewTestLogger()
+	slog.SetDefault(logger)
 
 	t := &testing.T{}
 	kod.RunTest(t, func(ctx context.Context, app *helloworld.App) {
@@ -302,7 +292,7 @@ func Example_testWithLogObserver() {
 		app.L(ctx).Info("Hello, World!")
 		app.L(ctx).Warn("Hello, World!")
 		app.L(ctx).Error("Hello, World!")
-	}, kod.WithLogger(logger))
+	})
 
 	fmt.Println(observer.Len())
 	fmt.Println(observer.ErrorCount())
@@ -314,4 +304,20 @@ func Example_testWithLogObserver() {
 	// 3
 	// 1
 	// 0
+}
+
+// This example demonstrates how to use [kod.RunTest], [kod.WithKoanf] to run a test function with a custom koanf instance.
+func Example_testWithKoanf() {
+	c := koanf.New("_")
+	c.Set("name", "testName")
+
+	kod.RunTest(&testing.T{}, func(ctx context.Context, app *helloworld.App) {
+		fmt.Println(app.Config().Name)
+		app.HelloWorld.Get().SayHello(ctx)
+	}, kod.WithKoanf(c))
+	// Output:
+	// helloWorld init
+	// testName
+	// Hello, World!
+	// helloWorld shutdown
 }

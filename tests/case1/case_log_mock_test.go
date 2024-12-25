@@ -12,6 +12,7 @@ import (
 
 func TestMockLog(t *testing.T) {
 	log, observer := kod.NewTestLogger()
+	slog.SetDefault(log)
 	t.Setenv("KOD_LOG_LEVEL", "error")
 
 	kod.RunTest(t, func(ctx context.Context, k Test1Component) {
@@ -26,5 +27,5 @@ func TestMockLog(t *testing.T) {
 		slog.Info("test")
 		require.Equal(t, 1, observer.Len())
 		require.Equal(t, 0, observer.ErrorCount())
-	}, kod.WithLogger(log))
+	})
 }

@@ -4,10 +4,8 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"log/slog"
 	"reflect"
 
-	"github.com/creasty/defaults"
 	"github.com/dominikbraun/graph"
 
 	"github.com/go-kod/kod/interceptor"
@@ -93,7 +91,7 @@ func (k *Kod) get(ctx context.Context, reg *Registration) (any, error) {
 	// Fill global config.
 	if c, ok := obj.(interface{ getGlobalConfig() any }); ok {
 		if cfg := c.getGlobalConfig(); cfg != nil {
-			err := k.setConfig("", cfg)
+			err := k.unmarshalConfig("", cfg)
 			if err != nil {
 				return nil, err
 			}
@@ -103,16 +101,16 @@ func (k *Kod) get(ctx context.Context, reg *Registration) (any, error) {
 	// Fill config.
 	if c, ok := obj.(interface{ getConfig() any }); ok {
 		if cfg := c.getConfig(); cfg != nil {
-			err := k.setConfig(reg.Name, cfg)
+			err := k.unmarshalConfig(reg.Name, cfg)
 			if err != nil {
 				return nil, err
 			}
 		}
 	}
 
-	// Fill logger.
-	if err := fillLog(reg.Name, obj, k.log); err != nil {
-		return nil, err
+	// Fill name.
+	if c, ok := obj.(interface{ setName(string) }); ok {
+		c.setName(reg.Name)
 	}
 
 	// Fill refs.
@@ -134,34 +132,13 @@ func (k *Kod) get(ctx context.Context, reg *Registration) (any, error) {
 
 	// Call Shutdown if available.
 	if i, ok := obj.(interface{ Shutdown(context.Context) error }); ok {
-		k.hooker.Add(hooks.HookFunc{Name: reg.Name, Fn: func(ctx context.Context) error {
-			return i.Shutdown(ctx)
-		}})
+		k.hooker.Add(hooks.HookFunc{Name: reg.Name, Fn: i.Shutdown})
 	}
 
 	// Cache the component.
 	k.components[reg.Name] = obj
 
 	return obj, nil
-}
-
-func (k *Kod) setConfig(name string, cfg any) error {
-	err := defaults.Set(cfg)
-	if err != nil {
-		return err
-	}
-
-	return k.cfg.Unmarshal(name, cfg)
-}
-
-func fillLog(name string, obj any, log *slog.Logger) error {
-	x, ok := obj.(interface{ setLogger(string, *slog.Logger) })
-	if !ok {
-		return fmt.Errorf("fillLog: %T does not implement kod.Implements", obj)
-	}
-
-	x.setLogger(name, log)
-	return nil
 }
 
 func fillRefs(impl any, lazyInit map[reflect.Type]bool, get func(reflect.Type) componentGetter) error {

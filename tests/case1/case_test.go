@@ -24,6 +24,7 @@ func TestMain(m *testing.M) {
 		goleak.IgnoreAnyFunction("go.opentelemetry.io/otel/sdk/trace.(*batchSpanProcessor).processQueue"),
 		goleak.IgnoreAnyFunction("go.opentelemetry.io/otel/sdk/log.exportSync.func1"),
 		goleak.IgnoreAnyFunction("go.opentelemetry.io/otel/sdk/log.(*BatchProcessor).poll.func1"),
+		goleak.IgnoreAnyFunction("github.com/go-kod/kod/internal/signals.Shutdown.func1"),
 	)
 }
 
@@ -62,7 +63,7 @@ func TestInterface(t *testing.T) {
 		require.Equal(t, "test1:B", err.Error())
 		require.False(t, span.SpanContext().IsValid())
 		require.Equal(t, 2, res.Id)
-	}, kod.WithOpenTelemetryDisabled())
+	})
 
 	kod.RunTest(t, func(ctx context.Context, k Test1Component) {
 		// ctx = StartTrace(ctx)
@@ -77,7 +78,7 @@ func TestInterface(t *testing.T) {
 		res, err := k.Foo(ctx, &FooReq{Id: 2})
 		fmt.Println(err)
 		require.Equal(t, "test1:B", err.Error())
-		require.True(t, span.SpanContext().IsValid())
+		require.False(t, span.SpanContext().IsValid())
 		require.Equal(t, 2, res.Id)
 	})
 }
