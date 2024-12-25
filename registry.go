@@ -108,10 +108,10 @@ func (k *Kod) get(ctx context.Context, reg *Registration) (any, error) {
 		}
 	}
 
-	// // Fill logger.
-	// if err := fillLog(reg.Name, obj, slog.Default()); err != nil {
-	// 	return nil, err
-	// }
+	// Fill name.
+	if c, ok := obj.(interface{ setName(string) }); ok {
+		c.setName(reg.Name)
+	}
 
 	// Fill refs.
 	if err := fillRefs(obj, k.lazyInitComponents,

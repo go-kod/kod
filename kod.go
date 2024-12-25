@@ -66,6 +66,12 @@ func (i *Implements[T]) Meter(opts ...metric.MeterOption) metric.Meter {
 	return otel.Meter(i.name, opts...)
 }
 
+// setName sets the name for the component.
+// nolint
+func (i *Implements[T]) setName(name string) {
+	i.name = name
+}
+
 // implements is a marker method to assert implementation of an interface.
 // nolint
 func (Implements[T]) implements(T) {}
