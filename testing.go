@@ -8,6 +8,7 @@ import (
 
 	"github.com/samber/lo"
 
+	"github.com/go-kod/kod/internal/hooks"
 	"github.com/go-kod/kod/internal/kslog"
 )
 
@@ -83,6 +84,17 @@ func (r runner) sub(tb testing.TB, testBody any) error {
 	defer runner.hooker.Do(ctx)
 
 	ctx = newContext(ctx, runner)
+
+	for _, core := range runner.cores {
+		if err := core.Init(ctx); err != nil {
+			return fmt.Errorf("init core %s: %w", core.Name(), err)
+		}
+
+		runner.hooker.Add(hooks.HookFunc{
+			Name: core.Name(),
+			Fn:   core.Shutdown,
+		})
+	}
 
 	tb.Helper()
 	body, intfs, err := checkRunFunc(ctx, testBody)

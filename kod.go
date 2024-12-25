@@ -12,6 +12,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/creasty/defaults"
 	"github.com/knadh/koanf/parsers/json"
 	"github.com/knadh/koanf/parsers/toml/v2"
 	"github.com/knadh/koanf/parsers/yaml"
@@ -262,6 +263,18 @@ func Run[T any, _ PointerToMain[T]](ctx context.Context, run func(context.Contex
 	ctx, cancel := context.WithCancel(ctx)
 	defer cancel()
 
+	// Initialize cores in registration order
+	for _, core := range kod.cores {
+		if err := core.Init(ctx); err != nil {
+			return fmt.Errorf("init core %s: %w", core.Name(), err)
+		}
+
+		kod.hooker.Add(hooks.HookFunc{
+			Name: core.Name(),
+			Fn:   core.Shutdown,
+		})
+	}
+
 	// get the main component implementation
 	main, err := kod.getImpl(ctx, reflect.TypeFor[T]())
 	if err != nil {
@@ -310,7 +323,7 @@ type Core interface {
 	// Name returns the unique name
 	Name() string
 	// Init is called during framework startup
-	Init(context.Context, *Kod) error
+	Init(context.Context) error
 	// Shutdown is called during framework shutdown
 	Shutdown(context.Context) error
 }
@@ -324,9 +337,9 @@ func NewBaseCore(name string) BaseCore {
 	return BaseCore{name: name}
 }
 
-func (b BaseCore) Name() string                     { return b.name }
-func (b BaseCore) Init(context.Context, *Kod) error { return nil }
-func (b BaseCore) Shutdown(context.Context) error   { return nil }
+func (b BaseCore) Name() string                   { return b.name }
+func (b BaseCore) Init(context.Context) error     { return nil }
+func (b BaseCore) Shutdown(context.Context) error { return nil }
 
 // Kod represents the core structure of the application, holding configuration and component registrations.
 type Kod struct {
@@ -391,18 +404,6 @@ func newKod(ctx context.Context, opts ...func(*options)) (*Kod, error) {
 		return nil, err
 	}
 
-	// Initialize cores in registration order
-	for _, core := range kod.cores {
-		if err := core.Init(ctx, kod); err != nil {
-			return nil, fmt.Errorf("init core %s: %w", core.Name(), err)
-		}
-
-		kod.hooker.Add(hooks.HookFunc{
-			Name: core.Name(),
-			Fn:   core.Shutdown,
-		})
-	}
-
 	kod.lazyInitComponents, err = processRegistrations(kod.regs)
 	if err != nil {
 		return nil, err
@@ -418,6 +419,16 @@ func newKod(ctx context.Context, opts ...func(*options)) (*Kod, error) {
 // Config returns the current configuration of the Kod instance.
 func (k *Kod) Config() kodConfig {
 	return k.config
+}
+
+// Unmarshal parses the configuration into the provided struct.
+func (k *Kod) Unmarshal(key string, out interface{}) error {
+	err := defaults.Set(out)
+	if err != nil {
+		return fmt.Errorf("set defaults: %w", err)
+	}
+
+	return k.cfg.Unmarshal(key, out)
 }
 
 // L() returns the logger of the Kod instance.

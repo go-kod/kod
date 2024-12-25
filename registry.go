@@ -7,7 +7,6 @@ import (
 	"log/slog"
 	"reflect"
 
-	"github.com/creasty/defaults"
 	"github.com/dominikbraun/graph"
 
 	"github.com/go-kod/kod/interceptor"
@@ -93,7 +92,7 @@ func (k *Kod) get(ctx context.Context, reg *Registration) (any, error) {
 	// Fill global config.
 	if c, ok := obj.(interface{ getGlobalConfig() any }); ok {
 		if cfg := c.getGlobalConfig(); cfg != nil {
-			err := k.setConfig("", cfg)
+			err := k.Unmarshal("", cfg)
 			if err != nil {
 				return nil, err
 			}
@@ -103,7 +102,7 @@ func (k *Kod) get(ctx context.Context, reg *Registration) (any, error) {
 	// Fill config.
 	if c, ok := obj.(interface{ getConfig() any }); ok {
 		if cfg := c.getConfig(); cfg != nil {
-			err := k.setConfig(reg.Name, cfg)
+			err := k.Unmarshal(reg.Name, cfg)
 			if err != nil {
 				return nil, err
 			}
@@ -143,15 +142,6 @@ func (k *Kod) get(ctx context.Context, reg *Registration) (any, error) {
 	k.components[reg.Name] = obj
 
 	return obj, nil
-}
-
-func (k *Kod) setConfig(name string, cfg any) error {
-	err := defaults.Set(cfg)
-	if err != nil {
-		return err
-	}
-
-	return k.cfg.Unmarshal(name, cfg)
 }
 
 func fillLog(name string, obj any, log *slog.Logger) error {

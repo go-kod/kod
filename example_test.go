@@ -273,7 +273,7 @@ type testCore struct {
 	kod.BaseCore
 }
 
-func (c testCore) Init(ctx context.Context, k *kod.Kod) error {
+func (c testCore) Init(ctx context.Context) error {
 	fmt.Println("core init")
 	return nil
 }
