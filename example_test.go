@@ -131,33 +131,6 @@ func Example_openTelemetryLog() {
 	// {"component":"github.com/go-kod/kod/examples/helloworld/HelloWorld","level":"INFO","msg":"Hello, World!"}
 }
 
-// // This example demonstrates how to use tracing with OpenTelemetry.
-// func Example_openTelemetryTrace() {
-// 	logger, observer := kod.NewTestLogger()
-
-// 	kod.Run(context.Background(), func(ctx context.Context, app *helloworld.App) error {
-// 		ctx, span := app.Tracer().Start(ctx, "example")
-// 		defer span.End()
-// 		app.L(ctx).Info("Hello, World!")
-// 		app.L(ctx).WarnContext(ctx, "Hello, World!")
-
-// 		app.HelloWorld.Get().SayHello(ctx)
-// 		return nil
-// 	}, kod.WithInterceptors(ktrace.Interceptor()), kod.WithLogger(logger))
-
-// 	fmt.Println(observer.Filter(func(m map[string]any) bool {
-// 		return m["trace_id"] != nil && m["span_id"] != nil
-// 	}).RemoveKeys("trace_id", "span_id", "time"))
-
-// 	// Output:
-// 	// helloWorld init
-// 	// Hello, World!
-// 	// helloWorld shutdown
-// 	// {"component":"github.com/go-kod/kod/Main","level":"INFO","msg":"Hello, World!"}
-// 	// {"component":"github.com/go-kod/kod/Main","level":"WARN","msg":"Hello, World!"}
-// 	// {"component":"github.com/go-kod/kod/examples/helloworld/HelloWorld","level":"INFO","msg":"Hello, World!"}
-// }
-
 // This example demonstrates how to use metrics with OpenTelemetry.
 func Example_openTelemetryMetric() {
 	kod.Run(context.Background(), func(ctx context.Context, app *helloworld.App) error {
