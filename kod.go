@@ -408,6 +408,19 @@ func (k *Kod) register(regs []*Registration) {
 	}
 }
 
+// parseConfig parses the config file.
+func (k *Kod) parseConfig(filename string) error {
+	if k.opts.koanf == nil {
+		err := k.loadConfig(filename)
+		if err != nil {
+			return err
+		}
+	}
+
+	return k.unmarshalConfig("kod", &k.config)
+}
+
+// loadConfig loads the configuration from the specified file.
 func (k *Kod) loadConfig(filename string) error {
 	noConfigProvided := false
 	if filename == "" {
@@ -455,16 +468,4 @@ func (k *Kod) loadConfig(filename string) error {
 	k.opts.koanf = c
 
 	return nil
-}
-
-// parseConfig parses the config file.
-func (k *Kod) parseConfig(filename string) error {
-	if k.opts.koanf == nil {
-		err := k.loadConfig(filename)
-		if err != nil {
-			return err
-		}
-	}
-
-	return k.unmarshalConfig("kod", &k.config)
 }
