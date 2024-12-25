@@ -317,8 +317,6 @@ type Kod struct {
 
 	config kodConfig
 
-	cfg *koanf.Koanf
-
 	hooker *hooks.Hooker
 
 	regs                []*Registration
@@ -394,7 +392,7 @@ func (k *Kod) unmarshalConfig(key string, out interface{}) error {
 		return fmt.Errorf("set defaults: %w", err)
 	}
 
-	return k.cfg.Unmarshal(key, out)
+	return k.opts.koanf.Unmarshal(key, out)
 }
 
 // register adds the given implementations to the Kod instance.
@@ -454,7 +452,7 @@ func (k *Kod) loadConfig(filename string) error {
 		}
 	}
 
-	k.cfg = c
+	k.opts.koanf = c
 
 	return nil
 }
@@ -466,14 +464,7 @@ func (k *Kod) parseConfig(filename string) error {
 		if err != nil {
 			return err
 		}
-	} else {
-		k.cfg = k.opts.koanf
 	}
 
-	err := k.cfg.Unmarshal("kod", &k.config)
-	if err != nil {
-		return fmt.Errorf("unmarshal config: %w", err)
-	}
-
-	return nil
+	return k.unmarshalConfig("kod", &k.config)
 }
