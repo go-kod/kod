@@ -373,7 +373,7 @@ type options struct {
 }
 
 // newKod creates a new instance of Kod with the provided registrations and options.
-func newKod(ctx context.Context, opts ...func(*options)) (*Kod, error) {
+func newKod(_ context.Context, opts ...func(*options)) (*Kod, error) {
 	opt := &options{}
 	for _, o := range opts {
 		o(opt)
