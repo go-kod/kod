@@ -305,26 +305,23 @@ type kodConfig struct {
 	ShutdownTimeout time.Duration
 }
 
-// Core is initialized by the Kod instance.
+// Core represents an extension point for the framework.
 type Core interface {
-	// Name returns the unique name of this core
+	// Name returns the unique name
 	Name() string
-	// Init initializes the core with provided Kod instance
+	// Init is called during framework startup
 	Init(context.Context, *Kod) error
-	// Shutdown cleanups resources when application exits
+	// Shutdown is called during framework shutdown
 	Shutdown(context.Context) error
 }
 
-// BaseCore provides default implementation for Core interface
+// BaseCore provides a default implementation of Core
 type BaseCore struct {
 	name string
 }
 
-// NewBaseCore creates a new BaseCore with given name
 func NewBaseCore(name string) BaseCore {
-	return BaseCore{
-		name: name,
-	}
+	return BaseCore{name: name}
 }
 
 func (b BaseCore) Name() string                     { return b.name }
@@ -341,7 +338,7 @@ type Kod struct {
 
 	hooker *hooks.Hooker
 
-	cores []Core // 直接存储cores列表
+	cores []Core // Store cores directly in Kod
 
 	regs                []*Registration
 	registryByName      map[string]*Registration
@@ -384,7 +381,7 @@ func newKod(ctx context.Context, opts ...func(*options)) (*Kod, error) {
 		registryByImpl:      make(map[reflect.Type]*Registration),
 		components:          make(map[string]any),
 		opts:                opt,
-		cores:               opt.cores, // 直接使用opts中的cores
+		cores:               opt.cores,
 	}
 
 	kod.register(opt.registrations)
@@ -394,10 +391,10 @@ func newKod(ctx context.Context, opts ...func(*options)) (*Kod, error) {
 		return nil, err
 	}
 
-	// 初始化所有cores
+	// Initialize cores in registration order
 	for _, core := range kod.cores {
 		if err := core.Init(ctx, kod); err != nil {
-			return nil, fmt.Errorf("failed to init core %s: %w", core.Name(), err)
+			return nil, fmt.Errorf("init core %s: %w", core.Name(), err)
 		}
 
 		kod.hooker.Add(hooks.HookFunc{
