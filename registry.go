@@ -111,7 +111,7 @@ func (k *Kod) get(ctx context.Context, reg *Registration) (any, error) {
 	}
 
 	// Fill logger.
-	if err := fillLog(reg.Name, obj, k.log); err != nil {
+	if err := fillLog(reg.Name, obj, slog.Default()); err != nil {
 		return nil, err
 	}
 
