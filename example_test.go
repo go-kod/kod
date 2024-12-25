@@ -12,6 +12,7 @@ import (
 	"github.com/go-kod/kod/interceptor/kmetric"
 	"github.com/go-kod/kod/interceptor/krecovery"
 	"github.com/go-kod/kod/interceptor/ktrace"
+	"github.com/knadh/koanf/v2"
 	"go.uber.org/mock/gomock"
 )
 
@@ -267,4 +268,20 @@ func Example_testWithLogObserver() {
 	// 3
 	// 1
 	// 0
+}
+
+// This example demonstrates how to use [kod.RunTest], [kod.WithKoanf] to run a test function with a custom koanf instance.
+func Example_testWithKoanf() {
+	c := koanf.New("_")
+	c.Set("name", "testName")
+
+	kod.RunTest(&testing.T{}, func(ctx context.Context, app *helloworld.App) {
+		fmt.Println(app.Config().Name)
+		app.HelloWorld.Get().SayHello(ctx)
+	}, kod.WithKoanf(c))
+	// Output:
+	// helloWorld init
+	// testName
+	// Hello, World!
+	// helloWorld shutdown
 }

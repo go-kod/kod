@@ -243,6 +243,13 @@ func WithInterceptors(interceptors ...interceptor.Interceptor) func(*options) {
 	}
 }
 
+// WithKoanf is an option setter for specifying a custom Koanf instance.
+func WithKoanf(cfg *koanf.Koanf) func(*options) {
+	return func(opts *options) {
+		opts.koanf = cfg
+	}
+}
+
 // MustRun is a helper function to run the application with the provided main component and options.
 // It panics if an error occurs during the execution.
 func MustRun[T any, P PointerToMain[T]](ctx context.Context, run func(context.Context, *T) error, opts ...func(*options)) {
@@ -330,11 +337,14 @@ type options struct {
 	fakes          map[reflect.Type]any
 	registrations  []*Registration
 	interceptors   []interceptor.Interceptor
+	koanf          *koanf.Koanf
 }
 
 // newKod creates a new instance of Kod with the provided registrations and options.
 func newKod(_ context.Context, opts ...func(*options)) (*Kod, error) {
-	opt := &options{}
+	opt := &options{
+		koanf: koanf.New("."),
+	}
 	for _, o := range opts {
 		o(opt)
 	}
@@ -413,7 +423,7 @@ func (k *Kod) parseConfig(filename string) error {
 		}
 	}
 
-	c := koanf.New(".")
+	c := k.opts.koanf
 	err := c.Load(env.Provider("KOD_", ".", func(s string) string {
 		return strings.Replace(strings.ToLower(s), "_", ".", -1)
 	}), nil)
