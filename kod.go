@@ -38,7 +38,6 @@ const (
 // with logging/tracing/metrics capabilities and a reference to the component's interface.
 type Implements[T any] struct {
 	name string
-	log  *slog.Logger
 	//nolint
 	component_interface_type T
 }
