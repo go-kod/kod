@@ -26,7 +26,6 @@ import (
 
 	"github.com/go-kod/kod/interceptor"
 	"github.com/go-kod/kod/internal/hooks"
-	"github.com/go-kod/kod/internal/kslog"
 	"github.com/go-kod/kod/internal/registry"
 	"github.com/go-kod/kod/internal/signals"
 )
@@ -46,7 +45,16 @@ type Implements[T any] struct {
 
 // L returns the associated logger.
 func (i *Implements[T]) L(ctx context.Context) *slog.Logger {
-	return kslog.LogWithContext(ctx, i.log)
+	s := trace.SpanContextFromContext(ctx)
+	if s.IsValid() {
+		return slog.Default().With(
+			slog.String("component", i.name),
+			slog.String("span_id", s.SpanID().String()),
+			slog.String("trace_id", s.TraceID().String()),
+		)
+	}
+
+	return slog.Default().With(slog.String("component", i.name))
 }
 
 // Tracer return the associated tracer.
@@ -57,13 +65,6 @@ func (i *Implements[T]) Tracer(opts ...trace.TracerOption) trace.Tracer {
 // Meter return the associated meter.
 func (i *Implements[T]) Meter(opts ...metric.MeterOption) metric.Meter {
 	return otel.Meter(i.name, opts...)
-}
-
-// setLogger sets the logger for the component.
-// nolint
-func (i *Implements[T]) setLogger(name string, log *slog.Logger) {
-	i.name = name
-	i.log = log.With(slog.String("component", name))
 }
 
 // implements is a marker method to assert implementation of an interface.

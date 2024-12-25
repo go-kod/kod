@@ -4,7 +4,6 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"log/slog"
 	"reflect"
 
 	"github.com/dominikbraun/graph"
@@ -109,10 +108,10 @@ func (k *Kod) get(ctx context.Context, reg *Registration) (any, error) {
 		}
 	}
 
-	// Fill logger.
-	if err := fillLog(reg.Name, obj, slog.Default()); err != nil {
-		return nil, err
-	}
+	// // Fill logger.
+	// if err := fillLog(reg.Name, obj, slog.Default()); err != nil {
+	// 	return nil, err
+	// }
 
 	// Fill refs.
 	if err := fillRefs(obj, k.lazyInitComponents,
@@ -133,25 +132,13 @@ func (k *Kod) get(ctx context.Context, reg *Registration) (any, error) {
 
 	// Call Shutdown if available.
 	if i, ok := obj.(interface{ Shutdown(context.Context) error }); ok {
-		k.hooker.Add(hooks.HookFunc{Name: reg.Name, Fn: func(ctx context.Context) error {
-			return i.Shutdown(ctx)
-		}})
+		k.hooker.Add(hooks.HookFunc{Name: reg.Name, Fn: i.Shutdown})
 	}
 
 	// Cache the component.
 	k.components[reg.Name] = obj
 
 	return obj, nil
-}
-
-func fillLog(name string, obj any, log *slog.Logger) error {
-	x, ok := obj.(interface{ setLogger(string, *slog.Logger) })
-	if !ok {
-		return fmt.Errorf("fillLog: %T does not implement kod.Implements", obj)
-	}
-
-	x.setLogger(name, log)
-	return nil
 }
 
 func fillRefs(impl any, lazyInit map[reflect.Type]bool, get func(reflect.Type) componentGetter) error {
