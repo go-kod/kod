@@ -386,6 +386,11 @@ func (k *Kod) Config() kodConfig {
 	return k.config
 }
 
+// Defer adds a hook function to the Kod instance.
+func (k *Kod) Defer(name string, fn func(context.Context) error) {
+	k.hooker.Add(hooks.HookFunc{Name: name, Fn: fn})
+}
+
 // unmarshalConfig sets the configuration for the Kod instance.
 func (k *Kod) unmarshalConfig(key string, out interface{}) error {
 	err := defaults.Set(out)

@@ -321,3 +321,23 @@ func Example_testWithKoanf() {
 	// Hello, World!
 	// helloWorld shutdown
 }
+
+// This example demonstrates how to use [kod.RunTest] to run a test function with a defer function.
+func Example_testWithDefer() {
+	kod.RunTest(&testing.T{}, func(ctx context.Context, app *helloworld.App) {
+		k := kod.FromContext(ctx)
+		k.Defer("test", func(ctx context.Context) error {
+			fmt.Println("Defer called")
+			return nil
+		})
+
+		fmt.Println(app.Config().Name)
+		app.HelloWorld.Get().SayHello(ctx)
+	})
+	// Output:
+	// helloWorld init
+	// kod
+	// Hello, World!
+	// Defer called
+	// helloWorld shutdown
+}
