@@ -10,12 +10,6 @@ import (
 	"github.com/go-kod/kod/internal/mock"
 )
 
-type testComponent struct {
-	Implements[testInterface]
-}
-
-type testInterface interface{}
-
 func Test_testRunner_sub(t *testing.T) {
 	t.Run("failure", func(t *testing.T) {
 		mock.ExpectFailure(t, func(tb testing.TB) {

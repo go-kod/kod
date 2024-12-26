@@ -1,12 +1,14 @@
 package kod
 
 import (
+	"context"
 	"io"
 	"reflect"
 	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 
 	"github.com/go-kod/kod/internal/registry"
 )
@@ -103,4 +105,20 @@ func TestCycleRegistrations(t *testing.T) {
 	if !strings.Contains(err.Error(), want) {
 		t.Fatalf("checkCircularDependency: got %q, want %q", err, want)
 	}
+}
+
+func TestGetImpl(t *testing.T) {
+	k, err := newKod(context.Background())
+	require.NoError(t, err)
+
+	_, err = k.getImpl(context.Background(), reflect.TypeOf(struct{}{}))
+	assert.Error(t, err) // Should fail for unregistered type
+}
+
+func TestGetIntf(t *testing.T) {
+	k, err := newKod(context.Background())
+	require.NoError(t, err)
+
+	_, err = k.getIntf(context.Background(), reflect.TypeOf((*interface{})(nil)).Elem())
+	assert.Error(t, err) // Should fail for unregistered interface
 }
