@@ -96,7 +96,7 @@ func init() {
 
 // CodeGen version check.
 var _ kod.CodeGenLatestVersion = kod.CodeGenVersion[[0][1]struct{}](`
-ERROR: You generated this file with 'kod generate' (devel) (codegen
+ERROR: You generated this file with 'kod generate'  (codegen
 version v0.1.0). The generated code is incompatible with the version of the
 github.com/go-kod/kod module that you're using. The kod module
 version can be found in your go.mod file or by running the following command.
