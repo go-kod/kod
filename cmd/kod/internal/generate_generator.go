@@ -675,14 +675,14 @@ func (g *generator) generateFullMethodNames(p printFn) {
 }
 
 func (g *generator) generateVersionCheck(p printFn) {
-	selfVersion := version.SelfVersion()
+	// selfVersion := version.SelfVersion()
 
 	p(``)
 	p(`// CodeGen version check.`)
 	p("var _ kod.CodeGenLatestVersion = kod.CodeGenVersion[[%d][%d]struct{}](%s)",
 		version.CodeGenMajor, version.CodeGenMinor,
 		fmt.Sprintf("`"+`
-ERROR: You generated this file with 'kod generate' %s (codegen
+ERROR: You generated this file with 'kod generate' (codegen
 version %s). The generated code is incompatible with the version of the
 github.com/go-kod/kod module that you're using. The kod module
 version can be found in your go.mod file or by running the following command.
@@ -697,7 +697,7 @@ running the following.
 
 Then, re-run 'kod generate' and re-build your code. If the problem persists,
 please file an issue at https://github.com/go-kod/kod/issues.
-`+"`", selfVersion, version.CodeGenSemVersion))
+`+"`", version.CodeGenSemVersion))
 }
 
 // generateInstanceChecks generates code that checks that every component
