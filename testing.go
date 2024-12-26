@@ -61,7 +61,7 @@ func runTest(tb testing.TB, testBody any, opts ...func(*options)) {
 
 	err := runner{options: opts}.sub(tb, testBody)
 	if err != nil {
-		tb.Errorf("runTest failed: %v", err)
+		tb.Logf("runTest failed: %v", err)
 		tb.FailNow()
 	}
 }
