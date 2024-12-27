@@ -4,6 +4,8 @@ import (
 	"context"
 	"errors"
 	"testing"
+
+	"github.com/stretchr/testify/require"
 )
 
 func TestIf(t *testing.T) {
@@ -298,4 +300,47 @@ func TestIsMethod(t *testing.T) {
 			}
 		})
 	}
+}
+
+func TestSingleton(t *testing.T) {
+	name := "FullMethod"
+
+	initCount := 0
+	callCount := 0
+
+	// Create a mock invoker function
+	initFn := func() Interceptor {
+		initCount++
+		return func(ctx context.Context, info CallInfo, req, reply []interface{}, invoker HandleFunc) error {
+			callCount++
+			return nil
+		}
+	}
+
+	// Create the singleton interceptor using the test case input
+	singletonInterceptor := SingletonByFullMethod(initFn)
+
+	err := singletonInterceptor(context.Background(), CallInfo{
+		FullMethod: name,
+	}, nil, nil, nil)
+
+	require.Nil(t, err)
+	require.Equal(t, 1, initCount)
+	require.Equal(t, 1, callCount)
+
+	err = singletonInterceptor(context.Background(), CallInfo{
+		FullMethod: name,
+	}, nil, nil, nil)
+
+	require.Nil(t, err)
+	require.Equal(t, 1, initCount)
+	require.Equal(t, 2, callCount)
+
+	err = singletonInterceptor(context.Background(), CallInfo{
+		FullMethod: "no cache",
+	}, nil, nil, nil)
+
+	require.Nil(t, err)
+	require.Equal(t, 2, initCount)
+	require.Equal(t, 3, callCount)
 }

@@ -2,6 +2,8 @@ package interceptor
 
 import (
 	"context"
+
+	"github.com/go-kod/kod/internal/singleton"
 )
 
 // CallInfo contains information about the call.
@@ -53,6 +55,18 @@ func If(interceptor Interceptor, condition Condition) Interceptor {
 		}
 
 		return invoker(ctx, info, req, reply)
+	}
+}
+
+// pool is a singleton for interceptors.
+var pool = singleton.New[Interceptor]()
+
+// SingletonByFullMethod returns an Interceptor that is a singleton for the given method.
+func SingletonByFullMethod(initFn func() Interceptor) Interceptor {
+	return func(ctx context.Context, info CallInfo, req, reply []any, invoker HandleFunc) error {
+		interceptor := pool.Get(info.FullMethod, initFn)
+
+		return interceptor(ctx, info, req, reply, invoker)
 	}
 }
 

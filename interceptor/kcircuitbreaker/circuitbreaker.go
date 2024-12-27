@@ -12,13 +12,13 @@ import (
 
 var (
 	once sync.Once
-	pool *singleton.Singleton[circuitbreaker.CircuitBreaker]
+	pool *singleton.Singleton[*circuitbreaker.CircuitBreaker]
 )
 
 // Interceptor returns an interceptor do circuit breaker.
 func Interceptor() interceptor.Interceptor {
 	once.Do(func() {
-		pool = singleton.NewSingleton[circuitbreaker.CircuitBreaker]()
+		pool = singleton.New[*circuitbreaker.CircuitBreaker]()
 	})
 
 	return func(ctx context.Context, info interceptor.CallInfo, req, reply []any, invoker interceptor.HandleFunc) error {

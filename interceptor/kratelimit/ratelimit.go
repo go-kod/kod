@@ -12,13 +12,13 @@ import (
 
 var (
 	once sync.Once
-	pool *singleton.Singleton[ratelimit.Ratelimit]
+	pool *singleton.Singleton[*ratelimit.Ratelimit]
 )
 
 // Interceptor returns an interceptor do rate limit.
 func Interceptor() interceptor.Interceptor {
 	once.Do(func() {
-		pool = singleton.NewSingleton[ratelimit.Ratelimit]()
+		pool = singleton.New[*ratelimit.Ratelimit]()
 	})
 
 	return func(ctx context.Context, info interceptor.CallInfo, req, reply []any, invoker interceptor.HandleFunc) error {
