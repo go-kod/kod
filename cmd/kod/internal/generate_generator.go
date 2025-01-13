@@ -666,7 +666,7 @@ func (g *generator) generateFullMethodNames(p printFn) {
 			continue
 		}
 
-		p(`// %s is the full name of the component [%s].`, comp.intfName(), comp.fullIntfName())
+		p(`// %s_ComponentName is the full name of the component [%s].`, comp.intfName(), comp.intfName())
 		p(`%s_ComponentName = %q`, comp.intfName(), comp.fullIntfName())
 
 		for _, m := range comp.methods() {
