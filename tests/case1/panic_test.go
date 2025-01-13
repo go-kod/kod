@@ -16,7 +16,7 @@ func TestPanicRecovery(t *testing.T) {
 	})
 }
 
-func TestRunWithInterceptor(t *testing.T) {
+func TestRunSetInterceptor(t *testing.T) {
 	t.Parallel()
 
 	t.Run("panicNoRecvoeryCase with interceptor", func(t *testing.T) {

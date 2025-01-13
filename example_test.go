@@ -184,7 +184,7 @@ func Example_openTelemetryMetric() {
 	// helloWorld shutdown
 }
 
-// This example demonstrates how to use [kod.WithInterceptors] to provide global interceptors to the application.
+// This example demonstrates how to use [kod.Kod.SetInterceptors] to provide global interceptors to the application.
 func Example_interceptorGlobal() {
 	itcpt := interceptor.Interceptor(func(ctx context.Context, info interceptor.CallInfo, req, res []interface{}, next interceptor.HandleFunc) error {
 		fmt.Println("Before call")
@@ -207,7 +207,7 @@ func Example_interceptorGlobal() {
 	// helloWorld shutdown
 }
 
-// This example demonstrates how to use [kod.WithInterceptors] to provide component-specific interceptors to the application.
+// This example demonstrates how to use [kod.Kod.SetInterceptors] to provide component-specific interceptors to the application.
 func Example_interceptorComponent() {
 	kod.Run(context.Background(), func(ctx context.Context, app *helloworld.App) error {
 		app.HelloWorldInterceptor.Get().SayHello(ctx)
@@ -221,7 +221,7 @@ func Example_interceptorComponent() {
 	// helloWorld shutdown
 }
 
-// This example demonstrates how to use built-in interceptors with [kod.WithInterceptors].
+// This example demonstrates how to use built-in interceptors with [kod.Kod.SetInterceptors].
 // Such as [krecovery.Interceptor], [ktrace.Interceptor], and [kmetric.Interceptor] ...
 func Example_interceptorBuiltin() {
 	kod.Run(context.Background(), func(ctx context.Context, app *helloworld.App) error {
