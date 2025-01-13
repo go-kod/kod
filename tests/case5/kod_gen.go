@@ -12,7 +12,7 @@ import (
 
 // Full method names for components.
 const (
-	// TestRefStruct1 is the full name of the component [github.com/go-kod/kod/tests/case5/TestRefStruct1].
+	// TestRefStruct1_ComponentName is the full name of the component [TestRefStruct1].
 	TestRefStruct1_ComponentName = "github.com/go-kod/kod/tests/case5/TestRefStruct1"
 )
 
