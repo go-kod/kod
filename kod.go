@@ -236,13 +236,6 @@ func WithRegistrations(regs ...*Registration) func(*options) {
 	}
 }
 
-// WithInterceptors is an option setter for specifying interceptors.
-func WithInterceptors(interceptors ...interceptor.Interceptor) func(*options) {
-	return func(opts *options) {
-		opts.interceptors = interceptors
-	}
-}
-
 // WithKoanf is an option setter for specifying a custom Koanf instance.
 func WithKoanf(cfg *koanf.Koanf) func(*options) {
 	return func(opts *options) {
@@ -320,6 +313,8 @@ type Kod struct {
 
 	hooker *hooks.Hooker
 
+	interceptor interceptor.Interceptor
+
 	regs                []*Registration
 	registryByName      map[string]*Registration
 	registryByInterface map[reflect.Type]*Registration
@@ -335,7 +330,6 @@ type options struct {
 	configFilename string
 	fakes          map[reflect.Type]any
 	registrations  []*Registration
-	interceptors   []interceptor.Interceptor
 	koanf          *koanf.Koanf
 }
 
@@ -384,6 +378,11 @@ func newKod(_ context.Context, opts ...func(*options)) (*Kod, error) {
 // Config returns the current configuration of the Kod instance.
 func (k *Kod) Config() kodConfig {
 	return k.config
+}
+
+// SetDefaultInterceptor sets the default interceptor for the Kod instance.
+func (k *Kod) SetInterceptors(interceptors ...interceptor.Interceptor) {
+	k.interceptor = interceptor.Chain(interceptors)
 }
 
 // Defer adds a hook function to the Kod instance.

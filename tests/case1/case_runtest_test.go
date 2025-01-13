@@ -12,6 +12,7 @@ import (
 
 func TestTest(t *testing.T) {
 	t.Parallel()
+
 	kod.RunTest(t, func(ctx context.Context, k *test1Component) {
 		_, err := k.Foo(ctx, &FooReq{})
 		fmt.Println(err)
@@ -21,6 +22,7 @@ func TestTest(t *testing.T) {
 
 func TestTest2(t *testing.T) {
 	t.Parallel()
+
 	kod.RunTest2(t, func(ctx context.Context, k *test1Component, k2 Test2Component) {
 		_, err := k.Foo(ctx, &FooReq{})
 		fmt.Println(err)

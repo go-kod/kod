@@ -12,10 +12,16 @@ import (
 
 // Full method names for components.
 const (
+	// HelloWorld_ComponentName is the full name of the component [HelloWorld].
+	HelloWorld_ComponentName = "github.com/go-kod/kod/examples/helloworld/HelloWorld"
 	// HelloWorld_SayHello_FullMethodName is the full name of the method [helloWorld.SayHello].
 	HelloWorld_SayHello_FullMethodName = "github.com/go-kod/kod/examples/helloworld/HelloWorld.SayHello"
+	// HelloWorldLazy_ComponentName is the full name of the component [HelloWorldLazy].
+	HelloWorldLazy_ComponentName = "github.com/go-kod/kod/examples/helloworld/HelloWorldLazy"
 	// HelloWorldLazy_SayHello_FullMethodName is the full name of the method [lazyHelloWorld.SayHello].
 	HelloWorldLazy_SayHello_FullMethodName = "github.com/go-kod/kod/examples/helloworld/HelloWorldLazy.SayHello"
+	// HelloWorldInterceptor_ComponentName is the full name of the component [HelloWorldInterceptor].
+	HelloWorldInterceptor_ComponentName = "github.com/go-kod/kod/examples/helloworld/HelloWorldInterceptor"
 	// HelloWorldInterceptor_SayHello_FullMethodName is the full name of the method [helloWorldInterceptor.SayHello].
 	HelloWorldInterceptor_SayHello_FullMethodName = "github.com/go-kod/kod/examples/helloworld/HelloWorldInterceptor.SayHello"
 )

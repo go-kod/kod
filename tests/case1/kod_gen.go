@@ -15,24 +15,56 @@ import (
 
 // Full method names for components.
 const (
+	// test1Controller_ComponentName is the full name of the component [test1Controller].
+	test1Controller_ComponentName = "github.com/go-kod/kod/tests/case1/test1Controller"
+	// testService_ComponentName is the full name of the component [testService].
+	testService_ComponentName = "github.com/go-kod/kod/tests/case1/testService"
 	// testService_Foo_FullMethodName is the full name of the method [serviceImpl.Foo].
 	testService_Foo_FullMethodName = "github.com/go-kod/kod/tests/case1/testService.Foo"
+	// testRepository_ComponentName is the full name of the component [testRepository].
+	testRepository_ComponentName = "github.com/go-kod/kod/tests/case1/testRepository"
 	// testRepository_Foo_FullMethodName is the full name of the method [modelImpl.Foo].
 	testRepository_Foo_FullMethodName = "github.com/go-kod/kod/tests/case1/testRepository.Foo"
+	// Test1Component_ComponentName is the full name of the component [Test1Component].
+	Test1Component_ComponentName = "github.com/go-kod/kod/tests/case1/Test1Component"
 	// Test1Component_Foo_FullMethodName is the full name of the method [test1Component.Foo].
 	Test1Component_Foo_FullMethodName = "github.com/go-kod/kod/tests/case1/Test1Component.Foo"
+	// Test2Component_ComponentName is the full name of the component [Test2Component].
+	Test2Component_ComponentName = "github.com/go-kod/kod/tests/case1/Test2Component"
+	// ctxInterface_ComponentName is the full name of the component [ctxInterface].
+	ctxInterface_ComponentName = "github.com/go-kod/kod/tests/case1/ctxInterface"
 	// ctxInterface_Foo_FullMethodName is the full name of the method [ctxImpl.Foo].
 	ctxInterface_Foo_FullMethodName = "github.com/go-kod/kod/tests/case1/ctxInterface.Foo"
+	// test1ComponentDefaultError_ComponentName is the full name of the component [test1ComponentDefaultError].
+	test1ComponentDefaultError_ComponentName = "github.com/go-kod/kod/tests/case1/test1ComponentDefaultError"
+	// test1ComponentGlobalDefaultError_ComponentName is the full name of the component [test1ComponentGlobalDefaultError].
+	test1ComponentGlobalDefaultError_ComponentName = "github.com/go-kod/kod/tests/case1/test1ComponentGlobalDefaultError"
+	// testEchoController_ComponentName is the full name of the component [testEchoController].
+	testEchoController_ComponentName = "github.com/go-kod/kod/tests/case1/testEchoController"
+	// testGinController_ComponentName is the full name of the component [testGinController].
+	testGinController_ComponentName = "github.com/go-kod/kod/tests/case1/testGinController"
+	// HTTPController_ComponentName is the full name of the component [HTTPController].
+	HTTPController_ComponentName = "github.com/go-kod/kod/tests/case1/HTTPController"
+	// InterceptorRetry_ComponentName is the full name of the component [InterceptorRetry].
+	InterceptorRetry_ComponentName = "github.com/go-kod/kod/tests/case1/InterceptorRetry"
 	// InterceptorRetry_TestError_FullMethodName is the full name of the method [interceptorRetry.TestError].
 	InterceptorRetry_TestError_FullMethodName = "github.com/go-kod/kod/tests/case1/InterceptorRetry.TestError"
 	// InterceptorRetry_TestNormal_FullMethodName is the full name of the method [interceptorRetry.TestNormal].
 	InterceptorRetry_TestNormal_FullMethodName = "github.com/go-kod/kod/tests/case1/InterceptorRetry.TestNormal"
+	// LazyInitImpl_ComponentName is the full name of the component [LazyInitImpl].
+	LazyInitImpl_ComponentName = "github.com/go-kod/kod/tests/case1/LazyInitImpl"
 	// LazyInitImpl_Try_FullMethodName is the full name of the method [lazyInitImpl.Try].
 	LazyInitImpl_Try_FullMethodName = "github.com/go-kod/kod/tests/case1/LazyInitImpl.Try"
+	// LazyInitComponent_ComponentName is the full name of the component [LazyInitComponent].
+	LazyInitComponent_ComponentName = "github.com/go-kod/kod/tests/case1/LazyInitComponent"
 	// LazyInitComponent_Try_FullMethodName is the full name of the method [lazyInitComponent.Try].
 	LazyInitComponent_Try_FullMethodName = "github.com/go-kod/kod/tests/case1/LazyInitComponent.Try"
+	// panicCaseInterface_ComponentName is the full name of the component [panicCaseInterface].
+	panicCaseInterface_ComponentName = "github.com/go-kod/kod/tests/case1/panicCaseInterface"
 	// panicCaseInterface_TestPanic_FullMethodName is the full name of the method [panicCase.TestPanic].
 	panicCaseInterface_TestPanic_FullMethodName = "github.com/go-kod/kod/tests/case1/panicCaseInterface.TestPanic"
+	// panicNoRecvoeryCaseInterface_ComponentName is the full name of the component [panicNoRecvoeryCaseInterface].
+	panicNoRecvoeryCaseInterface_ComponentName = "github.com/go-kod/kod/tests/case1/panicNoRecvoeryCaseInterface"
 	// panicNoRecvoeryCaseInterface_TestPanic_FullMethodName is the full name of the method [panicNoRecvoeryCase.TestPanic].
 	panicNoRecvoeryCaseInterface_TestPanic_FullMethodName = "github.com/go-kod/kod/tests/case1/panicNoRecvoeryCaseInterface.TestPanic"
 )
