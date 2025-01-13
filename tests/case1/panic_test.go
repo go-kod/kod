@@ -21,7 +21,9 @@ func TestRunWithInterceptor(t *testing.T) {
 
 	t.Run("panicNoRecvoeryCase with interceptor", func(t *testing.T) {
 		kod.RunTest(t, func(ctx context.Context, t panicNoRecvoeryCaseInterface) {
+			kod.FromContext(ctx).SetInterceptors(krecovery.Interceptor())
+
 			t.TestPanic(ctx)
-		}, kod.WithInterceptors(krecovery.Interceptor()))
+		})
 	})
 }
