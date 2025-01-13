@@ -12,8 +12,12 @@ import (
 
 // Full method names for components.
 const (
+	// Test1Component is the full name of the component [github.com/go-kod/kod/tests/case2/Test1Component].
+	Test1Component_ComponentName = "github.com/go-kod/kod/tests/case2/Test1Component"
 	// Test1Component_Foo_FullMethodName is the full name of the method [test1Component.Foo].
 	Test1Component_Foo_FullMethodName = "github.com/go-kod/kod/tests/case2/Test1Component.Foo"
+	// Test2Component is the full name of the component [github.com/go-kod/kod/tests/case2/Test2Component].
+	Test2Component_ComponentName = "github.com/go-kod/kod/tests/case2/Test2Component"
 	// Test2Component_Foo_FullMethodName is the full name of the method [test2Component.Foo].
 	Test2Component_Foo_FullMethodName = "github.com/go-kod/kod/tests/case2/Test2Component.Foo"
 )

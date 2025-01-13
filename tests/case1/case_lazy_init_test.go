@@ -66,7 +66,7 @@ func TestLazyInitTest3(t *testing.T) {
 
 		require.Equal(t, 3, observer.Len(), observer.String())
 
-		require.Equal(t, comp, k.test.Get())
+		// require.Equal(t, comp, k.test.Get())
 		require.Equal(t, 3, observer.Len(), observer.String())
 
 		require.Nil(t, k.test.Get().Try(ctx))

@@ -2,6 +2,7 @@ package interceptor
 
 import (
 	"context"
+	"sync/atomic"
 
 	"github.com/go-kod/kod/internal/singleton"
 )
@@ -22,6 +23,44 @@ type Interceptor func(ctx context.Context, info CallInfo, req, reply []any, invo
 
 // Condition is the type of the function used to determine whether an interceptor should be used.
 type Condition func(ctx context.Context, info CallInfo) bool
+
+var (
+	// pool is a singleton for interceptors.
+	pool = singleton.New[Interceptor]()
+
+	// defaultInterceptor is the default interceptor.
+	defaultInterceptor atomic.Pointer[Interceptor]
+)
+
+// SingletonByFullMethod returns an Interceptor that is a singleton for the given method.
+func SingletonByFullMethod(initFn func() Interceptor) Interceptor {
+	return func(ctx context.Context, info CallInfo, req, reply []any, invoker HandleFunc) error {
+		interceptor := pool.Get(info.FullMethod, initFn)
+
+		return interceptor(ctx, info, req, reply, invoker)
+	}
+}
+
+func init() {
+	defaultInterceptor.Store(new(Interceptor))
+}
+
+// Default returns the default interceptor dynamically.
+func Default() Interceptor {
+	return func(ctx context.Context, info CallInfo, req, reply []any, invoker HandleFunc) error {
+		defaultInterceptor := *defaultInterceptor.Load()
+		if defaultInterceptor == nil {
+			return invoker(ctx, info, req, reply)
+		}
+
+		return defaultInterceptor(ctx, info, req, reply, invoker)
+	}
+}
+
+// SetDefault sets the default interceptor.
+func SetDefault(interceptor Interceptor) {
+	defaultInterceptor.Store(&interceptor)
+}
 
 // Chain converts a slice of Interceptors into a single Interceptor.
 func Chain(interceptors []Interceptor) Interceptor {
@@ -55,18 +94,6 @@ func If(interceptor Interceptor, condition Condition) Interceptor {
 		}
 
 		return invoker(ctx, info, req, reply)
-	}
-}
-
-// pool is a singleton for interceptors.
-var pool = singleton.New[Interceptor]()
-
-// SingletonByFullMethod returns an Interceptor that is a singleton for the given method.
-func SingletonByFullMethod(initFn func() Interceptor) Interceptor {
-	return func(ctx context.Context, info CallInfo, req, reply []any, invoker HandleFunc) error {
-		interceptor := pool.Get(info.FullMethod, initFn)
-
-		return interceptor(ctx, info, req, reply, invoker)
 	}
 }
 

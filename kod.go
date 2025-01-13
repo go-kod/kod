@@ -369,6 +369,11 @@ func newKod(_ context.Context, opts ...func(*options)) (*Kod, error) {
 		return nil, err
 	}
 
+	// Set the default interceptors.
+	if len(kod.opts.interceptors) > 0 {
+		interceptor.SetDefault(interceptor.Chain(kod.opts.interceptors))
+	}
+
 	kod.lazyInitComponents, err = processRegistrations(kod.regs)
 	if err != nil {
 		return nil, err

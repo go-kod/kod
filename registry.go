@@ -53,16 +53,17 @@ func (k *Kod) getIntf(ctx context.Context, t reflect.Type) (any, error) {
 		return nil, err
 	}
 
-	interceptors := k.opts.interceptors
+	itcpt := interceptor.Default()
 	if h, ok := impl.(interface {
 		Interceptors() []interceptor.Interceptor
 	}); ok {
-		interceptors = append(interceptors, h.Interceptors()...)
+		localInterceptor := interceptor.Chain(h.Interceptors())
+		itcpt = interceptor.Chain([]interceptor.Interceptor{itcpt, localInterceptor})
 	}
 
 	info := &LocalStubFnInfo{
 		Impl:        impl,
-		Interceptor: interceptor.Chain(interceptors),
+		Interceptor: itcpt,
 	}
 
 	intf = reg.LocalStubFn(ctx, info)

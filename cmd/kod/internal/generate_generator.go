@@ -662,6 +662,13 @@ func (g *generator) generateFullMethodNames(p printFn) {
 	p(`// Full method names for components.`)
 	p(`const (`)
 	for _, comp := range g.components {
+		if comp.isMain {
+			continue
+		}
+
+		p(`// %s is the full name of the component [%s].`, comp.intfName(), comp.fullIntfName())
+		p(`%s_ComponentName = %q`, comp.intfName(), comp.fullIntfName())
+
 		for _, m := range comp.methods() {
 			if g.getFirstArgTypeString(m) != "context.Context" {
 				continue
