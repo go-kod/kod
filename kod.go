@@ -243,6 +243,13 @@ func WithKoanf(cfg *koanf.Koanf) func(*options) {
 	}
 }
 
+// WithInterceptors is an option setter for specifying interceptors.
+func WithInterceptors(interceptors ...interceptor.Interceptor) func(*options) {
+	return func(opts *options) {
+		opts.interceptor = interceptor.Chain(interceptors)
+	}
+}
+
 // MustRun is a helper function to run the application with the provided main component and options.
 // It panics if an error occurs during the execution.
 func MustRun[T any, P PointerToMain[T]](ctx context.Context, run func(context.Context, *T) error, opts ...func(*options)) {
@@ -313,8 +320,6 @@ type Kod struct {
 
 	hooker *hooks.Hooker
 
-	interceptor interceptor.Interceptor
-
 	regs                []*Registration
 	registryByName      map[string]*Registration
 	registryByInterface map[reflect.Type]*Registration
@@ -331,6 +336,7 @@ type options struct {
 	fakes          map[reflect.Type]any
 	registrations  []*Registration
 	koanf          *koanf.Koanf
+	interceptor    interceptor.Interceptor
 }
 
 // newKod creates a new instance of Kod with the provided registrations and options.
@@ -382,7 +388,7 @@ func (k *Kod) Config() kodConfig {
 
 // SetDefaultInterceptor sets the default interceptor for the Kod instance.
 func (k *Kod) SetInterceptors(interceptors ...interceptor.Interceptor) {
-	k.interceptor = interceptor.Chain(interceptors)
+	k.opts.interceptor = interceptor.Chain(interceptors)
 }
 
 // Defer adds a hook function to the Kod instance.

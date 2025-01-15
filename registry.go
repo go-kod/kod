@@ -54,11 +54,11 @@ func (k *Kod) getIntf(ctx context.Context, t reflect.Type) (any, error) {
 	}
 
 	itcpt := func(ctx context.Context, info interceptor.CallInfo, req, reply []any, invoker interceptor.HandleFunc) error {
-		if k.interceptor == nil {
+		if k.opts.interceptor == nil {
 			return invoker(ctx, info, req, reply)
 		}
 
-		return k.interceptor(ctx, info, req, reply, invoker)
+		return k.opts.interceptor(ctx, info, req, reply, invoker)
 	}
 
 	if h, ok := impl.(interface {

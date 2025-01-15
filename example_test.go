@@ -146,8 +146,6 @@ func Example_openTelemetryTrace() {
 	otel.SetTracerProvider(tracerProvider)
 
 	kod.Run(context.Background(), func(ctx context.Context, app *helloworld.App) error {
-		kod.FromContext(ctx).SetInterceptors(ktrace.Interceptor())
-
 		ctx, span := app.Tracer().Start(ctx, "example")
 		defer span.End()
 		app.L(ctx).Info("Hello, World!")
@@ -155,7 +153,7 @@ func Example_openTelemetryTrace() {
 
 		app.HelloWorld.Get().SayHello(ctx)
 		return nil
-	})
+	}, kod.WithInterceptors(ktrace.Interceptor()))
 
 	fmt.Println(observer.Filter(func(m map[string]any) bool {
 		return m["trace_id"] != nil && m["span_id"] != nil
@@ -184,7 +182,7 @@ func Example_openTelemetryMetric() {
 	// helloWorld shutdown
 }
 
-// This example demonstrates how to use [kod.Kod.SetInterceptors] to provide global interceptors to the application.
+// This example demonstrates how to use [kod.WithInterceptors] to provide global interceptors to the application.
 func Example_interceptorGlobal() {
 	itcpt := interceptor.Interceptor(func(ctx context.Context, info interceptor.CallInfo, req, res []interface{}, next interceptor.HandleFunc) error {
 		fmt.Println("Before call")
@@ -194,11 +192,9 @@ func Example_interceptorGlobal() {
 	})
 
 	kod.Run(context.Background(), func(ctx context.Context, app *helloworld.App) error {
-		kod.FromContext(ctx).SetInterceptors(itcpt)
-
 		app.HelloWorld.Get().SayHello(ctx)
 		return nil
-	})
+	}, kod.WithInterceptors(itcpt))
 	// Output:
 	// helloWorld init
 	// Before call
@@ -207,31 +203,13 @@ func Example_interceptorGlobal() {
 	// helloWorld shutdown
 }
 
-// This example demonstrates how to use [kod.Kod.SetInterceptors] to provide component-specific interceptors to the application.
-func Example_interceptorComponent() {
-	kod.Run(context.Background(), func(ctx context.Context, app *helloworld.App) error {
-		app.HelloWorldInterceptor.Get().SayHello(ctx)
-		return nil
-	})
-	// Output:
-	// helloWorld init
-	// Before call
-	// Hello, Interceptor!
-	// After call
-	// helloWorld shutdown
-}
-
-// This example demonstrates how to use built-in interceptors with [kod.Kod.SetInterceptors].
+// This example demonstrates how to use built-in interceptors with [kod.WithInterceptors].
 // Such as [krecovery.Interceptor], [ktrace.Interceptor], and [kmetric.Interceptor] ...
 func Example_interceptorBuiltin() {
 	kod.Run(context.Background(), func(ctx context.Context, app *helloworld.App) error {
-		kod.FromContext(ctx).SetInterceptors(interceptor.Chain([]interceptor.Interceptor{
-			krecovery.Interceptor(), ktrace.Interceptor(), kmetric.Interceptor(),
-		}))
-
 		app.HelloWorld.Get().SayHello(ctx)
 		return nil
-	})
+	}, kod.WithInterceptors(krecovery.Interceptor(), ktrace.Interceptor(), kmetric.Interceptor()))
 	// Output:
 	// helloWorld init
 	// Hello, World!
