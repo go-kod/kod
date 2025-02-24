@@ -7,7 +7,7 @@ toolchain go1.23.0
 replace github.com/go-kod/kod => ../
 
 require (
-	github.com/avast/retry-go/v4 v4.6.0
+	github.com/avast/retry-go/v4 v4.6.1
 	github.com/gin-gonic/gin v1.10.0
 	github.com/go-kod/kod v0.0.0-00010101000000-000000000000
 	github.com/labstack/echo/v4 v4.13.3
@@ -35,7 +35,7 @@ require (
 	github.com/go-ole/go-ole v1.3.0 // indirect
 	github.com/go-playground/locales v0.14.1 // indirect
 	github.com/go-playground/universal-translator v0.18.1 // indirect
-	github.com/go-playground/validator/v10 v10.24.0 // indirect
+	github.com/go-playground/validator/v10 v10.25.0 // indirect
 	github.com/go-viper/mapstructure/v2 v2.2.1 // indirect
 	github.com/goccy/go-json v0.10.4 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
