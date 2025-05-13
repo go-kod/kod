@@ -12,6 +12,6 @@ func TestVersion(t *testing.T) {
 	})
 
 	t.Run("self version", func(t *testing.T) {
-		require.Empty(t, SelfVersion())
+		require.Equal(t, "(devel)", SelfVersion())
 	})
 }
