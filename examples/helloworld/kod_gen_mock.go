@@ -103,15 +103,15 @@ func (m *MockHelloWorldLazy) EXPECT() *MockHelloWorldLazyMockRecorder {
 }
 
 // SayHello mocks base method.
-func (m *MockHelloWorldLazy) SayHello(ctx context.Context) {
+func (m *MockHelloWorldLazy) SayHello(arg0 context.Context) {
 	m.ctrl.T.Helper()
-	m.ctrl.Call(m, "SayHello", ctx)
+	m.ctrl.Call(m, "SayHello", arg0)
 }
 
 // SayHello indicates an expected call of SayHello.
-func (mr *MockHelloWorldLazyMockRecorder) SayHello(ctx any) *MockHelloWorldLazySayHelloCall {
+func (mr *MockHelloWorldLazyMockRecorder) SayHello(arg0 any) *MockHelloWorldLazySayHelloCall {
 	mr.mock.ctrl.T.Helper()
-	call := mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SayHello", reflect.TypeOf((*MockHelloWorldLazy)(nil).SayHello), ctx)
+	call := mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SayHello", reflect.TypeOf((*MockHelloWorldLazy)(nil).SayHello), arg0)
 	return &MockHelloWorldLazySayHelloCall{Call: call}
 }
 
@@ -163,15 +163,15 @@ func (m *MockHelloWorldInterceptor) EXPECT() *MockHelloWorldInterceptorMockRecor
 }
 
 // SayHello mocks base method.
-func (m *MockHelloWorldInterceptor) SayHello(ctx context.Context) {
+func (m *MockHelloWorldInterceptor) SayHello(arg0 context.Context) {
 	m.ctrl.T.Helper()
-	m.ctrl.Call(m, "SayHello", ctx)
+	m.ctrl.Call(m, "SayHello", arg0)
 }
 
 // SayHello indicates an expected call of SayHello.
-func (mr *MockHelloWorldInterceptorMockRecorder) SayHello(ctx any) *MockHelloWorldInterceptorSayHelloCall {
+func (mr *MockHelloWorldInterceptorMockRecorder) SayHello(arg0 any) *MockHelloWorldInterceptorSayHelloCall {
 	mr.mock.ctrl.T.Helper()
-	call := mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SayHello", reflect.TypeOf((*MockHelloWorldInterceptor)(nil).SayHello), ctx)
+	call := mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SayHello", reflect.TypeOf((*MockHelloWorldInterceptor)(nil).SayHello), arg0)
 	return &MockHelloWorldInterceptorSayHelloCall{Call: call}
 }
 

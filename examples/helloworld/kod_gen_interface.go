@@ -24,7 +24,7 @@ type HelloWorldLazy interface {
 	// SayHello is implemented by [lazyHelloWorld.SayHello]
 	//
 	//	SayHello ...
-	SayHello(ctx context.Context)
+	SayHello(_ context.Context)
 }
 
 // HelloWorldInterceptor is implemented by [helloWorldInterceptor],
@@ -35,5 +35,5 @@ type HelloWorldInterceptor interface {
 	// SayHello is implemented by [helloWorldInterceptor.SayHello]
 	//
 	//	SayHello ...
-	SayHello(ctx context.Context)
+	SayHello(_ context.Context)
 }
