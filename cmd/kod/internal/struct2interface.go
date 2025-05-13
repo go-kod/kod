@@ -41,7 +41,7 @@ func (m *Method) Lines() []string {
 		m.MethodName, m.StructName, m.MethodName))
 
 	docs := lo.Map(m.Docs, func(s string, _ int) string {
-		return strings.Replace(s, "//", "//\t", -1)
+		return strings.ReplaceAll(s, "//", "//\t")
 	})
 
 	lines = append(lines, docs...)

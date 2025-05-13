@@ -98,7 +98,7 @@ func (r runner) sub(tb testing.TB, testBody any) error {
 	//     runner.Test(t, func(t *testing.T, f *foo) {...})
 	for _, intf := range intfs {
 		if _, ok := runner.opts.fakes[intf]; ok {
-			return fmt.Errorf("Component %v has both fake and component implementation pointer", intf)
+			return fmt.Errorf("component %v has both fake and component implementation pointer", intf)
 		}
 	}
 

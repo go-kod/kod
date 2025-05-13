@@ -445,7 +445,7 @@ func (k *Kod) loadConfig(filename string) error {
 
 	c := koanf.New(".")
 	err := c.Load(env.Provider("KOD_", ".", func(s string) string {
-		return strings.Replace(strings.ToLower(s), "_", ".", -1)
+		return strings.ReplaceAll(strings.ToLower(s), "_", ".")
 	}), nil)
 	if err != nil {
 		return fmt.Errorf("load env config: %w", err)

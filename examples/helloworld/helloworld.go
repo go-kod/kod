@@ -31,7 +31,7 @@ type helloWorld struct {
 	kod.WithConfig[Config]
 }
 
-func (h *helloWorld) Init(ctx context.Context) error {
+func (h *helloWorld) Init(_ context.Context) error {
 	fmt.Println("helloWorld init")
 	return nil
 }
@@ -44,7 +44,7 @@ func (h *helloWorld) SayHello(ctx context.Context) {
 	fmt.Println("Hello, World!" + h.Config().Name)
 }
 
-func (h *helloWorld) Shutdown(ctx context.Context) error {
+func (h *helloWorld) Shutdown(_ context.Context) error {
 	fmt.Println("helloWorld shutdown")
 	return nil
 }
@@ -54,17 +54,17 @@ type lazyHelloWorld struct {
 	kod.LazyInit
 }
 
-func (h *lazyHelloWorld) Init(ctx context.Context) error {
+func (h *lazyHelloWorld) Init(_ context.Context) error {
 	fmt.Println("lazyHelloWorld init")
 	return nil
 }
 
 // SayHello ...
-func (h *lazyHelloWorld) SayHello(ctx context.Context) {
+func (h *lazyHelloWorld) SayHello(_ context.Context) {
 	fmt.Println("Hello, Lazy!")
 }
 
-func (h *lazyHelloWorld) Shutdown(ctx context.Context) error {
+func (h *lazyHelloWorld) Shutdown(_ context.Context) error {
 	fmt.Println("lazyHelloWorld shutdown")
 	return nil
 }
@@ -75,7 +75,7 @@ type helloWorldInterceptor struct {
 }
 
 // SayHello ...
-func (h *helloWorldInterceptor) SayHello(ctx context.Context) {
+func (h *helloWorldInterceptor) SayHello(_ context.Context) {
 	fmt.Println("Hello, Interceptor!")
 }
 
