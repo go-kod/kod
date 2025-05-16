@@ -276,21 +276,13 @@ func Run[T any, _ PointerToMain[T]](ctx context.Context, run func(context.Contex
 	}
 
 	// wait for shutdown signal
-	stop := make(chan struct{}, 2)
 	sig := make(chan os.Signal, 2)
 	signals.Shutdown(ctx, sig, func(_ bool) {
 		cancel()
-		stop <- struct{}{}
 	})
 
-	// run the main component
-	go func() {
-		err = run(ctx, main.(*T))
-		stop <- struct{}{}
-	}()
-
 	// wait for stop signal
-	<-stop
+	err = run(ctx, main.(*T))
 
 	ctx, timeoutCancel := context.WithTimeout(
 		context.WithoutCancel(ctx), kod.config.ShutdownTimeout)
