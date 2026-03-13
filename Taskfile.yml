@@ -36,7 +36,7 @@ tasks:
 
   test:
     cmd: |
-      PATH=$PATH:$GOBIN GOEXPERIMENT=nocoverageredesign go test -race -cover -coverprofile=coverage.out \
+      PATH=$PATH:$GOBIN go test -race -cover -coverprofile=coverage.out \
         -covermode=atomic ./... ./tests/... \
         -coverpkg .,./cmd/...,./internal/...,./interceptor/...
       git checkout tests/case1/kod_gen_mock.go
