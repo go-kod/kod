@@ -19,10 +19,17 @@ type fakeComponent struct {
 }
 
 // Fake returns a fake component.
-func Fake[T any](impl any) fakeComponent {
+func Fake[T any](impl T) fakeComponent {
 	t := reflect.TypeFor[T]()
-	if _, ok := impl.(T); !ok {
-		panic(fmt.Sprintf("%T does not implement %v", impl, t))
+	if t.Kind() != reflect.Interface {
+		panic(fmt.Sprintf("kod.Fake type %v must be an interface", t))
+	}
+	v := reflect.ValueOf(impl)
+	switch v.Kind() {
+	case reflect.Invalid, reflect.Chan, reflect.Func, reflect.Interface, reflect.Map, reflect.Pointer, reflect.Slice:
+		if !v.IsValid() || v.IsNil() {
+			panic(fmt.Sprintf("%T does not implement %v", impl, t))
+		}
 	}
 	return fakeComponent{intf: t, impl: impl}
 }
@@ -108,8 +115,9 @@ func checkRunFunc(ctx context.Context, fn any) (func(context.Context, *Kod) erro
 	if fnType.NumOut() > 0 {
 		return nil, nil, fmt.Errorf("must have no return outputs")
 	}
-	if fnType.In(0) != reflect.TypeOf(&ctx).Elem() {
-		return nil, nil, fmt.Errorf("function first argument type %v does not match first kod.Run argument %v", fnType.In(0), reflect.TypeOf(&ctx).Elem())
+	ctxType := reflect.TypeFor[context.Context]()
+	if fnType.In(0) != ctxType {
+		return nil, nil, fmt.Errorf("function first argument type %v does not match first kod.Run argument %v", fnType.In(0), ctxType)
 	}
 	var intfs []reflect.Type
 	for i := 1; i < n; i++ {
@@ -163,10 +171,13 @@ func extractComponentInterfaceType(t reflect.Type) (reflect.Type, error) {
 	if t.Kind() != reflect.Struct {
 		return nil, fmt.Errorf("type %v is not a struct", t)
 	}
-	// See the definition of kod.Implements.
-	f, ok := t.FieldByName("component_interface_type")
+	c, ok := reflect.New(t).Interface().(interface{ componentInterfaceType() reflect.Type })
 	if !ok {
 		return nil, fmt.Errorf("type %v does not embed kod.Implements", t)
 	}
-	return f.Type, nil
+	intf := c.componentInterfaceType()
+	if intf.Kind() != reflect.Interface {
+		return nil, fmt.Errorf("type %v embeds kod.Implements[%v], but %v is not an interface", t, intf, intf)
+	}
+	return intf, nil
 }

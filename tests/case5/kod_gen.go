@@ -19,15 +19,15 @@ const (
 func init() {
 	kod.Register(&kod.Registration{
 		Name:        "github.com/go-kod/kod/Main",
-		Interface:   reflect.TypeOf((*kod.Main)(nil)).Elem(),
-		Impl:        reflect.TypeOf(refStructImpl{}),
+		Interface:   reflect.TypeFor[kod.Main](),
+		Impl:        reflect.TypeFor[refStructImpl](),
 		Refs:        `⟦b915993d:KoDeDgE:github.com/go-kod/kod/Main→github.com/go-kod/kod/tests/case5/testRefStruct1⟧`,
 		LocalStubFn: nil,
 	})
 	kod.Register(&kod.Registration{
 		Name:      "github.com/go-kod/kod/tests/case5/TestRefStruct1",
-		Interface: reflect.TypeOf((*TestRefStruct1)(nil)).Elem(),
-		Impl:      reflect.TypeOf(testRefStruct1{}),
+		Interface: reflect.TypeFor[TestRefStruct1](),
+		Impl:      reflect.TypeFor[testRefStruct1](),
 		Refs:      ``,
 		LocalStubFn: func(ctx context.Context, info *kod.LocalStubFnInfo) any {
 			return testRefStruct1_local_stub{

@@ -39,6 +39,15 @@ func TestTest2(t *testing.T) {
 	})
 }
 
+func TestInterfaceThenImpl(t *testing.T) {
+	t.Parallel()
+
+	kod.RunTest(t, func(ctx context.Context, intf Test1Component, impl *test1Component) {
+		require.NotNil(t, intf)
+		require.NotNil(t, impl)
+	})
+}
+
 func TestTest3(t *testing.T) {
 	t.Parallel()
 

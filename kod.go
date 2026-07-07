@@ -27,8 +27,6 @@ const (
 // with logging/tracing/metrics capabilities and a reference to the component's interface.
 type Implements[T any] struct {
 	name string
-	//nolint
-	component_interface_type T
 }
 
 // L returns the associated logger.
@@ -65,6 +63,10 @@ func (i *Implements[T]) setName(name string) {
 // nolint
 func (Implements[T]) implements(T) {}
 
+// componentInterfaceType returns the component interface type.
+// nolint
+func (Implements[T]) componentInterfaceType() reflect.Type { return reflect.TypeFor[T]() }
+
 // Ref[T any] is a reference holder to a value of type T.
 // The reference is expected to be a field of a component struct.
 // The value is set by the framework, and is accessible via the Get() method.
@@ -97,6 +99,10 @@ func (r *Ref[T]) Get() T {
 // isRef is a marker method to identify a Ref type.
 // nolint
 func (r Ref[T]) isRef() {}
+
+// refType returns the referenced component interface type.
+// nolint
+func (r Ref[T]) refType() reflect.Type { return reflect.TypeFor[T]() }
 
 // setRef sets the reference value.
 // nolint
@@ -230,6 +236,7 @@ type Kod struct {
 	registryByImpl      map[reflect.Type]*Registration
 
 	components         map[string]any
+	impls              map[string]any
 	lazyInitComponents map[reflect.Type]bool
 	opts               *options
 }
@@ -263,6 +270,7 @@ func newKod(_ context.Context, opts ...func(*options)) (*Kod, error) {
 		registryByInterface: make(map[reflect.Type]*Registration),
 		registryByImpl:      make(map[reflect.Type]*Registration),
 		components:          make(map[string]any),
+		impls:               make(map[string]any),
 		opts:                opt,
 	}
 
@@ -298,6 +306,9 @@ func (k *Kod) register(regs []*Registration) {
 	}
 
 	for _, v := range k.regs {
+		if v == nil {
+			continue
+		}
 		k.registryByName[v.Name] = v
 		k.registryByInterface[v.Interface] = v
 		k.registryByImpl[v.Impl] = v

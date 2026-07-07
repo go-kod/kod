@@ -747,11 +747,8 @@ func (g *generator) generateRegisteredComponents(p printFn) {
 		reflect := g.tset.importPackage("reflect", "reflect")
 		p(`	%s(&%s{`, g.codegen().qualify("Register"), g.codegen().qualify("Registration"))
 		p(`		Name: %q,`, myName)
-		// To get a reflect.Type for an interface, we have to first get a type
-		// of its pointer and then resolve the underlying type. See:
-		//   https://pkg.go.dev/reflect#example-TypeOf
-		p(`		Interface: %s((*%s)(nil)).Elem(),`, reflect.qualify("TypeOf"), g.componentRef(comp))
-		p(`		Impl: %s(%s{}),`, reflect.qualify("TypeOf"), comp.implName())
+		p(`		Interface: %s[%s](),`, reflect.qualify("TypeFor"), g.componentRef(comp))
+		p(`		Impl: %s[%s](),`, reflect.qualify("TypeFor"), comp.implName())
 		p("		Refs: `%s`,", strings.Join(refNames, ",\n"))
 		if !comp.isMain {
 			p(`		LocalStubFn: %s,`, localStubFn)

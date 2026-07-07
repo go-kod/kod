@@ -2,7 +2,9 @@ package internal
 
 import (
 	"context"
+	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 	"time"
 
@@ -11,11 +13,19 @@ import (
 
 func TestGenerate(t *testing.T) {
 	t.Run("generate basic case", func(t *testing.T) {
-		err := execute(t, "generate github.com/go-kod/kod/tests/graphcase/... -v")
-		require.Empty(t, err)
+		testsDir, err := filepath.Abs("../../../tests")
+		require.NoError(t, err)
+		require.NoError(t, Generate(testsDir, []string{"./graphcase/..."}, Options{}))
 
 		// Verify generated files exist
-		require.FileExists(t, filepath.Join("../../../tests/graphcase", "kod_gen.go"))
+		generated := filepath.Join(testsDir, "graphcase", "kod_gen.go")
+		require.FileExists(t, generated)
+
+		src, readErr := os.ReadFile(generated)
+		require.NoError(t, readErr)
+		require.Contains(t, string(src), "reflect.TypeFor[test1Controller]()")
+		require.Contains(t, string(src), "reflect.TypeFor[kod.Main]()")
+		require.False(t, strings.Contains(string(src), "reflect.TypeOf((*"))
 	})
 
 	t.Run("generate with invalid path", func(t *testing.T) {
@@ -63,6 +73,9 @@ func TestStartWatch(t *testing.T) {
 
 func TestGenerateOptions(t *testing.T) {
 	t.Run("generate with custom warn function", func(t *testing.T) {
+		testsDir, err := filepath.Abs("../../../tests")
+		require.NoError(t, err)
+
 		var warnings []error
 		opt := Options{
 			Warn: func(err error) {
@@ -70,7 +83,7 @@ func TestGenerateOptions(t *testing.T) {
 			},
 		}
 
-		err := Generate(".", []string{"github.com/go-kod/kod/tests/graphcase/..."}, opt)
+		err = Generate(testsDir, []string{"./graphcase/..."}, opt)
 		require.NoError(t, err)
 	})
 }

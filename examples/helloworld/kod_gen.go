@@ -29,8 +29,8 @@ const (
 func init() {
 	kod.Register(&kod.Registration{
 		Name:      "github.com/go-kod/kod/Main",
-		Interface: reflect.TypeOf((*kod.Main)(nil)).Elem(),
-		Impl:      reflect.TypeOf(App{}),
+		Interface: reflect.TypeFor[kod.Main](),
+		Impl:      reflect.TypeFor[App](),
 		Refs: `⟦bda493e9:KoDeDgE:github.com/go-kod/kod/Main→github.com/go-kod/kod/examples/helloworld/HelloWorld⟧,
 ⟦b60b3708:KoDeDgE:github.com/go-kod/kod/Main→github.com/go-kod/kod/examples/helloworld/HelloWorldLazy⟧,
 ⟦c811f6f3:KoDeDgE:github.com/go-kod/kod/Main→github.com/go-kod/kod/examples/helloworld/HelloWorldInterceptor⟧`,
@@ -38,8 +38,8 @@ func init() {
 	})
 	kod.Register(&kod.Registration{
 		Name:      "github.com/go-kod/kod/examples/helloworld/HelloWorld",
-		Interface: reflect.TypeOf((*HelloWorld)(nil)).Elem(),
-		Impl:      reflect.TypeOf(helloWorld{}),
+		Interface: reflect.TypeFor[HelloWorld](),
+		Impl:      reflect.TypeFor[helloWorld](),
 		Refs:      ``,
 		LocalStubFn: func(ctx context.Context, info *kod.LocalStubFnInfo) any {
 			return helloWorld_local_stub{
@@ -50,8 +50,8 @@ func init() {
 	})
 	kod.Register(&kod.Registration{
 		Name:      "github.com/go-kod/kod/examples/helloworld/HelloWorldLazy",
-		Interface: reflect.TypeOf((*HelloWorldLazy)(nil)).Elem(),
-		Impl:      reflect.TypeOf(lazyHelloWorld{}),
+		Interface: reflect.TypeFor[HelloWorldLazy](),
+		Impl:      reflect.TypeFor[lazyHelloWorld](),
 		Refs:      ``,
 		LocalStubFn: func(ctx context.Context, info *kod.LocalStubFnInfo) any {
 			return helloWorldLazy_local_stub{
@@ -62,8 +62,8 @@ func init() {
 	})
 	kod.Register(&kod.Registration{
 		Name:      "github.com/go-kod/kod/examples/helloworld/HelloWorldInterceptor",
-		Interface: reflect.TypeOf((*HelloWorldInterceptor)(nil)).Elem(),
-		Impl:      reflect.TypeOf(helloWorldInterceptor{}),
+		Interface: reflect.TypeFor[HelloWorldInterceptor](),
+		Impl:      reflect.TypeFor[helloWorldInterceptor](),
 		Refs:      ``,
 		LocalStubFn: func(ctx context.Context, info *kod.LocalStubFnInfo) any {
 			return helloWorldInterceptor_local_stub{

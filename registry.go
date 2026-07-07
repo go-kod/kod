@@ -73,7 +73,11 @@ func (k *Kod) getIntf(ctx context.Context, t reflect.Type) (any, error) {
 		Interceptor: itcpt,
 	}
 
-	intf = reg.LocalStubFn(ctx, info)
+	if reg.LocalStubFn == nil {
+		intf = impl
+	} else {
+		intf = reg.LocalStubFn(ctx, info)
+	}
 
 	k.components[reg.Name] = intf
 
@@ -83,7 +87,7 @@ func (k *Kod) getIntf(ctx context.Context, t reflect.Type) (any, error) {
 // get returns the component for the given registration.
 func (k *Kod) get(ctx context.Context, reg *Registration) (any, error) {
 	// Check if we already have the component.
-	if c, ok := k.components[reg.Name]; ok {
+	if c, ok := k.impls[reg.Name]; ok {
 		return c, nil
 	}
 
@@ -124,7 +128,7 @@ func (k *Kod) get(ctx context.Context, reg *Registration) (any, error) {
 	}
 
 	// Cache the component.
-	k.components[reg.Name] = obj
+	k.impls[reg.Name] = obj
 
 	return obj, nil
 }
@@ -147,6 +151,7 @@ func fillRefs(impl any, lazyInit map[reflect.Type]bool, get func(reflect.Type) c
 		}
 		p := reflect.NewAt(f.Type(), f.Addr().UnsafePointer()).Interface()
 		x, ok := p.(interface {
+			refType() reflect.Type
 			setRef(bool, componentGetter)
 		})
 		if !ok {
@@ -154,9 +159,9 @@ func fillRefs(impl any, lazyInit map[reflect.Type]bool, get func(reflect.Type) c
 		}
 
 		// Set the component.
-		valueField := f.Field(0)
-		componentGetter := get(valueField.Type())
-		isLazyInit := lazyInit[valueField.Type()]
+		refType := x.refType()
+		componentGetter := get(refType)
+		isLazyInit := lazyInit[refType]
 
 		x.setRef(isLazyInit, componentGetter)
 	}
@@ -198,6 +203,9 @@ func processRegistrations(regs []*Registration) (map[reflect.Type]bool, error) {
 	// Gather the set of registered interfaces.
 	intfs := map[reflect.Type]struct{}{}
 	for _, reg := range regs {
+		if reg == nil || reg.Interface == nil {
+			continue
+		}
 		intfs[reg.Interface] = struct{}{}
 	}
 
@@ -207,29 +215,51 @@ func processRegistrations(regs []*Registration) (map[reflect.Type]bool, error) {
 	// struct, T is a registered interface.
 	var errs []error
 	for _, reg := range regs {
+		if reg == nil {
+			errs = append(errs, fmt.Errorf("component registration is nil"))
+			continue
+		}
+		if reg.Interface == nil {
+			errs = append(errs, fmt.Errorf("component registration %q interface type is nil", reg.Name))
+			continue
+		}
+		if reg.Impl == nil {
+			errs = append(errs, fmt.Errorf("component registration %q implementation type is nil", reg.Name))
+			continue
+		}
+		if reg.Interface.Kind() != reflect.Interface {
+			errs = append(errs, fmt.Errorf("component registration %q interface type %v is not an interface", reg.Name, reg.Interface))
+			continue
+		}
+		if reg.Impl.Kind() != reflect.Struct {
+			errs = append(errs, fmt.Errorf("component registration %q implementation type %v is not a struct", reg.Name, reg.Impl))
+			continue
+		}
+		if !reflect.PointerTo(reg.Impl).Implements(reg.Interface) {
+			errs = append(errs, fmt.Errorf("component implementation struct %v does not implement interface %v", reg.Impl, reg.Interface))
+		}
 		for i := 0; i < reg.Impl.NumField(); i++ {
 			f := reg.Impl.Field(i)
 			switch {
 			case f.Type.Implements(reflect.TypeFor[interface{ isRef() }]()):
 				// f is a kod.Ref[T].
-				v := f.Type.Field(0) // a Ref[T]'s value field
-				// v是func 类型，取它的第一个返回值的类型
+				refType := reflect.New(f.Type).Interface().(interface{ refType() reflect.Type }).refType()
 
 				// check if v is interface or not
-				if v.Type.Kind() != reflect.Interface {
+				if refType.Kind() != reflect.Interface {
 					err := fmt.Errorf(
 						"component implementation struct %v has field %v, but field type %v is not an interface",
-						reg.Impl, f.Type, v.Type,
+						reg.Impl, f.Type, refType,
 					)
 					errs = append(errs, err)
 					continue
 				}
 
-				if _, ok := intfs[v.Type]; !ok {
+				if _, ok := intfs[refType]; !ok {
 					// T is not a registered component interface.
 					err := fmt.Errorf(
 						"component implementation struct %v has field %v, but component %v was not registered; maybe you forgot to run 'kod generate'",
-						reg.Impl, f.Type, v.Type,
+						reg.Impl, f.Type, refType,
 					)
 					errs = append(errs, err)
 				}
