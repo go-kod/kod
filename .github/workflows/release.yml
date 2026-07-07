@@ -3,9 +3,9 @@ name: Release
 on:
   push:
     tags:
-      - '*'
+      - "*"
   schedule:
-    - cron: '0 0 * * *'  # 每天0点触发
+    - cron: "0 0 * * *" # 每天0点触发
   workflow_dispatch:
 
 permissions:
@@ -25,7 +25,7 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v6
         with:
-          go-version: 'stable'
+          go-version: "go1.27rc1"
 
       - name: Goreleaser Release (Snapshot)
         if: github.event_name != 'push' || startsWith(github.ref, 'refs/heads/') # 触发条件为手动或非 tag 的 push
@@ -39,7 +39,7 @@ jobs:
       - name: Delete existing assets from release
         if: github.event_name != 'push' || startsWith(github.ref, 'refs/heads/') # 触发条件为手动或非 tag 的 push
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # 或者使用 PAT_TOKEN
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # 或者使用 PAT_TOKEN
         run: |
           RELEASE_TAG="prerelease-nightly"
           # 获取 Release ID
@@ -59,14 +59,14 @@ jobs:
       - name: Upload new assets to release
         if: github.event_name != 'push' || startsWith(github.ref, 'refs/heads/') # 触发条件为手动或非 tag 的 push
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # 或者使用 PAT_TOKEN
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # 或者使用 PAT_TOKEN
         run: |
           RELEASE_TAG="prerelease-nightly"
           # 上传新的构建产物
           gh release upload "$RELEASE_TAG" ./dist/*.tar.gz ./dist/*_checksums.txt --clobber
 
       - name: Goreleaser Release (Official)
-        if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')  # 触发条件为 tag 的 push
+        if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/') # 触发条件为 tag 的 push
         uses: goreleaser/goreleaser-action@v6
         with:
           version: latest
