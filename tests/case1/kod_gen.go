@@ -10,7 +10,6 @@ import (
 	"github.com/go-kod/kod/interceptor"
 	"github.com/labstack/echo/v4"
 	"net/http"
-	"reflect"
 )
 
 // Full method names for components.
@@ -70,205 +69,137 @@ const (
 )
 
 func init() {
-	kod.Register(&kod.Registration{
-		Name:      "github.com/go-kod/kod/tests/case1/test1Controller",
-		Interface: reflect.TypeFor[test1Controller](),
-		Impl:      reflect.TypeFor[test1ControllerImpl](),
-		Refs:      `⟦dd37e4d0:KoDeDgE:github.com/go-kod/kod/tests/case1/test1Controller→github.com/go-kod/kod/tests/case1/Test1Component⟧`,
-		LocalStubFn: func(ctx context.Context, info *kod.LocalStubFnInfo) any {
+	kod.RegisterComponent[test1Controller]("github.com/go-kod/kod/tests/case1/test1Controller", (*test1ControllerImpl)(nil), `⟦dd37e4d0:KoDeDgE:github.com/go-kod/kod/tests/case1/test1Controller→github.com/go-kod/kod/tests/case1/Test1Component⟧`,
+		func(ctx context.Context, info *kod.LocalStubFnInfo) any {
 			return test1Controller_local_stub{
 				impl:        info.Impl.(test1Controller),
 				interceptor: info.Interceptor,
 			}
 		},
-	})
-	kod.Register(&kod.Registration{
-		Name:      "github.com/go-kod/kod/tests/case1/testService",
-		Interface: reflect.TypeFor[testService](),
-		Impl:      reflect.TypeFor[serviceImpl](),
-		Refs:      ``,
-		LocalStubFn: func(ctx context.Context, info *kod.LocalStubFnInfo) any {
+	)
+	kod.RegisterComponent[testService]("github.com/go-kod/kod/tests/case1/testService", (*serviceImpl)(nil), ``,
+		func(ctx context.Context, info *kod.LocalStubFnInfo) any {
 			return testService_local_stub{
 				impl:        info.Impl.(testService),
 				interceptor: info.Interceptor,
 			}
 		},
-	})
-	kod.Register(&kod.Registration{
-		Name:      "github.com/go-kod/kod/tests/case1/testRepository",
-		Interface: reflect.TypeFor[testRepository](),
-		Impl:      reflect.TypeFor[modelImpl](),
-		Refs:      ``,
-		LocalStubFn: func(ctx context.Context, info *kod.LocalStubFnInfo) any {
+	)
+	kod.RegisterComponent[testRepository]("github.com/go-kod/kod/tests/case1/testRepository", (*modelImpl)(nil), ``,
+		func(ctx context.Context, info *kod.LocalStubFnInfo) any {
 			return testRepository_local_stub{
 				impl:        info.Impl.(testRepository),
 				interceptor: info.Interceptor,
 			}
 		},
-	})
-	kod.Register(&kod.Registration{
-		Name:      "github.com/go-kod/kod/tests/case1/Test1Component",
-		Interface: reflect.TypeFor[Test1Component](),
-		Impl:      reflect.TypeFor[test1Component](),
-		Refs:      ``,
-		LocalStubFn: func(ctx context.Context, info *kod.LocalStubFnInfo) any {
+	)
+	kod.RegisterComponent[Test1Component]("github.com/go-kod/kod/tests/case1/Test1Component", (*test1Component)(nil), ``,
+		func(ctx context.Context, info *kod.LocalStubFnInfo) any {
 			return test1Component_local_stub{
 				impl:        info.Impl.(Test1Component),
 				interceptor: info.Interceptor,
 			}
 		},
-	})
-	kod.Register(&kod.Registration{
-		Name:      "github.com/go-kod/kod/tests/case1/Test2Component",
-		Interface: reflect.TypeFor[Test2Component](),
-		Impl:      reflect.TypeFor[test2Component](),
-		Refs:      ``,
-		LocalStubFn: func(ctx context.Context, info *kod.LocalStubFnInfo) any {
+	)
+	kod.RegisterComponent[Test2Component]("github.com/go-kod/kod/tests/case1/Test2Component", (*test2Component)(nil), ``,
+		func(ctx context.Context, info *kod.LocalStubFnInfo) any {
 			return test2Component_local_stub{
 				impl:        info.Impl.(Test2Component),
 				interceptor: info.Interceptor,
 			}
 		},
-	})
-	kod.Register(&kod.Registration{
-		Name:        "github.com/go-kod/kod/Main",
-		Interface:   reflect.TypeFor[kod.Main](),
-		Impl:        reflect.TypeFor[App](),
-		Refs:        `⟦d40a644a:KoDeDgE:github.com/go-kod/kod/Main→github.com/go-kod/kod/tests/case1/Test1Component⟧`,
-		LocalStubFn: nil,
-	})
-	kod.Register(&kod.Registration{
-		Name:      "github.com/go-kod/kod/tests/case1/ctxInterface",
-		Interface: reflect.TypeFor[ctxInterface](),
-		Impl:      reflect.TypeFor[ctxImpl](),
-		Refs:      ``,
-		LocalStubFn: func(ctx context.Context, info *kod.LocalStubFnInfo) any {
+	)
+	kod.RegisterComponent[kod.Main]("github.com/go-kod/kod/Main", (*App)(nil), `⟦d40a644a:KoDeDgE:github.com/go-kod/kod/Main→github.com/go-kod/kod/tests/case1/Test1Component⟧`,
+		nil,
+	)
+	kod.RegisterComponent[ctxInterface]("github.com/go-kod/kod/tests/case1/ctxInterface", (*ctxImpl)(nil), ``,
+		func(ctx context.Context, info *kod.LocalStubFnInfo) any {
 			return ctxInterface_local_stub{
 				impl:        info.Impl.(ctxInterface),
 				interceptor: info.Interceptor,
 			}
 		},
-	})
-	kod.Register(&kod.Registration{
-		Name:      "github.com/go-kod/kod/tests/case1/test1ComponentDefaultError",
-		Interface: reflect.TypeFor[test1ComponentDefaultError](),
-		Impl:      reflect.TypeFor[test1ComponentDefaultErrorImpl](),
-		Refs:      ``,
-		LocalStubFn: func(ctx context.Context, info *kod.LocalStubFnInfo) any {
+	)
+	kod.RegisterComponent[test1ComponentDefaultError]("github.com/go-kod/kod/tests/case1/test1ComponentDefaultError", (*test1ComponentDefaultErrorImpl)(nil), ``,
+		func(ctx context.Context, info *kod.LocalStubFnInfo) any {
 			return test1ComponentDefaultError_local_stub{
 				impl:        info.Impl.(test1ComponentDefaultError),
 				interceptor: info.Interceptor,
 			}
 		},
-	})
-	kod.Register(&kod.Registration{
-		Name:      "github.com/go-kod/kod/tests/case1/test1ComponentGlobalDefaultError",
-		Interface: reflect.TypeFor[test1ComponentGlobalDefaultError](),
-		Impl:      reflect.TypeFor[test1ComponentGlobalDefaultErrorImpl](),
-		Refs:      ``,
-		LocalStubFn: func(ctx context.Context, info *kod.LocalStubFnInfo) any {
+	)
+	kod.RegisterComponent[test1ComponentGlobalDefaultError]("github.com/go-kod/kod/tests/case1/test1ComponentGlobalDefaultError", (*test1ComponentGlobalDefaultErrorImpl)(nil), ``,
+		func(ctx context.Context, info *kod.LocalStubFnInfo) any {
 			return test1ComponentGlobalDefaultError_local_stub{
 				impl:        info.Impl.(test1ComponentGlobalDefaultError),
 				interceptor: info.Interceptor,
 			}
 		},
-	})
-	kod.Register(&kod.Registration{
-		Name:      "github.com/go-kod/kod/tests/case1/testEchoController",
-		Interface: reflect.TypeFor[testEchoController](),
-		Impl:      reflect.TypeFor[testEchoControllerImpl](),
-		Refs:      ``,
-		LocalStubFn: func(ctx context.Context, info *kod.LocalStubFnInfo) any {
+	)
+	kod.RegisterComponent[testEchoController]("github.com/go-kod/kod/tests/case1/testEchoController", (*testEchoControllerImpl)(nil), ``,
+		func(ctx context.Context, info *kod.LocalStubFnInfo) any {
 			return testEchoController_local_stub{
 				impl:        info.Impl.(testEchoController),
 				interceptor: info.Interceptor,
 			}
 		},
-	})
-	kod.Register(&kod.Registration{
-		Name:      "github.com/go-kod/kod/tests/case1/testGinController",
-		Interface: reflect.TypeFor[testGinController](),
-		Impl:      reflect.TypeFor[testGinControllerImpl](),
-		Refs:      ``,
-		LocalStubFn: func(ctx context.Context, info *kod.LocalStubFnInfo) any {
+	)
+	kod.RegisterComponent[testGinController]("github.com/go-kod/kod/tests/case1/testGinController", (*testGinControllerImpl)(nil), ``,
+		func(ctx context.Context, info *kod.LocalStubFnInfo) any {
 			return testGinController_local_stub{
 				impl:        info.Impl.(testGinController),
 				interceptor: info.Interceptor,
 			}
 		},
-	})
-	kod.Register(&kod.Registration{
-		Name:      "github.com/go-kod/kod/tests/case1/HTTPController",
-		Interface: reflect.TypeFor[HTTPController](),
-		Impl:      reflect.TypeFor[httpControllerImpl](),
-		Refs:      ``,
-		LocalStubFn: func(ctx context.Context, info *kod.LocalStubFnInfo) any {
+	)
+	kod.RegisterComponent[HTTPController]("github.com/go-kod/kod/tests/case1/HTTPController", (*httpControllerImpl)(nil), ``,
+		func(ctx context.Context, info *kod.LocalStubFnInfo) any {
 			return hTTPController_local_stub{
 				impl:        info.Impl.(HTTPController),
 				interceptor: info.Interceptor,
 			}
 		},
-	})
-	kod.Register(&kod.Registration{
-		Name:      "github.com/go-kod/kod/tests/case1/InterceptorRetry",
-		Interface: reflect.TypeFor[InterceptorRetry](),
-		Impl:      reflect.TypeFor[interceptorRetry](),
-		Refs:      ``,
-		LocalStubFn: func(ctx context.Context, info *kod.LocalStubFnInfo) any {
+	)
+	kod.RegisterComponent[InterceptorRetry]("github.com/go-kod/kod/tests/case1/InterceptorRetry", (*interceptorRetry)(nil), ``,
+		func(ctx context.Context, info *kod.LocalStubFnInfo) any {
 			return interceptorRetry_local_stub{
 				impl:        info.Impl.(InterceptorRetry),
 				interceptor: info.Interceptor,
 			}
 		},
-	})
-	kod.Register(&kod.Registration{
-		Name:      "github.com/go-kod/kod/tests/case1/LazyInitImpl",
-		Interface: reflect.TypeFor[LazyInitImpl](),
-		Impl:      reflect.TypeFor[lazyInitImpl](),
-		Refs:      `⟦8e153348:KoDeDgE:github.com/go-kod/kod/tests/case1/LazyInitImpl→github.com/go-kod/kod/tests/case1/LazyInitComponent⟧`,
-		LocalStubFn: func(ctx context.Context, info *kod.LocalStubFnInfo) any {
+	)
+	kod.RegisterComponent[LazyInitImpl]("github.com/go-kod/kod/tests/case1/LazyInitImpl", (*lazyInitImpl)(nil), `⟦8e153348:KoDeDgE:github.com/go-kod/kod/tests/case1/LazyInitImpl→github.com/go-kod/kod/tests/case1/LazyInitComponent⟧`,
+		func(ctx context.Context, info *kod.LocalStubFnInfo) any {
 			return lazyInitImpl_local_stub{
 				impl:        info.Impl.(LazyInitImpl),
 				interceptor: info.Interceptor,
 			}
 		},
-	})
-	kod.Register(&kod.Registration{
-		Name:      "github.com/go-kod/kod/tests/case1/LazyInitComponent",
-		Interface: reflect.TypeFor[LazyInitComponent](),
-		Impl:      reflect.TypeFor[lazyInitComponent](),
-		Refs:      ``,
-		LocalStubFn: func(ctx context.Context, info *kod.LocalStubFnInfo) any {
+	)
+	kod.RegisterComponent[LazyInitComponent]("github.com/go-kod/kod/tests/case1/LazyInitComponent", (*lazyInitComponent)(nil), ``,
+		func(ctx context.Context, info *kod.LocalStubFnInfo) any {
 			return lazyInitComponent_local_stub{
 				impl:        info.Impl.(LazyInitComponent),
 				interceptor: info.Interceptor,
 			}
 		},
-	})
-	kod.Register(&kod.Registration{
-		Name:      "github.com/go-kod/kod/tests/case1/panicCaseInterface",
-		Interface: reflect.TypeFor[panicCaseInterface](),
-		Impl:      reflect.TypeFor[panicCase](),
-		Refs:      ``,
-		LocalStubFn: func(ctx context.Context, info *kod.LocalStubFnInfo) any {
+	)
+	kod.RegisterComponent[panicCaseInterface]("github.com/go-kod/kod/tests/case1/panicCaseInterface", (*panicCase)(nil), ``,
+		func(ctx context.Context, info *kod.LocalStubFnInfo) any {
 			return panicCaseInterface_local_stub{
 				impl:        info.Impl.(panicCaseInterface),
 				interceptor: info.Interceptor,
 			}
 		},
-	})
-	kod.Register(&kod.Registration{
-		Name:      "github.com/go-kod/kod/tests/case1/panicNoRecvoeryCaseInterface",
-		Interface: reflect.TypeFor[panicNoRecvoeryCaseInterface](),
-		Impl:      reflect.TypeFor[panicNoRecvoeryCase](),
-		Refs:      ``,
-		LocalStubFn: func(ctx context.Context, info *kod.LocalStubFnInfo) any {
+	)
+	kod.RegisterComponent[panicNoRecvoeryCaseInterface]("github.com/go-kod/kod/tests/case1/panicNoRecvoeryCaseInterface", (*panicNoRecvoeryCase)(nil), ``,
+		func(ctx context.Context, info *kod.LocalStubFnInfo) any {
 			return panicNoRecvoeryCaseInterface_local_stub{
 				impl:        info.Impl.(panicNoRecvoeryCaseInterface),
 				interceptor: info.Interceptor,
 			}
 		},
-	})
+	)
 }
 
 // CodeGen version check.
@@ -289,25 +220,6 @@ running the following.
 Then, re-run 'kod generate' and re-build your code. If the problem persists,
 please file an issue at https://github.com/go-kod/kod/issues.
 `)
-
-// kod.InstanceOf checks.
-var _ kod.InstanceOf[test1Controller] = (*test1ControllerImpl)(nil)
-var _ kod.InstanceOf[testService] = (*serviceImpl)(nil)
-var _ kod.InstanceOf[testRepository] = (*modelImpl)(nil)
-var _ kod.InstanceOf[Test1Component] = (*test1Component)(nil)
-var _ kod.InstanceOf[Test2Component] = (*test2Component)(nil)
-var _ kod.InstanceOf[kod.Main] = (*App)(nil)
-var _ kod.InstanceOf[ctxInterface] = (*ctxImpl)(nil)
-var _ kod.InstanceOf[test1ComponentDefaultError] = (*test1ComponentDefaultErrorImpl)(nil)
-var _ kod.InstanceOf[test1ComponentGlobalDefaultError] = (*test1ComponentGlobalDefaultErrorImpl)(nil)
-var _ kod.InstanceOf[testEchoController] = (*testEchoControllerImpl)(nil)
-var _ kod.InstanceOf[testGinController] = (*testGinControllerImpl)(nil)
-var _ kod.InstanceOf[HTTPController] = (*httpControllerImpl)(nil)
-var _ kod.InstanceOf[InterceptorRetry] = (*interceptorRetry)(nil)
-var _ kod.InstanceOf[LazyInitImpl] = (*lazyInitImpl)(nil)
-var _ kod.InstanceOf[LazyInitComponent] = (*lazyInitComponent)(nil)
-var _ kod.InstanceOf[panicCaseInterface] = (*panicCase)(nil)
-var _ kod.InstanceOf[panicNoRecvoeryCaseInterface] = (*panicNoRecvoeryCase)(nil)
 
 // Local stub implementations.
 // test1Controller_local_stub is a local stub implementation of [test1Controller].

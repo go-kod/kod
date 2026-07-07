@@ -7,7 +7,6 @@ import (
 	"context"
 	"github.com/go-kod/kod"
 	"github.com/go-kod/kod/interceptor"
-	"reflect"
 )
 
 // Full method names for components.
@@ -23,37 +22,25 @@ const (
 )
 
 func init() {
-	kod.Register(&kod.Registration{
-		Name:      "github.com/go-kod/kod/tests/case2/Test1Component",
-		Interface: reflect.TypeFor[Test1Component](),
-		Impl:      reflect.TypeFor[test1Component](),
-		Refs:      `⟦3dc9f060:KoDeDgE:github.com/go-kod/kod/tests/case2/Test1Component→github.com/go-kod/kod/tests/case2/Test2Component⟧`,
-		LocalStubFn: func(ctx context.Context, info *kod.LocalStubFnInfo) any {
+	kod.RegisterComponent[Test1Component]("github.com/go-kod/kod/tests/case2/Test1Component", (*test1Component)(nil), `⟦3dc9f060:KoDeDgE:github.com/go-kod/kod/tests/case2/Test1Component→github.com/go-kod/kod/tests/case2/Test2Component⟧`,
+		func(ctx context.Context, info *kod.LocalStubFnInfo) any {
 			return test1Component_local_stub{
 				impl:        info.Impl.(Test1Component),
 				interceptor: info.Interceptor,
 			}
 		},
-	})
-	kod.Register(&kod.Registration{
-		Name:      "github.com/go-kod/kod/tests/case2/Test2Component",
-		Interface: reflect.TypeFor[Test2Component](),
-		Impl:      reflect.TypeFor[test2Component](),
-		Refs:      `⟦1767cee9:KoDeDgE:github.com/go-kod/kod/tests/case2/Test2Component→github.com/go-kod/kod/tests/case2/Test1Component⟧`,
-		LocalStubFn: func(ctx context.Context, info *kod.LocalStubFnInfo) any {
+	)
+	kod.RegisterComponent[Test2Component]("github.com/go-kod/kod/tests/case2/Test2Component", (*test2Component)(nil), `⟦1767cee9:KoDeDgE:github.com/go-kod/kod/tests/case2/Test2Component→github.com/go-kod/kod/tests/case2/Test1Component⟧`,
+		func(ctx context.Context, info *kod.LocalStubFnInfo) any {
 			return test2Component_local_stub{
 				impl:        info.Impl.(Test2Component),
 				interceptor: info.Interceptor,
 			}
 		},
-	})
-	kod.Register(&kod.Registration{
-		Name:        "github.com/go-kod/kod/Main",
-		Interface:   reflect.TypeFor[kod.Main](),
-		Impl:        reflect.TypeFor[App](),
-		Refs:        `⟦73dc6a0b:KoDeDgE:github.com/go-kod/kod/Main→github.com/go-kod/kod/tests/case2/Test1Component⟧`,
-		LocalStubFn: nil,
-	})
+	)
+	kod.RegisterComponent[kod.Main]("github.com/go-kod/kod/Main", (*App)(nil), `⟦73dc6a0b:KoDeDgE:github.com/go-kod/kod/Main→github.com/go-kod/kod/tests/case2/Test1Component⟧`,
+		nil,
+	)
 }
 
 // CodeGen version check.
@@ -74,11 +61,6 @@ running the following.
 Then, re-run 'kod generate' and re-build your code. If the problem persists,
 please file an issue at https://github.com/go-kod/kod/issues.
 `)
-
-// kod.InstanceOf checks.
-var _ kod.InstanceOf[Test1Component] = (*test1Component)(nil)
-var _ kod.InstanceOf[Test2Component] = (*test2Component)(nil)
-var _ kod.InstanceOf[kod.Main] = (*App)(nil)
 
 // Local stub implementations.
 // test1Component_local_stub is a local stub implementation of [Test1Component].

@@ -23,9 +23,12 @@ func TestGenerate(t *testing.T) {
 
 		src, readErr := os.ReadFile(generated)
 		require.NoError(t, readErr)
-		require.Contains(t, string(src), "reflect.TypeFor[test1Controller]()")
-		require.Contains(t, string(src), "reflect.TypeFor[kod.Main]()")
+		require.Contains(t, string(src), `kod.RegisterComponent[test1Controller]("github.com/go-kod/kod/tests/graphcase/test1Controller", (*test1ControllerImpl)(nil),`)
+		require.Contains(t, string(src), `kod.RegisterComponent[kod.Main]("github.com/go-kod/kod/Main", (*App)(nil),`)
+		require.False(t, strings.Contains(string(src), "reg :="))
 		require.False(t, strings.Contains(string(src), "reflect.TypeOf((*"))
+		require.False(t, strings.Contains(string(src), "reflect.TypeFor["))
+		require.False(t, strings.Contains(string(src), "kod.InstanceOf checks"))
 	})
 
 	t.Run("generate with invalid path", func(t *testing.T) {

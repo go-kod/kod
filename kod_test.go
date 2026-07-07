@@ -2,6 +2,9 @@ package kod
 
 import (
 	"context"
+	"os"
+	"os/exec"
+	"path/filepath"
 	"testing"
 	"time"
 
@@ -18,6 +21,48 @@ func TestMain(m *testing.M) {
 		goleak.IgnoreAnyFunction("go.opentelemetry.io/otel/sdk/log.exportSync.func1"),
 		goleak.IgnoreAnyFunction("go.opentelemetry.io/otel/sdk/log.(*BatchProcessor).poll.func1"),
 	)
+}
+
+func TestRunRejectsMainValue(t *testing.T) {
+	dir := t.TempDir()
+	wd, err := os.Getwd()
+	require.NoError(t, err)
+
+	require.NoError(t, os.WriteFile(filepath.Join(dir, "go.mod"), []byte(`module runvaluetest
+
+go 1.27
+
+toolchain go1.27rc1
+
+replace github.com/go-kod/kod => `+wd+`
+
+require github.com/go-kod/kod v0.0.0
+`), 0o644))
+	require.NoError(t, os.WriteFile(filepath.Join(dir, "run_value_test.go"), []byte(`package runvaluetest
+
+import (
+	"context"
+	"testing"
+
+	"github.com/go-kod/kod"
+)
+
+type app struct {
+	kod.Implements[kod.Main]
+}
+
+func TestRunValue(t *testing.T) {
+	_ = kod.Run(context.Background(), func(context.Context, app) error {
+		return nil
+	})
+}
+`), 0o644))
+
+	cmd := exec.Command("go", "test", "-mod=mod", ".")
+	cmd.Dir = dir
+	out, err := cmd.CombinedOutput()
+	require.Error(t, err, string(out))
+	require.Contains(t, string(out), "does not satisfy kod.PointerToMain")
 }
 
 type testComponent struct {

@@ -146,6 +146,17 @@ func (r LazyInit) isLazyInit() {}
 //	}
 type Main interface{}
 
+// PointerTo asserts that *T is a component implementation of I.
+type PointerTo[I any, T any] interface {
+	*T
+	InstanceOf[I]
+}
+
+// PointerToMain asserts that *T is a main component implementation.
+type PointerToMain[T any] interface {
+	PointerTo[Main, T]
+}
+
 // InstanceOf[T any] is an interface for asserting implementation of an interface T.
 type InstanceOf[T any] interface {
 	implements(T)
@@ -158,8 +169,7 @@ func WithFakes(fakes ...fakeComponent) func(*options) {
 	}
 }
 
-// WithRegistrations is an option setter for specifying component registrations.
-func WithRegistrations(regs ...*Registration) func(*options) {
+func withRegistrations(regs ...*registration) func(*options) {
 	return func(opts *options) {
 		opts.registrations = regs
 	}
@@ -181,12 +191,12 @@ func WithShutdownTimeout(timeout time.Duration) func(*options) {
 
 // MustRun is a helper function to run the application with the provided main component and options.
 // It panics if an error occurs during the execution.
-func MustRun[T InstanceOf[Main]](ctx context.Context, run func(context.Context, T) error, opts ...func(*options)) {
-	lo.Must0(Run(ctx, run, opts...))
+func MustRun[T any, P PointerToMain[T]](ctx context.Context, run func(context.Context, P) error, opts ...func(*options)) {
+	lo.Must0(Run[T, P](ctx, run, opts...))
 }
 
 // Run initializes and runs the application with the provided main component and options.
-func Run[T InstanceOf[Main]](ctx context.Context, run func(context.Context, T) error, opts ...func(*options)) error {
+func Run[T any, P PointerToMain[T]](ctx context.Context, run func(context.Context, P) error, opts ...func(*options)) error {
 	// Create a new Kod instance.
 	kod, err := newKod(ctx, opts...)
 	if err != nil {
@@ -199,7 +209,7 @@ func Run[T InstanceOf[Main]](ctx context.Context, run func(context.Context, T) e
 	defer cancel()
 
 	// get the main component implementation
-	main, err := kod.Get[T](ctx)
+	main, err := kod.Get[P](ctx)
 	if err != nil {
 		return err
 	}
@@ -230,10 +240,10 @@ type Kod struct {
 	shutdownTimeout time.Duration
 	hooker          *hooks.Hooker
 
-	regs                []*Registration
-	registryByName      map[string]*Registration
-	registryByInterface map[reflect.Type]*Registration
-	registryByImpl      map[reflect.Type]*Registration
+	regs                []*registration
+	registryByName      map[string]*registration
+	registryByInterface map[reflect.Type]*registration
+	registryByImpl      map[reflect.Type]*registration
 
 	components         map[string]any
 	impls              map[string]any
@@ -244,7 +254,7 @@ type Kod struct {
 // options defines the configuration options for Kod.
 type options struct {
 	fakes           map[reflect.Type]any
-	registrations   []*Registration
+	registrations   []*registration
 	interceptor     interceptor.Interceptor
 	shutdownTimeout time.Duration
 }
@@ -266,9 +276,9 @@ func newKod(_ context.Context, opts ...func(*options)) (*Kod, error) {
 		shutdownTimeout:     shutdownTimeout,
 		hooker:              hooks.New(),
 		regs:                registry.All(),
-		registryByName:      make(map[string]*Registration),
-		registryByInterface: make(map[reflect.Type]*Registration),
-		registryByImpl:      make(map[reflect.Type]*Registration),
+		registryByName:      make(map[string]*registration),
+		registryByInterface: make(map[reflect.Type]*registration),
+		registryByImpl:      make(map[reflect.Type]*registration),
 		components:          make(map[string]any),
 		impls:               make(map[string]any),
 		opts:                opt,
@@ -300,7 +310,7 @@ func (k *Kod) Defer(name string, fn func(context.Context) error) {
 }
 
 // register adds the given implementations to the Kod instance.
-func (k *Kod) register(regs []*Registration) {
+func (k *Kod) register(regs []*registration) {
 	if len(regs) > 0 {
 		k.regs = regs
 	}

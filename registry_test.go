@@ -58,7 +58,7 @@ func TestValidateNoRegistrations(t *testing.T) {
 }
 
 func TestValidateInvalidRegistration(t *testing.T) {
-	regs := []*Registration{
+	regs := []*registration{
 		nil,
 		{Name: "missing-interface", Impl: reflect.TypeFor[struct{}]()},
 		{Name: "missing-impl", Interface: reflect.TypeFor[interface{}]()},
@@ -77,7 +77,7 @@ func TestValidateInvalidRegistration(t *testing.T) {
 func TestNewKodInvalidRegistration(t *testing.T) {
 	var err error
 	assert.NotPanics(t, func() {
-		_, err = newKod(context.Background(), WithRegistrations(nil))
+		_, err = newKod(context.Background(), withRegistrations(nil))
 	})
 	require.Error(t, err)
 	assert.Contains(t, err.Error(), "component registration is nil")
@@ -86,7 +86,7 @@ func TestNewKodInvalidRegistration(t *testing.T) {
 func TestValidateImplementationMismatch(t *testing.T) {
 	type foo interface{ Foo() }
 	type fooImpl struct{}
-	regs := []*Registration{
+	regs := []*registration{
 		{
 			Name:      "foo",
 			Interface: reflect.TypeFor[foo](),
@@ -106,7 +106,7 @@ func TestValidateImplementationMismatch(t *testing.T) {
 func TestMultipleRegistrations(t *testing.T) {
 	type foo interface{}
 	type fooImpl struct{ Ref[io.Reader] }
-	regs := []*Registration{
+	regs := []*registration{
 		{
 			Name:      "github.com/go-kod/kod/Main",
 			Interface: reflect.TypeFor[Main](),
@@ -134,7 +134,7 @@ func TestCycleRegistrations(t *testing.T) {
 	type test1Controller interface{}
 	type test1ControllerImpl struct{ Ref[io.Reader] }
 	type mainImpl struct{ Ref[test1Controller] }
-	regs := []*Registration{
+	regs := []*registration{
 		{
 			Name:      "github.com/go-kod/kod/Main",
 			Interface: reflect.TypeFor[Main](),
@@ -178,7 +178,7 @@ func TestGetInterfaceWithoutLocalStub(t *testing.T) {
 	type mainImpl struct {
 		Implements[Main]
 	}
-	k, err := newKod(context.Background(), WithRegistrations(&Registration{
+	k, err := newKod(context.Background(), withRegistrations(&registration{
 		Name:      "main",
 		Interface: reflect.TypeFor[Main](),
 		Impl:      reflect.TypeFor[mainImpl](),

@@ -570,7 +570,6 @@ func (g *generator) generate() error {
 		}
 		g.generateRegisteredComponents(fn)
 		g.generateVersionCheck(fn)
-		g.generateInstanceChecks(fn)
 		g.generateLocalStubs(fn)
 
 	}
@@ -706,21 +705,6 @@ please file an issue at https://github.com/go-kod/kod/issues.
 `+"`", version.CodeGenSemVersion))
 }
 
-// generateInstanceChecks generates code that checks that every component
-// implementation type implements kod.InstanceOf[T] for the appropriate T.
-func (g *generator) generateInstanceChecks(p printFn) {
-	// If someone deletes a kod.Implements annotation and forgets to re-run
-	// `kod generate`, these checks will fail to build. Similarly, if a user
-	// changes the interface in a kod.Implements and forgets to re-run
-	// `kod generate`, these checks will fail to build.
-	p(``)
-	p(`// kod.InstanceOf checks.`)
-	for _, c := range g.components {
-		// e.g., var _ kod.InstanceOf[Odd] = &odd{}
-		p(`var _ %s[%s] = (*%s)(nil)`, g.kod().qualify("InstanceOf"), g.tset.genTypeString(c.intf), g.tset.genTypeString(c.impl))
-	}
-}
-
 // generateRegisteredComponents generates code that registers the components with Kod.
 func (g *generator) generateRegisteredComponents(p printFn) {
 	if len(g.components) == 0 {
@@ -744,18 +728,15 @@ func (g *generator) generateRegisteredComponents(p printFn) {
 			refNames = append(refNames, callgraph.MakeEdgeString(comp.fullIntfName(), fullName(ref)))
 		}
 
-		reflect := g.tset.importPackage("reflect", "reflect")
-		p(`	%s(&%s{`, g.codegen().qualify("Register"), g.codegen().qualify("Registration"))
-		p(`		Name: %q,`, myName)
-		p(`		Interface: %s[%s](),`, reflect.qualify("TypeFor"), g.componentRef(comp))
-		p(`		Impl: %s[%s](),`, reflect.qualify("TypeFor"), comp.implName())
-		p("		Refs: `%s`,", strings.Join(refNames, ",\n"))
+		p("\t%s[%s](%q, (*%s)(nil), `%s`,",
+			g.codegen().qualify("RegisterComponent"), g.componentRef(comp), myName, comp.implName(),
+			strings.Join(refNames, ",\n"))
 		if !comp.isMain {
-			p(`		LocalStubFn: %s,`, localStubFn)
+			p(`		%s,`, localStubFn)
 		} else {
-			p(`		LocalStubFn: nil,`)
+			p(`		nil,`)
 		}
-		p(`	})`)
+		p(`	)`)
 	}
 	p(`}`)
 }

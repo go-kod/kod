@@ -17,11 +17,28 @@ import (
 // LocalStubFnInfo is the information passed to LocalStubFn.
 type LocalStubFnInfo = registry.LocalStubFnInfo
 
-// Registration is the registration information for a component.
-type Registration = registry.Registration
+type registration = registry.Registration
 
-// Register registers the given component implementations.
-var Register = registry.Register
+func newRegistration[I any, T any, P PointerTo[I, T]](name string, _ P) *registration {
+	return &registration{
+		Name:      name,
+		Interface: reflect.TypeFor[I](),
+		Impl:      reflect.TypeFor[T](),
+	}
+}
+
+// RegisterComponent registers a component implementation pointer.
+func RegisterComponent[I any, T any, P PointerTo[I, T]](
+	name string,
+	impl P,
+	refs string,
+	localStubFn func(context.Context, *LocalStubFnInfo) any,
+) {
+	reg := newRegistration[I](name, impl)
+	reg.Refs = refs
+	reg.LocalStubFn = localStubFn
+	registry.Register(reg)
+}
 
 // getImpl returns the component for the given implementation type.
 func (k *Kod) getImpl(ctx context.Context, t reflect.Type) (any, error) {
@@ -85,7 +102,7 @@ func (k *Kod) getIntf(ctx context.Context, t reflect.Type) (any, error) {
 }
 
 // get returns the component for the given registration.
-func (k *Kod) get(ctx context.Context, reg *Registration) (any, error) {
+func (k *Kod) get(ctx context.Context, reg *registration) (any, error) {
 	// Check if we already have the component.
 	if c, ok := k.impls[reg.Name]; ok {
 		return c, nil
@@ -170,7 +187,7 @@ func fillRefs(impl any, lazyInit map[reflect.Type]bool, get func(reflect.Type) c
 
 // checkCircularDependency checks that there are no circular dependencies
 // between registered components.
-func checkCircularDependency(reg []*Registration) error {
+func checkCircularDependency(reg []*registration) error {
 	g := graph.New(graph.StringHash, graph.Directed(), graph.PreventCycles())
 
 	for _, reg := range reg {
@@ -199,7 +216,7 @@ func checkCircularDependency(reg []*Registration) error {
 
 // processRegistrations checks that all registered component interfaces are
 // implemented by a registered component implementation struct.
-func processRegistrations(regs []*Registration) (map[reflect.Type]bool, error) {
+func processRegistrations(regs []*registration) (map[reflect.Type]bool, error) {
 	// Gather the set of registered interfaces.
 	intfs := map[reflect.Type]struct{}{}
 	for _, reg := range regs {
