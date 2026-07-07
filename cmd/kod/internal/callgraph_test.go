@@ -1,8 +1,10 @@
 package internal
 
 import (
+	"fmt"
 	"os"
 	"os/exec"
+	"path/filepath"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -26,29 +28,43 @@ func TestGraph(t *testing.T) {
 		{"darwin", "amd64"},
 	} {
 		t.Run(test.os+"_"+test.arch, func(t *testing.T) {
-			cmd := exec.Command("go", "build", "-o", "graphcase", "../../../tests/graphcase")
-			cmd.Env = append(os.Environ(), "GOOS="+test.os, "GOARCH="+test.arch)
-			assert.Nil(t, cmd.Run())
+			bin := buildGraphcase(t, test.os, test.arch)
+			dot := filepath.Join(t.TempDir(), "my-graph.dot")
 
-			execute(t, "callgraph graphcase")
-			assert.FileExists(t, "my-graph.dot")
+			execute(t, fmt.Sprintf("callgraph %s --o %s", bin, dot))
+			assert.FileExists(t, dot)
 
-			data, err := os.ReadFile("my-graph.dot")
+			data, err := os.ReadFile(dot)
 			assert.Nil(t, err)
 
 			assert.Contains(t, string(data), "github.com/go-kod/kod/Main")
-			os.Remove("my-graph.dot")
-			os.Remove("graphcase")
 		})
 	}
 
 	t.Run("json format", func(t *testing.T) {
-		cmd := exec.Command("go", "build", "-o", "graphcase", "../../../tests/graphcase")
-		assert.Nil(t, cmd.Run())
+		bin := buildGraphcase(t, "", "")
 
-		data := execute(t, "callgraph graphcase --t json")
+		data := execute(t, "callgraph "+bin+" --t json")
 
 		assert.Contains(t, string(data), "github.com/go-kod/kod/Main")
-		os.Remove("graphcase")
 	})
+}
+
+func buildGraphcase(t *testing.T, goos, goarch string) string {
+	t.Helper()
+
+	bin := filepath.Join(t.TempDir(), "graphcase")
+	cmd := exec.Command("go", "build", "-o", bin, "./graphcase")
+	cmd.Dir = "../../../tests"
+	cmd.Env = os.Environ()
+	if goos != "" {
+		cmd.Env = append(cmd.Env, "GOOS="+goos)
+	}
+	if goarch != "" {
+		cmd.Env = append(cmd.Env, "GOARCH="+goarch)
+	}
+	if err := cmd.Run(); err != nil {
+		t.Fatal(err)
+	}
+	return bin
 }

@@ -24,11 +24,18 @@ import (
 )
 
 type test1Config struct {
-	A     string `default:"a"`
+	A     string
 	Redis struct {
-		Addr    string        `default:"localhost:6379"`
-		Timeout time.Duration `default:"1s"`
+		Addr    string
+		Timeout time.Duration
 	}
+}
+
+func newTest1Config() test1Config {
+	cfg := test1Config{A: "B"}
+	cfg.Redis.Addr = "localhost:6379"
+	cfg.Redis.Timeout = 2 * time.Second
+	return cfg
 }
 
 type test1ControllerImpl struct {
@@ -55,12 +62,12 @@ func (t *modelImpl) Foo(ctx context.Context) error {
 
 type test1Component struct {
 	kod.Implements[Test1Component]
-	kod.WithConfig[test1Config]
+	config test1Config
 }
 
 func (t *test1Component) Init(ctx context.Context) error {
-	kod := kod.FromContext(ctx)
-	t.L(ctx).InfoContext(ctx, "Init test1Component"+kod.Config().Name)
+	t.config = newTest1Config()
+	t.L(ctx).InfoContext(ctx, "Init test1Componenttestapp")
 
 	return nil
 }
@@ -97,12 +104,12 @@ func (t *test1Component) Foo(ctx context.Context, req *FooReq) (*FooRes, error) 
 	}
 
 	ctx = baggage.ContextWithBaggage(ctx, lo.Must(baggage.New(lo.Must(baggage.NewMember("b1", "v1")))))
-	t.L(ctx).InfoContext(ctx, "Foo info ", slog.Any("config", t.Config()))
+	t.L(ctx).InfoContext(ctx, "Foo info ", slog.Any("config", t.config))
 	t.L(ctx).ErrorContext(ctx, "Foo error:")
 	t.L(ctx).DebugContext(ctx, "Foo debug:")
 	t.L(ctx).WithGroup("test group").InfoContext(ctx, "Foo info with group")
 
-	return &FooRes{Id: req.Id}, errors.New("test1:" + t.Config().A)
+	return &FooRes{Id: req.Id}, errors.New("test1:" + t.config.A)
 }
 
 type fakeTest1Component struct {
@@ -118,11 +125,16 @@ func (f *fakeTest1Component) Foo(ctx context.Context, req *FooReq) (*FooRes, err
 
 type test2Component struct {
 	kod.Implements[Test2Component]
-	kod.WithConfig[test1Config]
+	config test1Config
+}
+
+func (t *test2Component) Init(context.Context) error {
+	t.config = newTest1Config()
+	return nil
 }
 
 func (t *test2Component) GetClient() *http.Client {
-	slog.Info("Foo info ", "config", t.Config())
+	slog.Info("Foo info ", "config", t.config)
 	slog.Debug("Foo debug:")
 	fmt.Println(errors.New("test1"))
 	return &http.Client{}

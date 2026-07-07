@@ -10,122 +10,116 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-// test1Controller is implemented by [test1ControllerImpl],
-// which can be mocked with [NewMocktest1Controller].
+// test1Controller is implemented by [test1ControllerImpl].
 type test1Controller interface {
 }
 
-// testService is implemented by [serviceImpl],
-// which can be mocked with [NewMocktestService].
+// testService is implemented by [serviceImpl].
 type testService interface {
 	// Foo is implemented by [serviceImpl.Foo]
+	//
 	Foo(ctx context.Context) error
 }
 
-// testRepository is implemented by [modelImpl],
-// which can be mocked with [NewMocktestRepository].
+// testRepository is implemented by [modelImpl].
 type testRepository interface {
 	// Foo is implemented by [modelImpl.Foo]
+	//
 	Foo(ctx context.Context) error
 }
 
-// Test1Component is implemented by [test1Component],
-// which can be mocked with [NewMockTest1Component].
+// Test1Component is implemented by [test1Component].
 type Test1Component interface {
 	// Foo is implemented by [test1Component.Foo]
+	//
 	Foo(ctx context.Context, req *FooReq) (*FooRes, error)
 }
 
-// Test2Component is implemented by [test2Component],
-// which can be mocked with [NewMockTest2Component].
+// Test2Component is implemented by [test2Component].
 type Test2Component interface {
 	// GetClient is implemented by [test2Component.GetClient]
+	//
 	GetClient() *http.Client
 }
 
-// ctxInterface is implemented by [ctxImpl],
-// which can be mocked with [NewMockctxInterface].
+// ctxInterface is implemented by [ctxImpl].
 type ctxInterface interface {
 	// Foo is implemented by [ctxImpl.Foo]
 	//
-	//	Foo is a http handler
+	//	 Foo is a http handler
 	Foo(ctx context.Context)
 }
 
-// test1ComponentDefaultError is implemented by [test1ComponentDefaultErrorImpl],
-// which can be mocked with [NewMocktest1ComponentDefaultError].
+// test1ComponentDefaultError is implemented by [test1ComponentDefaultErrorImpl].
 type test1ComponentDefaultError interface {
 }
 
-// test1ComponentGlobalDefaultError is implemented by [test1ComponentGlobalDefaultErrorImpl],
-// which can be mocked with [NewMocktest1ComponentGlobalDefaultError].
+// test1ComponentGlobalDefaultError is implemented by [test1ComponentGlobalDefaultErrorImpl].
 type test1ComponentGlobalDefaultError interface {
 }
 
-// testEchoController is implemented by [testEchoControllerImpl],
-// which can be mocked with [NewMocktestEchoController].
+// testEchoController is implemented by [testEchoControllerImpl].
 type testEchoController interface {
 	// Hello is implemented by [testEchoControllerImpl.Hello]
 	//
-	//	Hello is a method of testEchoControllerImpl
+	//	 Hello is a method of testEchoControllerImpl
 	Hello(c echo.Context) error
 	// Error is implemented by [testEchoControllerImpl.Error]
 	//
-	//	Error is a method of testEchoControllerImpl
+	//	 Error is a method of testEchoControllerImpl
 	Error(c echo.Context) error
 }
 
-// testGinController is implemented by [testGinControllerImpl],
-// which can be mocked with [NewMocktestGinController].
+// testGinController is implemented by [testGinControllerImpl].
 type testGinController interface {
 	// Hello is implemented by [testGinControllerImpl.Hello]
 	//
-	//	Hello is a method of testGinControllerImpl
+	//	 Hello is a method of testGinControllerImpl
 	Hello(c *gin.Context)
 }
 
-// HTTPController is implemented by [httpControllerImpl],
-// which can be mocked with [NewMockHTTPController].
+// HTTPController is implemented by [httpControllerImpl].
 type HTTPController interface {
 	// Foo is implemented by [httpControllerImpl.Foo]
 	//
-	//	Foo is a http handler
+	//	 Foo is a http handler
 	Foo(w http.ResponseWriter, r *http.Request)
 }
 
-// InterceptorRetry is implemented by [interceptorRetry],
-// which can be mocked with [NewMockInterceptorRetry].
+// InterceptorRetry is implemented by [interceptorRetry].
 type InterceptorRetry interface {
 	// TestError is implemented by [interceptorRetry.TestError]
+	//
 	TestError(ctx context.Context) error
 	// TestNormal is implemented by [interceptorRetry.TestNormal]
+	//
 	TestNormal(ctx context.Context) error
 }
 
-// LazyInitImpl is implemented by [lazyInitImpl],
-// which can be mocked with [NewMockLazyInitImpl].
+// LazyInitImpl is implemented by [lazyInitImpl].
 type LazyInitImpl interface {
 	// Try is implemented by [lazyInitImpl.Try]
+	//
 	Try(ctx context.Context)
 }
 
-// LazyInitComponent is implemented by [lazyInitComponent],
-// which can be mocked with [NewMockLazyInitComponent].
+// LazyInitComponent is implemented by [lazyInitComponent].
 type LazyInitComponent interface {
 	// Try is implemented by [lazyInitComponent.Try]
+	//
 	Try(ctx context.Context) error
 }
 
-// panicCaseInterface is implemented by [panicCase],
-// which can be mocked with [NewMockpanicCaseInterface].
+// panicCaseInterface is implemented by [panicCase].
 type panicCaseInterface interface {
 	// TestPanic is implemented by [panicCase.TestPanic]
+	//
 	TestPanic(ctx context.Context)
 }
 
-// panicNoRecvoeryCaseInterface is implemented by [panicNoRecvoeryCase],
-// which can be mocked with [NewMockpanicNoRecvoeryCaseInterface].
+// panicNoRecvoeryCaseInterface is implemented by [panicNoRecvoeryCase].
 type panicNoRecvoeryCaseInterface interface {
 	// TestPanic is implemented by [panicNoRecvoeryCase.TestPanic]
+	//
 	TestPanic(ctx context.Context)
 }

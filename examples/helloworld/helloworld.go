@@ -10,25 +10,15 @@ import (
 
 type App struct {
 	kod.Implements[kod.Main]
-	kod.WithGlobalConfig[GlobalConfig]
 
 	HelloWorld            kod.Ref[HelloWorld]
 	HelloWorldLazy        kod.Ref[HelloWorldLazy]
 	HelloWorldInterceptor kod.Ref[HelloWorldInterceptor]
 }
 
-type GlobalConfig struct {
-	Name string `default:"kod"`
-}
-
-type Config struct {
-	Name string `default:"-"`
-}
-
 // HelloWorld ...
 type helloWorld struct {
 	kod.Implements[HelloWorld]
-	kod.WithConfig[Config]
 }
 
 func (h *helloWorld) Init(_ context.Context) error {
@@ -41,7 +31,7 @@ func (h *helloWorld) Init(_ context.Context) error {
 func (h *helloWorld) SayHello(ctx context.Context) {
 	h.L(ctx).Info("Hello, World!")
 
-	fmt.Println("Hello, World!" + h.Config().Name)
+	fmt.Println("Hello, World!")
 }
 
 func (h *helloWorld) Shutdown(_ context.Context) error {

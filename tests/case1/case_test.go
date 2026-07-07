@@ -136,45 +136,6 @@ func TestConflictFake(t *testing.T) {
 	})
 }
 
-func TestConfigFile1(t *testing.T) {
-	t.Parallel()
-	kod.RunTest(t, func(ctx context.Context, k *test1Component) {
-		_, err := k.Foo(ctx, &FooReq{})
-		fmt.Println(err)
-		require.Equal(t, "B", k.Config().A)
-		require.Equal(t, "test1:B", err.Error())
-	}, kod.WithConfigFile("kod.toml"))
-}
-
-func TestConfigFileYaml(t *testing.T) {
-	t.Parallel()
-	kod.RunTest(t, func(ctx context.Context, k *test1Component) {
-		_, err := k.Foo(ctx, &FooReq{})
-		fmt.Println(err)
-		require.Equal(t, "B", k.Config().A)
-		require.Equal(t, "test1:B", err.Error())
-	}, kod.WithConfigFile("kod.yaml"))
-}
-
-func TestConfigFileJSON(t *testing.T) {
-	t.Parallel()
-	kod.RunTest(t, func(ctx context.Context, k *test1Component) {
-		_, err := k.Foo(ctx, &FooReq{})
-		fmt.Println(err)
-		require.Equal(t, "B", k.Config().A)
-		require.Equal(t, "test1:B", err.Error())
-	}, kod.WithConfigFile("kod.json"))
-}
-
-func TestConfigFile2(t *testing.T) {
-	t.Parallel()
-	kod.RunTest(t, func(ctx context.Context, k *test1Component) {
-		_, err := k.Foo(ctx, &FooReq{})
-		fmt.Println(err)
-		require.Equal(t, "test1:B2", err.Error())
-	}, kod.WithConfigFile("kod2.toml"))
-}
-
 func TestRunKill(t *testing.T) {
 	t.Run("case1", func(t *testing.T) {
 		err := kod.Run(context.Background(), Run)
@@ -185,21 +146,11 @@ func TestRunKill(t *testing.T) {
 	})
 }
 
-func TestPanicKod(t *testing.T) {
-	kod.RunTest(t, func(ctx context.Context, k *test1Component) {
-		require.Panics(t, func() {
-			kod := kod.FromContext(context.Background())
-			kod.Config()
-		})
-	})
-}
-
 func BenchmarkCase1(b *testing.B) {
 	b.Run("case1", func(b *testing.B) {
 		kod.RunTest(b, func(ctx context.Context, k *test1Component) {
 			for i := 0; i < b.N; i++ {
 				_, err := k.Foo(ctx, &FooReq{})
-				require.Equal(b, "B", k.Config().A)
 				require.Equal(b, "test1:B", err.Error())
 			}
 		})

@@ -81,7 +81,7 @@ func Generate(dir string, pkgs []string, opt Options) error {
 	}
 	fset := token.NewFileSet()
 	cfg := &packages.Config{
-		Mode:       packages.NeedName | packages.NeedSyntax | packages.NeedImports | packages.NeedTypes | packages.NeedTypesInfo,
+		Mode:       packages.NeedName | packages.NeedSyntax | packages.NeedImports | packages.NeedDeps | packages.NeedTypes | packages.NeedTypesInfo,
 		Dir:        dir,
 		Fset:       fset,
 		ParseFile:  parseNonKodGenFile,
@@ -294,7 +294,7 @@ func extractComponent(opt Options, pkg *packages.Package, tset *typeSet, spec *a
 			// Ignore unembedded fields.
 			//
 			// TODO: Warn the user about unembedded
-			// kod.Implements, kod.WithConfig, or kod.WithRouter?
+			// kod.Implements?
 			continue
 		}
 
@@ -326,8 +326,7 @@ func extractComponent(opt Options, pkg *packages.Package, tset *typeSet, spec *a
 	}
 
 	if intf == nil {
-		// TODO: Warn the user if they embed kod.WithRouter or
-		// kod.WithConfig but don't embed kod.Implements.
+		// TODO: Warn the user if they embed kod types but don't embed kod.Implements.
 		return nil, nil
 	}
 

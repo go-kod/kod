@@ -96,26 +96,6 @@ func (k *Kod) get(ctx context.Context, reg *Registration) (any, error) {
 	v := reflect.New(reg.Impl)
 	obj := v.Interface()
 
-	// Fill global config.
-	if c, ok := obj.(interface{ getGlobalConfig() any }); ok {
-		if cfg := c.getGlobalConfig(); cfg != nil {
-			err := k.unmarshalConfig("", cfg)
-			if err != nil {
-				return nil, err
-			}
-		}
-	}
-
-	// Fill config.
-	if c, ok := obj.(interface{ getConfig() any }); ok {
-		if cfg := c.getConfig(); cfg != nil {
-			err := k.unmarshalConfig(reg.Name, cfg)
-			if err != nil {
-				return nil, err
-			}
-		}
-	}
-
 	// Fill name.
 	if c, ok := obj.(interface{ setName(string) }); ok {
 		c.setName(reg.Name)

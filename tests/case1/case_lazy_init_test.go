@@ -33,7 +33,7 @@ func TestLazyInitTest(t *testing.T) {
 	log, observer := kod.NewTestLogger()
 	slog.SetDefault(log)
 
-	kod.RunTest2(t, func(ctx context.Context, k *lazyInitImpl, comp *lazyInitComponent) {
+	kod.RunTest(t, func(ctx context.Context, k *lazyInitImpl, comp *lazyInitComponent) {
 		k.Try(ctx)
 
 		require.Equal(t, 3, observer.Len(), observer.String())
@@ -48,7 +48,7 @@ func TestLazyInitTest2(t *testing.T) {
 	log, observer := kod.NewTestLogger()
 	slog.SetDefault(log)
 
-	kod.RunTest2(t, func(ctx context.Context, k LazyInitImpl, comp LazyInitComponent) {
+	kod.RunTest(t, func(ctx context.Context, k LazyInitImpl, comp LazyInitComponent) {
 		require.Equal(t, 2, observer.Len(), observer.String())
 
 		k.Try(ctx)
@@ -61,7 +61,7 @@ func TestLazyInitTest3(t *testing.T) {
 	log, observer := kod.NewTestLogger()
 	slog.SetDefault(log)
 
-	kod.RunTest2(t, func(ctx context.Context, k *lazyInitImpl, comp LazyInitComponent) {
+	kod.RunTest(t, func(ctx context.Context, k *lazyInitImpl, comp LazyInitComponent) {
 		k.Try(ctx)
 
 		require.Equal(t, 3, observer.Len(), observer.String())
