@@ -10,6 +10,7 @@ import (
 // which can be mocked with [NewMockTest1Component].
 type Test1Component interface {
 	// Foo is implemented by [test1Component.Foo]
+	//
 	Foo(ctx context.Context, req *FooReq) error
 }
 
@@ -17,5 +18,6 @@ type Test1Component interface {
 // which can be mocked with [NewMockTest2Component].
 type Test2Component interface {
 	// Foo is implemented by [test2Component.Foo]
+	//
 	Foo(ctx context.Context, req *FooReq) error
 }
