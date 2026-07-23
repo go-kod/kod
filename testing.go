@@ -100,7 +100,7 @@ func (r runner) sub(tb testing.TB, testBody any) error {
 	return nil
 }
 
-func checkRunFunc(ctx context.Context, fn any) (func(context.Context, *Kod) error, []reflect.Type, error) {
+func checkRunFunc(_ context.Context, fn any) (func(context.Context, *Kod) error, []reflect.Type, error) {
 	fnType := reflect.TypeOf(fn)
 	if fnType == nil || fnType.Kind() != reflect.Func {
 		return nil, nil, fmt.Errorf("not a func")
