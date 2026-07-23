@@ -24,6 +24,11 @@ func TestFill(t *testing.T) {
 	})
 }
 
+func TestRefType(t *testing.T) {
+	var ref Ref[io.Reader]
+	assert.Equal(t, reflect.TypeFor[io.Reader](), ref.refType())
+}
+
 func TestValidateUnregisteredRef(t *testing.T) {
 	type foo interface{}
 	type fooImpl struct{ Ref[io.Reader] }
@@ -52,20 +57,66 @@ func TestValidateNoRegistrations(t *testing.T) {
 	}
 }
 
+func TestValidateInvalidRegistration(t *testing.T) {
+	regs := []*registration{
+		nil,
+		{Name: "missing-interface", Impl: reflect.TypeFor[struct{}]()},
+		{Name: "missing-impl", Interface: reflect.TypeFor[interface{}]()},
+	}
+
+	var err error
+	assert.NotPanics(t, func() {
+		_, err = processRegistrations(regs)
+	})
+	require.Error(t, err)
+	assert.Contains(t, err.Error(), "component registration is nil")
+	assert.Contains(t, err.Error(), `component registration "missing-interface" interface type is nil`)
+	assert.Contains(t, err.Error(), `component registration "missing-impl" implementation type is nil`)
+}
+
+func TestNewKodInvalidRegistration(t *testing.T) {
+	var err error
+	assert.NotPanics(t, func() {
+		_, err = newKod(context.Background(), withRegistrations(nil))
+	})
+	require.Error(t, err)
+	assert.Contains(t, err.Error(), "component registration is nil")
+}
+
+func TestValidateImplementationMismatch(t *testing.T) {
+	type foo interface{ Foo() }
+	type fooImpl struct{}
+	regs := []*registration{
+		{
+			Name:      "foo",
+			Interface: reflect.TypeFor[foo](),
+			Impl:      reflect.TypeFor[fooImpl](),
+		},
+	}
+	_, err := processRegistrations(regs)
+	if err == nil {
+		t.Fatal("unexpected validateRegistrations success")
+	}
+	const want = "does not implement interface"
+	if !strings.Contains(err.Error(), want) {
+		t.Fatalf("validateRegistrations: got %q, want %q", err, want)
+	}
+}
+
 func TestMultipleRegistrations(t *testing.T) {
 	type foo interface{}
 	type fooImpl struct{ Ref[io.Reader] }
-	regs := []*Registration{
+	regs := []*registration{
 		{
 			Name:      "github.com/go-kod/kod/Main",
-			Interface: reflect.TypeOf((*Main)(nil)).Elem(),
-			Impl:      reflect.TypeOf(fooImpl{}),
+			Interface: reflect.TypeFor[Main](),
+			Impl:      reflect.TypeFor[fooImpl](),
 			Refs:      `⟦48699770:KoDeDgE:github.com/go-kod/kod/Main→github.com/go-kod/kod/tests/graphcase/test1Controller⟧`,
 		},
 		{
 			Name:      "github.com/go-kod/kod/Main",
-			Interface: reflect.TypeOf((*foo)(nil)).Elem(),
-			Impl:      reflect.TypeOf(fooImpl{}),
+			Interface: reflect.TypeFor[foo](),
+			Impl:      reflect.TypeFor[fooImpl](),
 			Refs:      `⟦48699770:KoDeDgE:github.com/go-kod/kod/tests/graphcase/test1Controller→github.com/go-kod/kod/Main⟧`,
 		},
 	}
@@ -83,17 +134,17 @@ func TestCycleRegistrations(t *testing.T) {
 	type test1Controller interface{}
 	type test1ControllerImpl struct{ Ref[io.Reader] }
 	type mainImpl struct{ Ref[test1Controller] }
-	regs := []*Registration{
+	regs := []*registration{
 		{
 			Name:      "github.com/go-kod/kod/Main",
-			Interface: reflect.TypeOf((*Main)(nil)).Elem(),
-			Impl:      reflect.TypeOf(mainImpl{}),
+			Interface: reflect.TypeFor[Main](),
+			Impl:      reflect.TypeFor[mainImpl](),
 			Refs:      `⟦48699770:KoDeDgE:github.com/go-kod/kod/Main→github.com/go-kod/kod/test1Controller⟧`,
 		},
 		{
 			Name:      "github.com/go-kod/kod/test1Controller",
-			Interface: reflect.TypeOf((*test1Controller)(nil)).Elem(),
-			Impl:      reflect.TypeOf(test1ControllerImpl{}),
+			Interface: reflect.TypeFor[test1Controller](),
+			Impl:      reflect.TypeFor[test1ControllerImpl](),
 			Refs:      `⟦b8422d0e:KoDeDgE:github.com/go-kod/kod/test1Controller→github.com/go-kod/kod/Main⟧`,
 		},
 	}
@@ -119,6 +170,25 @@ func TestGetIntf(t *testing.T) {
 	k, err := newKod(context.Background())
 	require.NoError(t, err)
 
-	_, err = k.getIntf(context.Background(), reflect.TypeOf((*interface{})(nil)).Elem())
+	_, err = k.getIntf(context.Background(), reflect.TypeFor[interface{}]())
 	assert.Error(t, err) // Should fail for unregistered interface
+}
+
+func TestGetInterfaceWithoutLocalStub(t *testing.T) {
+	type mainImpl struct {
+		Implements[Main]
+	}
+	k, err := newKod(context.Background(), withRegistrations(&registration{
+		Name:      "main",
+		Interface: reflect.TypeFor[Main](),
+		Impl:      reflect.TypeFor[mainImpl](),
+	}))
+	require.NoError(t, err)
+
+	var got Main
+	assert.NotPanics(t, func() {
+		got, err = k.Get[Main](context.Background())
+	})
+	require.NoError(t, err)
+	assert.IsType(t, &mainImpl{}, got)
 }

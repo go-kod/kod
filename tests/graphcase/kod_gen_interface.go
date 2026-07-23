@@ -13,6 +13,7 @@ import (
 // which can be mocked with [NewMocktest1Controller].
 type test1Controller interface {
 	// Foo is implemented by [test1ControllerImpl.Foo]
+	//
 	Foo(cccccc *gin.Context)
 }
 
@@ -20,6 +21,7 @@ type test1Controller interface {
 // which can be mocked with [NewMockHTTPController].
 type HTTPController interface {
 	// Foo is implemented by [httpControllerImpl.Foo]
+	//
 	Foo(w http.ResponseWriter, r http.Request)
 }
 
@@ -27,6 +29,7 @@ type HTTPController interface {
 // which can be mocked with [NewMocktestService].
 type testService interface {
 	// Foo is implemented by [serviceImpl.Foo]
+	//
 	Foo(ctx context.Context) error
 }
 
@@ -34,6 +37,7 @@ type testService interface {
 // which can be mocked with [NewMocktestModel].
 type testModel interface {
 	// Foo is implemented by [modelImpl.Foo]
+	//
 	Foo(ctx context.Context) error
 }
 
@@ -41,5 +45,6 @@ type testModel interface {
 // which can be mocked with [NewMockTest1Component].
 type Test1Component interface {
 	// Foo is implemented by [test1Component.Foo]
+	//
 	Foo(ctx context.Context, req *FooReq) error
 }

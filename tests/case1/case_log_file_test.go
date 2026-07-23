@@ -28,5 +28,5 @@ func TestLogFile(t *testing.T) {
 		slog.Info("test")
 		require.Equal(t, 1, observer.Len())
 		os.Remove("./testapp.json")
-	}, kod.WithConfigFile("./kod-logfile.toml"))
+	})
 }

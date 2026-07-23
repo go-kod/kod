@@ -12,7 +12,6 @@ import (
 	"github.com/go-kod/kod/interceptor/kmetric"
 	"github.com/go-kod/kod/interceptor/krecovery"
 	"github.com/go-kod/kod/interceptor/ktrace"
-	"github.com/knadh/koanf/v2"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/sdk/trace"
 	"go.opentelemetry.io/otel/sdk/trace/tracetest"
@@ -84,30 +83,6 @@ func Example_componentMock() {
 	}, kod.WithFakes(kod.Fake[helloworld.HelloWorld](mock)))
 	// Output:
 	// Hello, Mock!
-}
-
-// This example demonstrates how to use [kod.WithConfig] to provide a configuration to the application.
-func Example_configInComponent() {
-	kod.Run(context.Background(), func(ctx context.Context, app *helloworld.App) error {
-		app.HelloWorld.Get().SayHello(ctx)
-		return nil
-	}, kod.WithConfigFile("./examples/helloworld/config.toml"))
-	// Output:
-	// helloWorld init
-	// Hello, World!config
-	// helloWorld shutdown
-}
-
-// This example demonstrates how to use [kod.WithGlobalConfig] to provide a global configuration to the application.
-func Example_configGlobal() {
-	kod.Run(context.Background(), func(ctx context.Context, app *helloworld.App) error {
-		fmt.Println(app.Config().Name)
-		return nil
-	}, kod.WithConfigFile("./examples/helloworld/config.toml"))
-	// Output:
-	// helloWorld init
-	// globalConfig
-	// helloWorld shutdown
 }
 
 // This example demonstrates how to use logging with OpenTelemetry.
@@ -241,32 +216,6 @@ func Example_testWithMockComponent() {
 	// Hello, Mock!
 }
 
-// This example demonstrates how to use [kod.RunTest] and [kod.WithConfigFile] to run a test function with a configuration.
-func Example_testWithConfig() {
-	kod.RunTest(&testing.T{}, func(ctx context.Context, app *helloworld.App) {
-		fmt.Println(app.Config().Name)
-		app.HelloWorld.Get().SayHello(ctx)
-	}, kod.WithConfigFile("./examples/helloworld/config.toml"))
-	// Output:
-	// helloWorld init
-	// globalConfig
-	// Hello, World!config
-	// helloWorld shutdown
-}
-
-// This example demonstrates how to use kod.WithGlobalConfig with default configuration.
-func Example_testWithDefaultConfig() {
-	kod.RunTest(&testing.T{}, func(ctx context.Context, app *helloworld.App) {
-		fmt.Println(app.Config().Name)
-		app.HelloWorld.Get().SayHello(ctx)
-	})
-	// Output:
-	// helloWorld init
-	// kod
-	// Hello, World!
-	// helloWorld shutdown
-}
-
 // This example demonstrates how to use [kod.RunTest], [kod.NewTestLogger] to run a test function with a custom logger.
 func Example_testWithLogObserver() {
 	logger, observer := kod.NewTestLogger()
@@ -292,22 +241,6 @@ func Example_testWithLogObserver() {
 	// 0
 }
 
-// This example demonstrates how to use [kod.RunTest], [kod.WithKoanf] to run a test function with a custom koanf instance.
-func Example_testWithKoanf() {
-	c := koanf.New("_")
-	c.Set("name", "testName")
-
-	kod.RunTest(&testing.T{}, func(ctx context.Context, app *helloworld.App) {
-		fmt.Println(app.Config().Name)
-		app.HelloWorld.Get().SayHello(ctx)
-	}, kod.WithKoanf(c))
-	// Output:
-	// helloWorld init
-	// testName
-	// Hello, World!
-	// helloWorld shutdown
-}
-
 // This example demonstrates how to use [kod.RunTest] to run a test function with a defer function.
 func Example_testWithDefer() {
 	kod.RunTest(&testing.T{}, func(ctx context.Context, app *helloworld.App) {
@@ -317,12 +250,10 @@ func Example_testWithDefer() {
 			return nil
 		})
 
-		fmt.Println(app.Config().Name)
 		app.HelloWorld.Get().SayHello(ctx)
 	})
 	// Output:
 	// helloWorld init
-	// kod
 	// Hello, World!
 	// Defer called
 	// helloWorld shutdown

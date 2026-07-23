@@ -6,8 +6,6 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/samber/lo"
-
 	"github.com/go-kod/kod/internal/kslog"
 )
 
@@ -21,10 +19,17 @@ type fakeComponent struct {
 }
 
 // Fake returns a fake component.
-func Fake[T any](impl any) fakeComponent {
+func Fake[T any](impl T) fakeComponent {
 	t := reflect.TypeFor[T]()
-	if _, ok := impl.(T); !ok {
-		panic(fmt.Sprintf("%T does not implement %v", impl, t))
+	if t.Kind() != reflect.Interface {
+		panic(fmt.Sprintf("kod.Fake type %v must be an interface", t))
+	}
+	v := reflect.ValueOf(impl)
+	switch v.Kind() {
+	case reflect.Invalid, reflect.Chan, reflect.Func, reflect.Interface, reflect.Map, reflect.Pointer, reflect.Slice:
+		if !v.IsValid() || v.IsNil() {
+			panic(fmt.Sprintf("%T does not implement %v", impl, t))
+		}
 	}
 	return fakeComponent{intf: t, impl: impl}
 }
@@ -34,22 +39,8 @@ type runner struct {
 	options []func(*options)
 }
 
-// RunTest runs a test function with one component.
-func RunTest[T any](tb testing.TB, body func(context.Context, T), opts ...func(*options)) {
-	tb.Helper()
-
-	runTest(tb, body, opts...)
-}
-
-// RunTest2 runs a test function with two components.
-func RunTest2[T1, T2 any](tb testing.TB, body func(context.Context, T1, T2), opts ...func(*options)) {
-	tb.Helper()
-
-	runTest(tb, body, opts...)
-}
-
-// RunTest3 runs a test function with three components.
-func RunTest3[T1, T2, T3 any](tb testing.TB, body func(context.Context, T1, T2, T3), opts ...func(*options)) {
+// RunTest runs a test function with component arguments.
+func RunTest(tb testing.TB, body any, opts ...func(*options)) {
 	tb.Helper()
 
 	runTest(tb, body, opts...)
@@ -109,7 +100,7 @@ func (r runner) sub(tb testing.TB, testBody any) error {
 	return nil
 }
 
-func checkRunFunc(ctx context.Context, fn any) (func(context.Context, *Kod) error, []reflect.Type, error) {
+func checkRunFunc(_ context.Context, fn any) (func(context.Context, *Kod) error, []reflect.Type, error) {
 	fnType := reflect.TypeOf(fn)
 	if fnType == nil || fnType.Kind() != reflect.Func {
 		return nil, nil, fmt.Errorf("not a func")
@@ -124,8 +115,9 @@ func checkRunFunc(ctx context.Context, fn any) (func(context.Context, *Kod) erro
 	if fnType.NumOut() > 0 {
 		return nil, nil, fmt.Errorf("must have no return outputs")
 	}
-	if fnType.In(0) != reflect.TypeOf(&ctx).Elem() {
-		return nil, nil, fmt.Errorf("function first argument type %v does not match first kod.Run argument %v", fnType.In(0), reflect.TypeOf(&ctx).Elem())
+	ctxType := reflect.TypeFor[context.Context]()
+	if fnType.In(0) != ctxType {
+		return nil, nil, fmt.Errorf("function first argument type %v does not match first kod.Run argument %v", fnType.In(0), ctxType)
 	}
 	var intfs []reflect.Type
 	for i := 1; i < n; i++ {
@@ -166,7 +158,11 @@ func checkRunFunc(ctx context.Context, fn any) (func(context.Context, *Kod) erro
 			}
 		}
 
-		reflect.ValueOf(fn).Call(lo.Map(args, func(item any, _ int) reflect.Value { return reflect.ValueOf(item) }))
+		in := make([]reflect.Value, n)
+		for i, arg := range args {
+			in[i] = reflect.ValueOf(arg)
+		}
+		reflect.ValueOf(fn).Call(in)
 		return nil
 	}, intfs, nil
 }
@@ -175,10 +171,13 @@ func extractComponentInterfaceType(t reflect.Type) (reflect.Type, error) {
 	if t.Kind() != reflect.Struct {
 		return nil, fmt.Errorf("type %v is not a struct", t)
 	}
-	// See the definition of kod.Implements.
-	f, ok := t.FieldByName("component_interface_type")
+	c, ok := reflect.New(t).Interface().(interface{ componentInterfaceType() reflect.Type })
 	if !ok {
 		return nil, fmt.Errorf("type %v does not embed kod.Implements", t)
 	}
-	return f.Type, nil
+	intf := c.componentInterfaceType()
+	if intf.Kind() != reflect.Interface {
+		return nil, fmt.Errorf("type %v embeds kod.Implements[%v], but %v is not an interface", t, intf, intf)
+	}
+	return intf, nil
 }

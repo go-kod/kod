@@ -205,90 +205,36 @@ func (f *foo) Interceptors() []interceptor.Interceptor {
 
 ### 配置
 
-#### WithConfig
-
-Kod使用TOML格式的配置文件来配置应用程序的运行方式。例如，一个最小的配置文件只需列出应用程序名称：
-
-```toml
-[kod]
-name = "hello"
-```
-
-配置文件还可以包含特定组件的配置部分，允许您配置应用程序中的组件。例如，考虑以下Greeter组件。
+Kod 不负责加载应用配置。配置应作为普通业务组件，由业务自行选择来源：命令行参数、环境变量、文件、密钥系统或远程配置。
 
 ```go
-type Greeter interface {
-    Greet(context.Context, string) (string, error)
+type Config interface {
+    Greeting() string
 }
 
-type greeter struct {
-    kod.Implements[Greeter]
+type config struct {
+    kod.Implements[Config]
+    greeting string
 }
 
-func (g *greeter) Greet(_ context.Context, name string) (string, error) {
-    return fmt.Sprintf("Hello, %s!", name), nil
-}
-```
-
-我们可以在配置文件中提供问候语而不是硬编码为"Hello"。首先，我们定义一个options结构。
-
-```go
-type greeterOptions struct {
-    Greeting string
-}
-```
-
-接下来，我们通过嵌入kod.WithConfig[T]结构将options结构与greeter实现关联。
-
-```go
-type greeter struct {
-    kod.Implements[Greeter]
-    kod.WithConfig[greeterOptions]
-}
-```
-
-现在，我们可以在配置文件中添加一个Greeter部分。该部分的键由组件的完整路径前缀名称引导。
-
-```toml
-["example.com/mypkg/Greeter"]
-Greeting = "Bonjour"
-```
-
-当创建Greeter组件时，Kod将自动将配置文件的Greeter部分解析为greeterOptions结构。您可以通过嵌入的WithConfig结构的Config方法访问填充的结构。例如：
-
-```go
-func (g *greeter) Greet(_ context.Context, name string) (string, error) {
-    greeting := g.Config().Greeting
-    if greeting == "" {
-        greeting = "Hello"
+func (c *config) Init(context.Context) error {
+    c.greeting = os.Getenv("GREETING")
+    if c.greeting == "" {
+        c.greeting = "Hello"
     }
-    return fmt.Sprintf("%s, %s!", greeting, name), nil
+    return nil
 }
-```
 
-您可以使用toml结构标签指定配置文件中应使用的字段名称。例如，我们可以将greeterOptions结构更改为以下内容。
+func (c *config) Greeting() string { return c.greeting }
 
-```go
-type greeterOptions struct {
-    Greeting string `toml:"my_custom_name"`
-}
-```
-
-#### WithGlobalConfig
-
-此外，我们可以使用 `kod.WithGlobalConfig` 结构从配置文件中读取整个配置。
-
-```go
 type greeter struct {
     kod.Implements[Greeter]
-    kod.WithGlobalConfig[greeterOptions]
+    config kod.Ref[Config]
 }
-```
 
-现在，我们可以根据 `greeterOptions` 结构向配置文件添加全局配置。
-
-```toml
-greeting = "Bonjour"
+func (g *greeter) Greet(_ context.Context, name string) (string, error) {
+    return fmt.Sprintf("%s, %s!", g.config.Get().Greeting(), name), nil
+}
 ```
 
 ### 测试
@@ -397,18 +343,6 @@ func TestClock(t *testing.T) {
             }
         }, kod.WithFakes(fake))
     })
-}
-```
-
-#### 配置
-
-您还可以通过设置Runner.Config字段将配置文件的内容提供给运行器。
-
-```go
-func TestArithmetic(t *testing.T) {
-    kod.RunTest(t, func(ctx context.Context, adder Adder) {
-        // ...
-    }, kod.WithConfigFile("testdata/config.toml"))
 }
 ```
 

@@ -205,92 +205,38 @@ Interface can be generated automatically by kod tool.
 //go:generate kod struct2interface .
 ```
 
-### Config
+### Configuration
 
-#### WithConfig
-
-Kod uses config files, written in TOML, to configure how applications are run. A minimal config file, for example, simply lists the application name:
-
-```toml
-[kod]
-name = "hello"
-```
-
-A config file may also contain component-specific configuration sections, which allow you configuring the components in your application. For example, consider the following `Greeter` component.
+Kod does not load application configuration. Treat configuration as an ordinary business component and choose your own source: flags, environment variables, files, secrets managers, or remote config.
 
 ```go
-type Greeter interface {
-    Greet(context.Context, string) (string, error)
+type Config interface {
+    Greeting() string
 }
 
-type greeter struct {
-    kod.Implements[Greeter]
+type config struct {
+    kod.Implements[Config]
+    greeting string
 }
 
-func (g *greeter) Greet(_ context.Context, name string) (string, error) {
-    return fmt.Sprintf("Hello, %s!", name), nil
-}
-```
-
-Rather than hard-coding the greeting "Hello", we can provide a greeting in a config file. First, we define an `options` struct.
-
-```go
-type greeterOptions struct {
-    Greeting string
-}
-```
-
-Next, we associate the `options` struct with the greeter implementation by embedding the `kod.WithConfig[T]` struct.
-
-```go
-type greeter struct {
-    kod.Implements[Greeter]
-    kod.WithConfig[greeterOptions]
-}
-```
-
-Now, we can add a Greeter section to the config file. The section is keyed by the full path-prefixed name of the component.
-
-```toml
-["example.com/mypkg/Greeter"]
-Greeting = "Bonjour"
-```
-
-When the Greeter component is created, Kod will automatically parse the Greeter section of the config file into a `greeterOptions` struct. You can access the populated struct via the `Config` method of the embedded `WithConfig` struct. For example:
-
-```go
-func (g *greeter) Greet(_ context.Context, name string) (string, error) {
-    greeting := g.Config().Greeting
-    if greeting == "" {
-        greeting = "Hello"
+func (c *config) Init(context.Context) error {
+    c.greeting = os.Getenv("GREETING")
+    if c.greeting == "" {
+        c.greeting = "Hello"
     }
-    return fmt.Sprintf("%s, %s!", greeting, name), nil
+    return nil
 }
-```
 
-You can use TOML struct tags to specify the name that should be used for a field in a config file. For example, we can change the `greeterOptions` struct to the following.
+func (c *config) Greeting() string { return c.greeting }
 
-```go
-type greeterOptions struct {
-    Greeting string `toml:"my_custom_name"`
-}
-```
-
-#### WithGlobalConfig
-
-Also, we can use the `kod.WithGlobalConfig` struct to read the whole config from the config file.
-
-```go
 type greeter struct {
     kod.Implements[Greeter]
-    kod.WithGlobalConfig[greeterOptions]
+    config kod.Ref[Config]
 }
-```
 
-Now, we can add global configuration to the config file based on the `greeterOptions` struct.
-
-```toml
-greeting = "Bonjour"
+func (g *greeter) Greet(_ context.Context, name string) (string, error) {
+    return fmt.Sprintf("%s, %s!", g.config.Get().Greeting(), name), nil
+}
 ```
 
 ### Testing
@@ -399,18 +345,6 @@ func TestClock(t *testing.T) {
             }
         }, kod.WithFakes(fake))
     })
-}
-```
-
-#### Config
-
-You can also provide the contents of a config file to a runner by setting the `Runner.Config` field:
-
-```go
-func TestArithmetic(t *testing.T) {
-    kod.RunTest(t, func(ctx context.Context, adder Adder) {
-        // ...
-    }, kod.WithConfigFile("testdata/config.toml"))
 }
 ```
 

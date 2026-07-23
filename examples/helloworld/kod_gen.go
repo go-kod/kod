@@ -7,7 +7,6 @@ import (
 	"context"
 	"github.com/go-kod/kod"
 	"github.com/go-kod/kod/interceptor"
-	"reflect"
 )
 
 // Full method names for components.
@@ -27,51 +26,35 @@ const (
 )
 
 func init() {
-	kod.Register(&kod.Registration{
-		Name:      "github.com/go-kod/kod/Main",
-		Interface: reflect.TypeOf((*kod.Main)(nil)).Elem(),
-		Impl:      reflect.TypeOf(App{}),
-		Refs: `⟦bda493e9:KoDeDgE:github.com/go-kod/kod/Main→github.com/go-kod/kod/examples/helloworld/HelloWorld⟧,
+	kod.RegisterComponent[kod.Main]("github.com/go-kod/kod/Main", (*App)(nil), `⟦bda493e9:KoDeDgE:github.com/go-kod/kod/Main→github.com/go-kod/kod/examples/helloworld/HelloWorld⟧,
 ⟦b60b3708:KoDeDgE:github.com/go-kod/kod/Main→github.com/go-kod/kod/examples/helloworld/HelloWorldLazy⟧,
 ⟦c811f6f3:KoDeDgE:github.com/go-kod/kod/Main→github.com/go-kod/kod/examples/helloworld/HelloWorldInterceptor⟧`,
-		LocalStubFn: nil,
-	})
-	kod.Register(&kod.Registration{
-		Name:      "github.com/go-kod/kod/examples/helloworld/HelloWorld",
-		Interface: reflect.TypeOf((*HelloWorld)(nil)).Elem(),
-		Impl:      reflect.TypeOf(helloWorld{}),
-		Refs:      ``,
-		LocalStubFn: func(ctx context.Context, info *kod.LocalStubFnInfo) any {
+		nil,
+	)
+	kod.RegisterComponent[HelloWorld]("github.com/go-kod/kod/examples/helloworld/HelloWorld", (*helloWorld)(nil), ``,
+		func(ctx context.Context, info *kod.LocalStubFnInfo) any {
 			return helloWorld_local_stub{
 				impl:        info.Impl.(HelloWorld),
 				interceptor: info.Interceptor,
 			}
 		},
-	})
-	kod.Register(&kod.Registration{
-		Name:      "github.com/go-kod/kod/examples/helloworld/HelloWorldLazy",
-		Interface: reflect.TypeOf((*HelloWorldLazy)(nil)).Elem(),
-		Impl:      reflect.TypeOf(lazyHelloWorld{}),
-		Refs:      ``,
-		LocalStubFn: func(ctx context.Context, info *kod.LocalStubFnInfo) any {
+	)
+	kod.RegisterComponent[HelloWorldLazy]("github.com/go-kod/kod/examples/helloworld/HelloWorldLazy", (*lazyHelloWorld)(nil), ``,
+		func(ctx context.Context, info *kod.LocalStubFnInfo) any {
 			return helloWorldLazy_local_stub{
 				impl:        info.Impl.(HelloWorldLazy),
 				interceptor: info.Interceptor,
 			}
 		},
-	})
-	kod.Register(&kod.Registration{
-		Name:      "github.com/go-kod/kod/examples/helloworld/HelloWorldInterceptor",
-		Interface: reflect.TypeOf((*HelloWorldInterceptor)(nil)).Elem(),
-		Impl:      reflect.TypeOf(helloWorldInterceptor{}),
-		Refs:      ``,
-		LocalStubFn: func(ctx context.Context, info *kod.LocalStubFnInfo) any {
+	)
+	kod.RegisterComponent[HelloWorldInterceptor]("github.com/go-kod/kod/examples/helloworld/HelloWorldInterceptor", (*helloWorldInterceptor)(nil), ``,
+		func(ctx context.Context, info *kod.LocalStubFnInfo) any {
 			return helloWorldInterceptor_local_stub{
 				impl:        info.Impl.(HelloWorldInterceptor),
 				interceptor: info.Interceptor,
 			}
 		},
-	})
+	)
 }
 
 // CodeGen version check.
@@ -92,12 +75,6 @@ running the following.
 Then, re-run 'kod generate' and re-build your code. If the problem persists,
 please file an issue at https://github.com/go-kod/kod/issues.
 `)
-
-// kod.InstanceOf checks.
-var _ kod.InstanceOf[kod.Main] = (*App)(nil)
-var _ kod.InstanceOf[HelloWorld] = (*helloWorld)(nil)
-var _ kod.InstanceOf[HelloWorldLazy] = (*lazyHelloWorld)(nil)
-var _ kod.InstanceOf[HelloWorldInterceptor] = (*helloWorldInterceptor)(nil)
 
 // Local stub implementations.
 // helloWorld_local_stub is a local stub implementation of [HelloWorld].

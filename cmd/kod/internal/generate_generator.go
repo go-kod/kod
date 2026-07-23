@@ -81,7 +81,7 @@ func Generate(dir string, pkgs []string, opt Options) error {
 	}
 	fset := token.NewFileSet()
 	cfg := &packages.Config{
-		Mode:       packages.NeedName | packages.NeedSyntax | packages.NeedImports | packages.NeedTypes | packages.NeedTypesInfo,
+		Mode:       packages.NeedName | packages.NeedSyntax | packages.NeedImports | packages.NeedDeps | packages.NeedTypes | packages.NeedTypesInfo,
 		Dir:        dir,
 		Fset:       fset,
 		ParseFile:  parseNonKodGenFile,
@@ -294,7 +294,7 @@ func extractComponent(opt Options, pkg *packages.Package, tset *typeSet, spec *a
 			// Ignore unembedded fields.
 			//
 			// TODO: Warn the user about unembedded
-			// kod.Implements, kod.WithConfig, or kod.WithRouter?
+			// kod.Implements?
 			continue
 		}
 
@@ -326,8 +326,7 @@ func extractComponent(opt Options, pkg *packages.Package, tset *typeSet, spec *a
 	}
 
 	if intf == nil {
-		// TODO: Warn the user if they embed kod.WithRouter or
-		// kod.WithConfig but don't embed kod.Implements.
+		// TODO: Warn the user if they embed kod types but don't embed kod.Implements.
 		return nil, nil
 	}
 
@@ -571,7 +570,6 @@ func (g *generator) generate() error {
 		}
 		g.generateRegisteredComponents(fn)
 		g.generateVersionCheck(fn)
-		g.generateInstanceChecks(fn)
 		g.generateLocalStubs(fn)
 
 	}
@@ -707,21 +705,6 @@ please file an issue at https://github.com/go-kod/kod/issues.
 `+"`", version.CodeGenSemVersion))
 }
 
-// generateInstanceChecks generates code that checks that every component
-// implementation type implements kod.InstanceOf[T] for the appropriate T.
-func (g *generator) generateInstanceChecks(p printFn) {
-	// If someone deletes a kod.Implements annotation and forgets to re-run
-	// `kod generate`, these checks will fail to build. Similarly, if a user
-	// changes the interface in a kod.Implements and forgets to re-run
-	// `kod generate`, these checks will fail to build.
-	p(``)
-	p(`// kod.InstanceOf checks.`)
-	for _, c := range g.components {
-		// e.g., var _ kod.InstanceOf[Odd] = &odd{}
-		p(`var _ %s[%s] = (*%s)(nil)`, g.kod().qualify("InstanceOf"), g.tset.genTypeString(c.intf), g.tset.genTypeString(c.impl))
-	}
-}
-
 // generateRegisteredComponents generates code that registers the components with Kod.
 func (g *generator) generateRegisteredComponents(p printFn) {
 	if len(g.components) == 0 {
@@ -745,21 +728,15 @@ func (g *generator) generateRegisteredComponents(p printFn) {
 			refNames = append(refNames, callgraph.MakeEdgeString(comp.fullIntfName(), fullName(ref)))
 		}
 
-		reflect := g.tset.importPackage("reflect", "reflect")
-		p(`	%s(&%s{`, g.codegen().qualify("Register"), g.codegen().qualify("Registration"))
-		p(`		Name: %q,`, myName)
-		// To get a reflect.Type for an interface, we have to first get a type
-		// of its pointer and then resolve the underlying type. See:
-		//   https://pkg.go.dev/reflect#example-TypeOf
-		p(`		Interface: %s((*%s)(nil)).Elem(),`, reflect.qualify("TypeOf"), g.componentRef(comp))
-		p(`		Impl: %s(%s{}),`, reflect.qualify("TypeOf"), comp.implName())
-		p("		Refs: `%s`,", strings.Join(refNames, ",\n"))
+		p("\t%s[%s](%q, (*%s)(nil), `%s`,",
+			g.codegen().qualify("RegisterComponent"), g.componentRef(comp), myName, comp.implName(),
+			strings.Join(refNames, ",\n"))
 		if !comp.isMain {
-			p(`		LocalStubFn: %s,`, localStubFn)
+			p(`		%s,`, localStubFn)
 		} else {
-			p(`		LocalStubFn: nil,`)
+			p(`		nil,`)
 		}
-		p(`	})`)
+		p(`	)`)
 	}
 	p(`}`)
 }

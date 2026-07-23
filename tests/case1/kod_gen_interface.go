@@ -19,6 +19,7 @@ type test1Controller interface {
 // which can be mocked with [NewMocktestService].
 type testService interface {
 	// Foo is implemented by [serviceImpl.Foo]
+	//
 	Foo(ctx context.Context) error
 }
 
@@ -26,6 +27,7 @@ type testService interface {
 // which can be mocked with [NewMocktestRepository].
 type testRepository interface {
 	// Foo is implemented by [modelImpl.Foo]
+	//
 	Foo(ctx context.Context) error
 }
 
@@ -33,6 +35,7 @@ type testRepository interface {
 // which can be mocked with [NewMockTest1Component].
 type Test1Component interface {
 	// Foo is implemented by [test1Component.Foo]
+	//
 	Foo(ctx context.Context, req *FooReq) (*FooRes, error)
 }
 
@@ -40,6 +43,7 @@ type Test1Component interface {
 // which can be mocked with [NewMockTest2Component].
 type Test2Component interface {
 	// GetClient is implemented by [test2Component.GetClient]
+	//
 	GetClient() *http.Client
 }
 
@@ -48,7 +52,7 @@ type Test2Component interface {
 type ctxInterface interface {
 	// Foo is implemented by [ctxImpl.Foo]
 	//
-	//	Foo is a http handler
+	//	 Foo is a http handler
 	Foo(ctx context.Context)
 }
 
@@ -67,11 +71,11 @@ type test1ComponentGlobalDefaultError interface {
 type testEchoController interface {
 	// Hello is implemented by [testEchoControllerImpl.Hello]
 	//
-	//	Hello is a method of testEchoControllerImpl
+	//	 Hello is a method of testEchoControllerImpl
 	Hello(c echo.Context) error
 	// Error is implemented by [testEchoControllerImpl.Error]
 	//
-	//	Error is a method of testEchoControllerImpl
+	//	 Error is a method of testEchoControllerImpl
 	Error(c echo.Context) error
 }
 
@@ -80,7 +84,7 @@ type testEchoController interface {
 type testGinController interface {
 	// Hello is implemented by [testGinControllerImpl.Hello]
 	//
-	//	Hello is a method of testGinControllerImpl
+	//	 Hello is a method of testGinControllerImpl
 	Hello(c *gin.Context)
 }
 
@@ -89,7 +93,7 @@ type testGinController interface {
 type HTTPController interface {
 	// Foo is implemented by [httpControllerImpl.Foo]
 	//
-	//	Foo is a http handler
+	//	 Foo is a http handler
 	Foo(w http.ResponseWriter, r *http.Request)
 }
 
@@ -97,8 +101,10 @@ type HTTPController interface {
 // which can be mocked with [NewMockInterceptorRetry].
 type InterceptorRetry interface {
 	// TestError is implemented by [interceptorRetry.TestError]
+	//
 	TestError(ctx context.Context) error
 	// TestNormal is implemented by [interceptorRetry.TestNormal]
+	//
 	TestNormal(ctx context.Context) error
 }
 
@@ -106,6 +112,7 @@ type InterceptorRetry interface {
 // which can be mocked with [NewMockLazyInitImpl].
 type LazyInitImpl interface {
 	// Try is implemented by [lazyInitImpl.Try]
+	//
 	Try(ctx context.Context)
 }
 
@@ -113,6 +120,7 @@ type LazyInitImpl interface {
 // which can be mocked with [NewMockLazyInitComponent].
 type LazyInitComponent interface {
 	// Try is implemented by [lazyInitComponent.Try]
+	//
 	Try(ctx context.Context) error
 }
 
@@ -120,6 +128,7 @@ type LazyInitComponent interface {
 // which can be mocked with [NewMockpanicCaseInterface].
 type panicCaseInterface interface {
 	// TestPanic is implemented by [panicCase.TestPanic]
+	//
 	TestPanic(ctx context.Context)
 }
 
@@ -127,5 +136,6 @@ type panicCaseInterface interface {
 // which can be mocked with [NewMockpanicNoRecvoeryCaseInterface].
 type panicNoRecvoeryCaseInterface interface {
 	// TestPanic is implemented by [panicNoRecvoeryCase.TestPanic]
+	//
 	TestPanic(ctx context.Context)
 }

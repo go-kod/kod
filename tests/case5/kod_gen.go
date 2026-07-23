@@ -7,7 +7,6 @@ import (
 	"context"
 	"github.com/go-kod/kod"
 	"github.com/go-kod/kod/interceptor"
-	"reflect"
 )
 
 // Full method names for components.
@@ -17,25 +16,17 @@ const (
 )
 
 func init() {
-	kod.Register(&kod.Registration{
-		Name:        "github.com/go-kod/kod/Main",
-		Interface:   reflect.TypeOf((*kod.Main)(nil)).Elem(),
-		Impl:        reflect.TypeOf(refStructImpl{}),
-		Refs:        `⟦b915993d:KoDeDgE:github.com/go-kod/kod/Main→github.com/go-kod/kod/tests/case5/testRefStruct1⟧`,
-		LocalStubFn: nil,
-	})
-	kod.Register(&kod.Registration{
-		Name:      "github.com/go-kod/kod/tests/case5/TestRefStruct1",
-		Interface: reflect.TypeOf((*TestRefStruct1)(nil)).Elem(),
-		Impl:      reflect.TypeOf(testRefStruct1{}),
-		Refs:      ``,
-		LocalStubFn: func(ctx context.Context, info *kod.LocalStubFnInfo) any {
+	kod.RegisterComponent[kod.Main]("github.com/go-kod/kod/Main", (*refStructImpl)(nil), `⟦b915993d:KoDeDgE:github.com/go-kod/kod/Main→github.com/go-kod/kod/tests/case5/testRefStruct1⟧`,
+		nil,
+	)
+	kod.RegisterComponent[TestRefStruct1]("github.com/go-kod/kod/tests/case5/TestRefStruct1", (*testRefStruct1)(nil), ``,
+		func(ctx context.Context, info *kod.LocalStubFnInfo) any {
 			return testRefStruct1_local_stub{
 				impl:        info.Impl.(TestRefStruct1),
 				interceptor: info.Interceptor,
 			}
 		},
-	})
+	)
 }
 
 // CodeGen version check.
@@ -56,10 +47,6 @@ running the following.
 Then, re-run 'kod generate' and re-build your code. If the problem persists,
 please file an issue at https://github.com/go-kod/kod/issues.
 `)
-
-// kod.InstanceOf checks.
-var _ kod.InstanceOf[kod.Main] = (*refStructImpl)(nil)
-var _ kod.InstanceOf[TestRefStruct1] = (*testRefStruct1)(nil)
 
 // Local stub implementations.
 // testRefStruct1_local_stub is a local stub implementation of [TestRefStruct1].

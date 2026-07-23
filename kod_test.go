@@ -2,10 +2,12 @@ package kod
 
 import (
 	"context"
+	"os"
+	"os/exec"
+	"path/filepath"
 	"testing"
 	"time"
 
-	"github.com/knadh/koanf/v2"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"go.uber.org/goleak"
@@ -21,51 +23,54 @@ func TestMain(m *testing.M) {
 	)
 }
 
-func TestConfigNoSuffix(t *testing.T) {
-	k, err := newKod(context.Background())
-	assert.Nil(t, err)
+func TestRunRejectsMainValue(t *testing.T) {
+	dir := t.TempDir()
+	wd, err := os.Getwd()
+	require.NoError(t, err)
 
-	assert.EqualError(t, k.parseConfig("nosuffix"), "read config file: Unsupported Config Type \"\"")
+	require.NoError(t, os.WriteFile(filepath.Join(dir, "go.mod"), []byte(`module runvaluetest
+
+go 1.27
+
+toolchain go1.27rc1
+
+replace github.com/go-kod/kod => `+wd+`
+
+require github.com/go-kod/kod v0.0.0
+`), 0o644))
+	require.NoError(t, os.WriteFile(filepath.Join(dir, "run_value_test.go"), []byte(`package runvaluetest
+
+import (
+	"context"
+	"testing"
+
+	"github.com/go-kod/kod"
+)
+
+type app struct {
+	kod.Implements[kod.Main]
 }
 
-func TestConfigNoFile(t *testing.T) {
-	k, err := newKod(context.Background())
-	assert.Nil(t, err)
-
-	assert.EqualError(t, k.parseConfig("notfound.yaml"), "read config file: open notfound.yaml: no such file or directory")
+func TestRunValue(t *testing.T) {
+	_ = kod.Run(context.Background(), func(context.Context, app) error {
+		return nil
+	})
 }
+`), 0o644))
 
-func TestConfigEnv(t *testing.T) {
-	k, err := newKod(context.Background())
-	assert.Nil(t, err)
-
-	assert.Equal(t, k.config.Name, "kod.test")
-	assert.Equal(t, k.config.Version, "")
-	assert.Equal(t, k.config.Env, "local")
-
-	t.Setenv("KOD_NAME", "test")
-	t.Setenv("KOD_VERSION", "1.0.0")
-	t.Setenv("KOD_ENV", "dev")
-
-	k, err = newKod(context.Background())
-	assert.Nil(t, err)
-
-	assert.Equal(t, k.config.Name, "test")
-	assert.Equal(t, k.config.Version, "1.0.0")
-	assert.Equal(t, k.config.Env, "dev")
+	cmd := exec.Command("go", "test", "-mod=mod", ".")
+	cmd.Dir = dir
+	out, err := cmd.CombinedOutput()
+	require.Error(t, err, string(out))
+	require.Contains(t, string(out), "does not satisfy kod.PointerToMain")
 }
 
 type testComponent struct {
 	Implements[testInterface]
-	WithConfig[testConfig]
 	initialized bool
 	initErr     error
 	shutdown    bool
 	shutdownErr error
-}
-
-type testConfig struct {
-	Value string `default:"default"`
 }
 
 type testInterface interface {
@@ -88,51 +93,10 @@ func (c *testComponent) IsInitialized() bool {
 
 func (c *testComponent) implements(testInterface) {}
 
-func TestConfigurationLoading(t *testing.T) {
-	tests := []struct {
-		name     string
-		koanf    *koanf.Koanf
-		filename string
-		wantErr  bool
-	}{
-		{
-			name:  "custom koanf",
-			koanf: koanf.New("."), // 使用 koanf.New() 替代空实例
-		},
-		{
-			name:     "invalid file extension",
-			filename: "config.invalid",
-			wantErr:  true,
-		},
-		{
-			name:     "missing file",
-			filename: "notexist.yaml",
-			wantErr:  true, // Should use defaults
-		},
-	}
-
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			opts := []func(*options){
-				WithConfigFile(tt.filename),
-			}
-			if tt.koanf != nil {
-				opts = append(opts, WithKoanf(tt.koanf))
-			}
-
-			k, err := newKod(context.Background(), opts...)
-			if tt.wantErr {
-				assert.Error(t, err)
-				return
-			}
-			require.NoError(t, err)
-
-			cfg := k.Config()
-			assert.NotEmpty(t, cfg.Name)
-			assert.NotEmpty(t, cfg.Env)
-			assert.Equal(t, 5*time.Second, cfg.ShutdownTimeout)
-		})
-	}
+func TestWithShutdownTimeout(t *testing.T) {
+	k, err := newKod(context.Background(), WithShutdownTimeout(time.Second))
+	require.NoError(t, err)
+	assert.Equal(t, time.Second, k.shutdownTimeout)
 }
 
 func TestDeferHooks(t *testing.T) {

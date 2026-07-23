@@ -13,8 +13,8 @@ import (
 type HelloWorld interface {
 	// SayHello is implemented by [helloWorld.SayHello]
 	//
-	//	SayHello ...
-	//	line two
+	//	 SayHello ...
+	//	 line two
 	SayHello(ctx context.Context)
 }
 
@@ -23,7 +23,7 @@ type HelloWorld interface {
 type HelloWorldLazy interface {
 	// SayHello is implemented by [lazyHelloWorld.SayHello]
 	//
-	//	SayHello ...
+	//	 SayHello ...
 	SayHello(_ context.Context)
 }
 
@@ -34,6 +34,6 @@ type HelloWorldLazy interface {
 type HelloWorldInterceptor interface {
 	// SayHello is implemented by [helloWorldInterceptor.SayHello]
 	//
-	//	SayHello ...
+	//	 SayHello ...
 	SayHello(_ context.Context)
 }

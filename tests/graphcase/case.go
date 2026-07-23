@@ -22,6 +22,13 @@ type test1Config struct {
 	}
 }
 
+func newTest1Config() test1Config {
+	cfg := test1Config{A: "B"}
+	cfg.Redis.Addr = "localhost:6379"
+	cfg.Redis.Timeout = 2 * time.Second
+	return cfg
+}
+
 type test1ControllerImpl struct {
 	kod.Implements[test1Controller]
 
@@ -60,10 +67,11 @@ func (t *modelImpl) Foo(ctx context.Context) error {
 
 type test1Component struct {
 	kod.Implements[Test1Component]
-	kod.WithConfig[test1Config]
+	config test1Config
 }
 
 func (t *test1Component) Init(ctx context.Context) error {
+	t.config = newTest1Config()
 	return nil
 }
 
@@ -76,10 +84,10 @@ type FooReq struct {
 }
 
 func (t *test1Component) Foo(ctx context.Context, req *FooReq) error {
-	t.L(ctx).InfoContext(ctx, "Foo info ", "config", t.Config())
+	t.L(ctx).InfoContext(ctx, "Foo info ", "config", t.config)
 	t.L(ctx).Debug("Foo debug:")
 	fmt.Println(errors.New("test1"))
-	return errors.New("test1:" + t.Config().A)
+	return errors.New("test1:" + t.config.A)
 }
 
 type fakeTest1Component struct {

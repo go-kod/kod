@@ -2,23 +2,12 @@ package kod
 
 import (
 	"context"
-	"fmt"
-	"io/fs"
 	"log/slog"
 	"os"
-	"path/filepath"
 	"reflect"
-	"strings"
 	"sync"
 	"time"
 
-	"github.com/creasty/defaults"
-	"github.com/knadh/koanf/parsers/json"
-	"github.com/knadh/koanf/parsers/toml/v2"
-	"github.com/knadh/koanf/parsers/yaml"
-	"github.com/knadh/koanf/providers/env"
-	"github.com/knadh/koanf/providers/file"
-	"github.com/knadh/koanf/v2"
 	"github.com/samber/lo"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/metric"
@@ -38,8 +27,6 @@ const (
 // with logging/tracing/metrics capabilities and a reference to the component's interface.
 type Implements[T any] struct {
 	name string
-	//nolint
-	component_interface_type T
 }
 
 // L returns the associated logger.
@@ -76,6 +63,10 @@ func (i *Implements[T]) setName(name string) {
 // nolint
 func (Implements[T]) implements(T) {}
 
+// componentInterfaceType returns the component interface type.
+// nolint
+func (Implements[T]) componentInterfaceType() reflect.Type { return reflect.TypeFor[T]() }
+
 // Ref[T any] is a reference holder to a value of type T.
 // The reference is expected to be a field of a component struct.
 // The value is set by the framework, and is accessible via the Get() method.
@@ -108,6 +99,10 @@ func (r *Ref[T]) Get() T {
 // isRef is a marker method to identify a Ref type.
 // nolint
 func (r Ref[T]) isRef() {}
+
+// refType returns the referenced component interface type.
+// nolint
+func (r Ref[T]) refType() reflect.Type { return reflect.TypeFor[T]() }
 
 // setRef sets the reference value.
 // nolint
@@ -151,75 +146,20 @@ func (r LazyInit) isLazyInit() {}
 //	}
 type Main interface{}
 
-// PointerToMain is a type constraint that asserts *T is an instance of Main
-// (i.e. T is a struct that embeds kod.Implements[kod.Main]).
-type PointerToMain[T any] interface {
+// PointerTo asserts that *T is a component implementation of I.
+type PointerTo[I any, T any] interface {
 	*T
-	InstanceOf[Main]
+	InstanceOf[I]
+}
+
+// PointerToMain asserts that *T is a main component implementation.
+type PointerToMain[T any] interface {
+	PointerTo[Main, T]
 }
 
 // InstanceOf[T any] is an interface for asserting implementation of an interface T.
 type InstanceOf[T any] interface {
 	implements(T)
-}
-
-// WithConfig[T any] is a struct to hold configuration of type T.
-// The struct is expected to be a field of a component struct.
-// The configuration is loaded from a file, and is accessible via the Config() method.
-//
-// Example:
-//
-//	type app struct {
-//		kod.Implements[kod.Main]
-//		kod.WithConfig[appConfig]
-//	}
-//
-//	type appConfig struct {
-//		Host string
-//		Port int
-//	}
-//
-//	func main() {
-//		kod.Run(context.Background(), func(ctx context.Context, main *app) error {
-//			fmt.Println("config:", main.Config())
-//		})
-//	}
-type WithConfig[T any] struct {
-	config T
-}
-
-// Config returns a pointer to the config.
-func (wc *WithConfig[T]) Config() *T {
-	return &wc.config
-}
-
-// getConfig returns the config.
-func (wc *WithConfig[T]) getConfig() any {
-	return &wc.config
-}
-
-// WithGlobalConfig[T any] is a struct to hold global configuration of type T.
-// The struct is expected to be a field of a component struct.
-// The configuration is loaded from a file, and is accessible via the Config() method.
-type WithGlobalConfig[T any] struct {
-	config T
-}
-
-// Config returns a pointer to the config.
-func (wc *WithGlobalConfig[T]) Config() *T {
-	return &wc.config
-}
-
-// getGlobalConfig returns the config.
-func (wc *WithGlobalConfig[T]) getGlobalConfig() any {
-	return &wc.config
-}
-
-// WithConfigFile is an option setter for specifying a configuration file.
-func WithConfigFile(filename string) func(*options) {
-	return func(opts *options) {
-		opts.configFilename = filename
-	}
 }
 
 // WithFakes is an option setter for specifying fake components for testing.
@@ -229,17 +169,9 @@ func WithFakes(fakes ...fakeComponent) func(*options) {
 	}
 }
 
-// WithRegistrations is an option setter for specifying component registrations.
-func WithRegistrations(regs ...*Registration) func(*options) {
+func withRegistrations(regs ...*registration) func(*options) {
 	return func(opts *options) {
 		opts.registrations = regs
-	}
-}
-
-// WithKoanf is an option setter for specifying a custom Koanf instance.
-func WithKoanf(cfg *koanf.Koanf) func(*options) {
-	return func(opts *options) {
-		opts.koanf = cfg
 	}
 }
 
@@ -250,14 +182,21 @@ func WithInterceptors(interceptors ...interceptor.Interceptor) func(*options) {
 	}
 }
 
+// WithShutdownTimeout sets how long shutdown hooks may run.
+func WithShutdownTimeout(timeout time.Duration) func(*options) {
+	return func(opts *options) {
+		opts.shutdownTimeout = timeout
+	}
+}
+
 // MustRun is a helper function to run the application with the provided main component and options.
 // It panics if an error occurs during the execution.
-func MustRun[T any, P PointerToMain[T]](ctx context.Context, run func(context.Context, *T) error, opts ...func(*options)) {
+func MustRun[T any, P PointerToMain[T]](ctx context.Context, run func(context.Context, P) error, opts ...func(*options)) {
 	lo.Must0(Run[T, P](ctx, run, opts...))
 }
 
 // Run initializes and runs the application with the provided main component and options.
-func Run[T any, _ PointerToMain[T]](ctx context.Context, run func(context.Context, *T) error, opts ...func(*options)) error {
+func Run[T any, P PointerToMain[T]](ctx context.Context, run func(context.Context, P) error, opts ...func(*options)) error {
 	// Create a new Kod instance.
 	kod, err := newKod(ctx, opts...)
 	if err != nil {
@@ -270,7 +209,7 @@ func Run[T any, _ PointerToMain[T]](ctx context.Context, run func(context.Contex
 	defer cancel()
 
 	// get the main component implementation
-	main, err := kod.getImpl(ctx, reflect.TypeFor[T]())
+	main, err := kod.Get[P](ctx)
 	if err != nil {
 		return err
 	}
@@ -282,10 +221,10 @@ func Run[T any, _ PointerToMain[T]](ctx context.Context, run func(context.Contex
 	})
 
 	// wait for stop signal
-	err = run(ctx, main.(*T))
+	err = run(ctx, main)
 
 	ctx, timeoutCancel := context.WithTimeout(
-		context.WithoutCancel(ctx), kod.config.ShutdownTimeout)
+		context.WithoutCancel(ctx), kod.shutdownTimeout)
 	defer timeoutCancel()
 
 	// run hook functions
@@ -294,41 +233,30 @@ func Run[T any, _ PointerToMain[T]](ctx context.Context, run func(context.Contex
 	return err
 }
 
-// kodConfig defines the overall configuration for the Kod application.
-type kodConfig struct {
-	Name    string
-	Env     string
-	Version string
-
-	ShutdownTimeout time.Duration
-}
-
 // Kod represents the core structure of the application, holding configuration and component registrations.
 type Kod struct {
-	mu  *sync.Mutex
-	cfg *koanf.Koanf
+	mu *sync.Mutex
 
-	config kodConfig
+	shutdownTimeout time.Duration
+	hooker          *hooks.Hooker
 
-	hooker *hooks.Hooker
-
-	regs                []*Registration
-	registryByName      map[string]*Registration
-	registryByInterface map[reflect.Type]*Registration
-	registryByImpl      map[reflect.Type]*Registration
+	regs                []*registration
+	registryByName      map[string]*registration
+	registryByInterface map[reflect.Type]*registration
+	registryByImpl      map[reflect.Type]*registration
 
 	components         map[string]any
+	impls              map[string]any
 	lazyInitComponents map[reflect.Type]bool
 	opts               *options
 }
 
 // options defines the configuration options for Kod.
 type options struct {
-	configFilename string
-	fakes          map[reflect.Type]any
-	registrations  []*Registration
-	koanf          *koanf.Koanf
-	interceptor    interceptor.Interceptor
+	fakes           map[reflect.Type]any
+	registrations   []*registration
+	interceptor     interceptor.Interceptor
+	shutdownTimeout time.Duration
 }
 
 // newKod creates a new instance of Kod with the provided registrations and options.
@@ -338,29 +266,27 @@ func newKod(_ context.Context, opts ...func(*options)) (*Kod, error) {
 		o(opt)
 	}
 
+	shutdownTimeout := opt.shutdownTimeout
+	if shutdownTimeout <= 0 {
+		shutdownTimeout = 5 * time.Second
+	}
+
 	kod := &Kod{
-		mu: &sync.Mutex{},
-		config: kodConfig{
-			Name:            filepath.Base(lo.Must(os.Executable())),
-			Env:             "local",
-			ShutdownTimeout: 5 * time.Second,
-		},
+		mu:                  &sync.Mutex{},
+		shutdownTimeout:     shutdownTimeout,
 		hooker:              hooks.New(),
 		regs:                registry.All(),
-		registryByName:      make(map[string]*Registration),
-		registryByInterface: make(map[reflect.Type]*Registration),
-		registryByImpl:      make(map[reflect.Type]*Registration),
+		registryByName:      make(map[string]*registration),
+		registryByInterface: make(map[reflect.Type]*registration),
+		registryByImpl:      make(map[reflect.Type]*registration),
 		components:          make(map[string]any),
+		impls:               make(map[string]any),
 		opts:                opt,
 	}
 
 	kod.register(opt.registrations)
 
-	err := kod.parseConfig(opt.configFilename)
-	if err != nil {
-		return nil, err
-	}
-
+	var err error
 	kod.lazyInitComponents, err = processRegistrations(kod.regs)
 	if err != nil {
 		return nil, err
@@ -373,11 +299,6 @@ func newKod(_ context.Context, opts ...func(*options)) (*Kod, error) {
 	return kod, nil
 }
 
-// Config returns the current configuration of the Kod instance.
-func (k *Kod) Config() kodConfig {
-	return k.config
-}
-
 // SetDefaultInterceptor sets the default interceptor for the Kod instance.
 func (k *Kod) SetInterceptors(interceptors ...interceptor.Interceptor) {
 	k.opts.interceptor = interceptor.Chain(interceptors)
@@ -388,88 +309,18 @@ func (k *Kod) Defer(name string, fn func(context.Context) error) {
 	k.hooker.Add(hooks.HookFunc{Name: name, Fn: fn})
 }
 
-// unmarshalConfig sets the configuration for the Kod instance.
-func (k *Kod) unmarshalConfig(key string, out interface{}) error {
-	err := defaults.Set(out)
-	if err != nil {
-		return fmt.Errorf("set defaults: %w", err)
-	}
-
-	return k.cfg.Unmarshal(key, out)
-}
-
 // register adds the given implementations to the Kod instance.
-func (k *Kod) register(regs []*Registration) {
+func (k *Kod) register(regs []*registration) {
 	if len(regs) > 0 {
 		k.regs = regs
 	}
 
 	for _, v := range k.regs {
+		if v == nil {
+			continue
+		}
 		k.registryByName[v.Name] = v
 		k.registryByInterface[v.Interface] = v
 		k.registryByImpl[v.Impl] = v
 	}
-}
-
-// parseConfig parses the config file.
-func (k *Kod) parseConfig(filename string) error {
-	k.cfg = k.opts.koanf
-	if k.cfg == nil {
-		err := k.loadConfig(filename)
-		if err != nil {
-			return err
-		}
-	}
-
-	return k.unmarshalConfig("kod", &k.config)
-}
-
-// loadConfig loads the configuration from the specified file.
-func (k *Kod) loadConfig(filename string) error {
-	noConfigProvided := false
-	if filename == "" {
-		filename = os.Getenv("KOD_CONFIG")
-		if filename == "" {
-			noConfigProvided = true
-			filename = "kod.toml"
-		}
-	}
-
-	c := koanf.New(".")
-	err := c.Load(env.Provider("KOD_", ".", func(s string) string {
-		return strings.ReplaceAll(strings.ToLower(s), "_", ".")
-	}), nil)
-	if err != nil {
-		return fmt.Errorf("load env config: %w", err)
-	}
-
-	// get ext
-	ext := filepath.Ext(filename)
-	switch ext {
-	case ".toml":
-		err = c.Load(file.Provider(filename), toml.Parser())
-	case ".yaml":
-		err = c.Load(file.Provider(filename), yaml.Parser())
-	case ".json":
-		err = c.Load(file.Provider(filename), json.Parser())
-	default:
-		return fmt.Errorf("read config file: Unsupported Config Type %q", ext)
-	}
-
-	if err != nil {
-		switch err.(type) {
-		case *fs.PathError:
-			if noConfigProvided {
-				fmt.Fprintln(os.Stderr, "failed to load config file, use default config")
-			} else {
-				return fmt.Errorf("read config file: %w", err)
-			}
-		default:
-			return fmt.Errorf("read config file: %w", err)
-		}
-	}
-
-	k.cfg = c
-
-	return nil
 }

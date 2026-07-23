@@ -1,10 +1,10 @@
 name: Build and Test
 
 on:
- push:
-   branches:
-     - 'main'
- pull_request:
+  push:
+    branches:
+      - "main"
+  pull_request:
 
 jobs:
   build:
@@ -12,7 +12,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        version: [stable]
+        version: ['1.27.0-rc.1']
 
     steps:
       - name: Check out repository
@@ -32,7 +32,7 @@ jobs:
 
       - name: generate and test
         run: |
-            task github-action
+          task github-action
 
       - uses: codecov/codecov-action@v5
         env:
